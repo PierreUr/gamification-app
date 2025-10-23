@@ -1,0 +1,76 @@
+﻿{
+  "project_name": "Gamification App",
+  "version": "1.0",
+  "architecture_type": "Modular-Manager-Pattern",
+  "core_entry_point": "js/main.js",
+  "data_flow": "main.js (listenToUserProfile) -> updateUserData in all Managers",
+  "modules": {
+    "GamificationApp": {
+      "file": "js/main.js",
+      "purpose": "Orchestrator, Firebase/Auth Setup, Global State Management",
+      "ui_areas": ["#auth-view", "#app-view", "#global-currency-display", "#notification-area"],
+      "dependencies": ["All Managers"]
+    },
+    "QuestManager": {
+      "file": "js/questManager.js",
+      "purpose": "Quest CRUD, Focus Logic, Completion/Reward Handling",
+      "ui_areas": ["#focus-quest-container (div-6xxx)", "div-1112 (Edit Modal)"],
+      "dependencies": ["GanttManager", "QuestListManager", "QuestWizardManager", "TimerManager"]
+    },
+    "GanttManager": {
+      "file": "js/ganttManager.js",
+      "purpose": "Renders Gantt Chart, Pomodoro Mode/Settings, Drag\u0026Drop, UI Controls",
+      "ui_areas": ["div-7110 (Gantt Grid)", "div-7120 (Pomodoro Activate)", "div-7130 (Pomodoro Settings)"],
+      "dependencies": ["GanttSortManager", "GanttWarningManager", "PomodoroGridGenerator", "QuestManager"]
+    },
+    "TimerManager": {
+      "file": "js/timerManager.js",
+      "purpose": "Manages quest and break countdown timers (Pomodoro functionality)",
+      "ui_areas": ["div-4020 (Break Popup)", "div-4030 (Post-Break)", "#minimized-break-timer"],
+      "dependencies": ["QuestManager", "ModalManager"]
+    },
+    "CharacterSheetManager": {
+      "file": "js/characterSheetManager.js",
+      "purpose": "Calculates and renders character stats/bars (HP, XP, Attributes)",
+      "ui_areas": ["div-3000 (Character Sidebar)", "div-3210 (Bars)", "div-3400 (Attributes)"],
+      "dependencies": []
+    },
+    "InventoryManager": {
+      "file": "js/inventoryManager.js",
+      "purpose": "Manages Inventory (stacking, delete) and Equipment (equip, unequip)",
+      "ui_areas": ["div-3310 (Equipment Modal)", "div-3320 (Inventory Modal)", "#hp-potion-count", "#mana-potion-count"],
+      "dependencies": []
+    },
+    "PetManager": {
+      "file": "js/petManager.js",
+      "purpose": "Manages Pets, Active Pet selection and rendering in sidebar",
+      "ui_areas": ["div-5110 (Pets Modal)", "#active-pets-sidebar"],
+      "dependencies": []
+    },
+    "SkillTreeManager": {
+      "file": "js/skillTree.js",
+      "purpose": "Manages Skill Tree logic (learning skills, cost, dependencies)",
+      "ui_areas": ["div-3340 (Skills Modal)", "#skill-points-display"],
+      "dependencies": []
+    },
+    "TestToolsManager": {
+      "file": "js/testToolsManager.js",
+      "purpose": "Provides debug and testing utilities, DB query function",
+      "ui_areas": ["div-8110 (Test Tools Modal)"],
+      "dependencies": ["QuestManager", "TimerManager"]
+    },
+    "GanttSortManager": {
+      "file": "js/ganttSortManager.js",
+      "purpose": "Logic for sorting quests (chronological, pomodoro grid insertion)",
+      "ui_areas": ["#gantt-sort-all-btn"],
+      "dependencies": ["GanttManager"]
+    },
+    "PomodoroGridGenerator": {
+      "file": "js/PomodoroGridGenerator.js",
+      "purpose": "Generates temporal grid data for Pomodoro breaks (pure logic)",
+      "ui_areas": [],
+      "dependencies": []
+    }
+  },
+  "ui_id_schema_reference": "PROCESS_DOCS/UI_ELEMENT_IDS.md"
+}
