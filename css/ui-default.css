@@ -1,0 +1,8 @@
+.gantt-bar-warning {
+    /* This class is now just a marker, the styling is on the icon itself. */
+}
+
+.gantt-warning-icon {
+    cursor: help;
+    margin-right: 4px;
+}

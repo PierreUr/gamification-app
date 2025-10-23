@@ -5,129 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gamification Core</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <style>
-        .modal.hidden, .menu-section-content.hidden, .quest-wizard-step.hidden { display: none; }
-        .modal { resize: both; overflow: auto; border: 2px solid #4a5568; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
-        #character-sidebar .sidebar-content { max-height: calc(100vh - 4rem); overflow-y: auto; }
-        .achievement-icon-selector.selected { outline: 2px solid #f59e0b; background-color: #374151; }
-        .gantt-quest-bar { position: absolute; height: 80%; top: 10%; border-radius: 0.25rem; cursor: grab; display: flex; align-items: center; justify-content: space-between; padding-left: 0.5rem; padding-right: 0.25rem; font-size: 0.75rem; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border: 1px solid rgba(0,0,0,0.3); }
-        .gantt-quest-bar:active { cursor: grabbing; }
-        .gantt-quest-bar.project { height: 10px; top: calc(50% - 5px); background-color: #9ca3af; border-radius: 0; }
-        .quest-conflict { border: 2px solid #ef4444; box-shadow: 0 0 8px #ef4444; }
-        #focus-timer-visual-fill { transition: height 0.5s linear; }
-        .text-shadow { text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); }
-        .wizard-progress-dot { width: 10px; height: 10px; border-radius: 50%; background-color: #4b5567; transition: background-color 0.3s; }
-        .wizard-progress-dot.active { background-color: #6366f1; }
-        @keyframes blink { 50% { border-color: #ef4444; } }
-        #main-content.blinking-border { animation: blink 1.5s linear infinite; border-style: solid; border-width: 2px; border-color: #4b5567; }
-        .gantt-conflict-segment { position: absolute; height: 100%; top: 0; background-image: repeating-linear-gradient(45deg, rgba(239, 68, 68, 0.4), rgba(239, 68, 68, 0.4) 5px, transparent 5px, transparent 10px); pointer-events: none; }
-        .pet-selector.selected { border-color: #f59e0b; box-shadow: 0 0 10px #f59e0b; background-color: #374151; }
-    </style>
-    <style id="skills-styles">
-        .skill-node {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.5rem;
-            border: 2px solid #4b5567;
-            border-radius: 0.5rem;
-            background-color: #374151;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-        .skill-node.selected {
-            border-color: #6366f1;
-            background-color: #4338ca;
-        }
-        .skill-node--locked {
-            opacity: 0.5;
-            background-color: #1f2937;
-        }
-        .skill-node--learnable {
-            border-color: #f59e0b;
-        }
-        .skill-node--learnable:hover {
-            background-color: #4b5567;
-        }
-        .skill-node--unlocked {
-            border-color: #22c55e;
-            background-color: #166534;
-        }
-        .skill-icon {
-            font-size: 1.5rem;
-            width: 2.5rem;
-            height: 2.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 0.375rem;
-            background-color: rgba(0,0,0,0.2);
-        }
-    </style>
-    <style id="equipment-styles">
-        .equipment-slot { background-color: #111827; border: 2px solid #4b5567; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; transition: all 0.2s; cursor: pointer; transform: rotate(45deg); border-radius: 0.375rem; }
-        .equipment-slot:hover { border-color: #9ca3af; background-color: #1f2937; }
-        .equipment-slot.selected { border-color: #f59e0b; box-shadow: 0 0 10px #f59e0b; }
-        .equipment-slot.blocked { background-color: #374151; cursor: not-allowed; }
-        .equipment-slot > * { text-align: center; line-height: 1; transform: rotate(-45deg); }
-        .slot-medium { width: 5rem; height: 5rem; }
-        .slot-small { width: 4.5rem; height: 4.5rem; }
-    </style>
-    <style id="my-quests-styles">
-        .quest-filter-btn.active { background-color: #4f46e5; font-weight: bold; }
-    </style>
-    <style id="inventory-styles">
-        #inventory-list-container .group.selected { background-color: #3b82f6; border: 1px solid #60a5fa; }
-    </style>
-    <style id="pets-styles">
-        #pets-inventory-list .active-pet-glow { box-shadow: 0 0 12px #f59e0b, inset 0 0 8px rgba(245, 158, 11, 0.5); }
-    </style>
-    <style id="journal-styles"></style>
-    <style id="character-stats-styles"></style>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/character.css">
+    <link rel="stylesheet" href="css/gantt.css">
+    <link rel="stylesheet" href="css/quests.css">
+    <link rel="stylesheet" href="css/ui-default.css">
+    <link rel="stylesheet" href="css/pets.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎮</text></svg>">
+    
 </head>
-<body class="bg-gray-900 text-gray-200">
+<body class="bg-gray-900 text-gray-200 pl-[3%]">
 
-    <div id="global-currency-display" class="fixed top-4 right-4 z-50 flex gap-4 text-sm">
-       <div class="flex items-center gap-1 p-2 bg-gray-800 rounded-lg border border-gray-600">
-           <span title="Kristalle">💎</span><span id="crystals-amount">0</span>
-       </div>
-       <div class="flex items-center gap-1 p-2 bg-gray-800 rounded-lg border border-gray-600">
-           <span title="Gold">💰</span><span id="gold-amount">0</span>
-       </div>
-       <div class="flex items-center gap-1 p-2 bg-gray-800 rounded-lg border border-gray-600">
-           <span title="Silber">🪙</span><span id="silver-amount">0</span>
-       </div>
-       <div class="flex items-center gap-1 p-2 bg-gray-800 rounded-lg border border-gray-600">
-           <span title="Bronze">🥉</span><span id="bronze-amount">0</span>
-       </div>
+    <div id="div-9000" class="h-16 bg-gray-800 flex items-center justify-end px-6 border-b border-gray-700">
+        <div id="global-currency-display" class="flex gap-4 text-sm">
+           <div class="flex items-center gap-1 p-2 bg-gray-900 rounded-lg border border-gray-600">
+               <span title="Kristalle">💎</span><span id="crystals-amount">0</span>
+           </div>
+           <div class="flex items-center gap-1 p-2 bg-gray-900 rounded-lg border border-gray-600">
+               <span title="Gold">💰</span><span id="gold-amount">0</span>
+           </div>
+           <div class="flex items-center gap-1 p-2 bg-gray-900 rounded-lg border border-gray-600">
+               <span title="Silber">🪙</span><span id="silver-amount">0</span>
+           </div>
+           <div class="flex items-center gap-1 p-2 bg-gray-900 rounded-lg border border-gray-600">
+               <span title="Bronze">🥉</span><span id="bronze-amount">0</span>
+           </div>
+        </div>
     </div>
 
     <!-- Minimized Break Timer -->
-    <div id="minimized-break-timer" class="hidden fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-gray-700 text-white p-2 rounded-lg shadow-lg border border-gray-500">
+    <div id="minimized-break-timer" class="hidden fixed top-4 left-1/2 -translate-x-1/2 z-[90] bg-gray-700 text-white p-2 rounded-lg shadow-lg border border-gray-500">
         <span>Pause: </span><span id="minimized-break-timer-display" class="font-mono">05:00</span>
     </div>
 
 
-    <div class="min-h-screen flex items-center justify-center p-4">
-        <!-- Auth View -->
-        <div id="auth-view">
-            <div class="bg-gray-800 p-8 rounded-lg shadow-lg text-center max-w-md mx-auto">
-                <h1 class="text-white text-3xl font-bold mb-6">Willkommen!</h1>
-                <button id="login-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
-                    Anonym Anmelden
-                </button>
-            </div>
+    <!-- Auth View -->
+    <div id="auth-view" class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-gray-800 p-8 rounded-lg shadow-lg text-center max-w-md mx-auto">
+            <h1 class="text-white text-3xl font-bold mb-6">Willkommen!</h1>
+            <button id="login-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+                Anonym Anmelden
+            </button>
         </div>
-
-        <!-- App View -->
-        <div id="app-view" class="hidden w-full max-w-screen-xl mx-auto flex gap-4">
-            <!-- Left Menu -->
-            <div id="main-menu-container" class="w-48 flex-shrink-0 bg-gray-800 p-4 rounded-lg shadow-lg flex flex-col gap-4">
+    </div>
+    <!-- App View -->
+    <div id="app-view" class="hidden w-full max-w-screen-2xl flex gap-4 p-4 mt-4">
+        <!-- Left Menu -->
+        <div id="div-1000" class="w-48 flex-shrink-0 bg-gray-800 p-4 rounded-lg shadow-lg flex flex-col gap-4">
                  <h2 class="text-xl font-bold text-center border-b border-gray-600 pb-2">Menü</h2>
                  
-                 <div class="menu-section">
+                 <div id="div-1100" class="menu-section">
                     <h3 class="menu-section-header text-lg font-semibold cursor-pointer border-b border-gray-700 pb-1 mb-2">Produktion</h3>
-                    <div class="menu-section-content pl-2 flex flex-col gap-2">
+                    <div id="div-1100" class="menu-section-content pl-2 flex flex-col gap-2">
                         <button id="menu-btn-new-quest" class="menu-btn bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Neue Quest</button>
                         <button id="menu-btn-simple-quest" class="menu-btn bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded-lg transition duration-300 text-xs">Simple Quest (Test)</button>
                         <button id="menu-btn-my-quests" class="menu-btn bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
@@ -138,77 +67,74 @@
                     </div>
                  </div>
 
-                <div class="menu-section">
+                <div id="div-5000" class="menu-section">
                     <h3 class="menu-section-header text-lg font-semibold cursor-pointer border-b border-gray-700 pb-1 mb-2">Gamification</h3>
-                    <div class="menu-section-content pl-2 flex flex-col gap-2">
+                     <div id="div-5100" class="menu-section-content pl-2 flex flex-col gap-2">
                         <button id="menu-btn-pets" class="menu-btn bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Pets</button>
                     </div>
                 </div>
 
-
-                 <div class="mt-auto border-t border-gray-600 pt-4 space-y-2">
-                     <h3 class="text-xs text-gray-400 text-center">Test-Tools</h3>
-                     <div id="test-buttons-container" class="flex flex-col gap-2">
-                         <button id="test-levelup-btn" class="text-xs bg-yellow-600 hover:bg-yellow-500 p-1 rounded">Level Up</button>
-                         <button id="test-add-bronze-btn" class="text-xs bg-yellow-700 hover:bg-yellow-600 p-1 rounded">+125 Bronze</button>
-                         <button id="test-gantt-btn" class="text-xs bg-teal-600 hover:bg-teal-500 p-1 rounded">Test Gantt</button>
-                         <button id="test-add-today-quests-btn" class="text-xs bg-blue-600 hover:bg-blue-500 p-1 rounded">+5 Quests für Heute</button>
-                         <button id="test-complete-all-quests-btn" class="text-xs bg-red-600 hover:bg-red-500 p-1 rounded">Alle Quests erledigen</button>
-                         <button id="test-simulate-drop-btn" class="text-xs bg-orange-600 hover:bg-orange-500 p-1 rounded">Simulate Drop</button>
-                         <button id="test-gain-pet-xp-btn" class="text-xs bg-purple-600 hover:bg-purple-500 p-1 rounded">+50 Pet XP</button>
-                         <button data-count="5" data-priority="Leicht" class="add-test-quests-btn text-xs bg-gray-600 hover:bg-gray-500 p-1 rounded">+5 Leicht</button>
-                         <button data-count="5" data-priority="Mittel" class="add-test-quests-btn text-xs bg-gray-600 hover:bg-gray-500 p-1 rounded">+5 Mittel</button>
-                         <button data-count="5" data-priority="Schwer" class="add-test-quests-btn text-xs bg-gray-600 hover:bg-gray-500 p-1 rounded">+5 Schwer</button>
-                     </div>
-                 </div>
-
-                 <div class="mt-4">
-                    <button id="logout-btn" class="w-full bg-red-800 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Abmelden & Löschen</button>
+                <div id="div-8000" class="menu-section mt-auto pt-4 border-t border-gray-600">
+                    <h3 class="menu-section-header text-lg font-semibold cursor-pointer border-b border-gray-700 pb-1 mb-2">System</h3>
+                    <div id="div-8100" class="menu-section-content pl-2 flex flex-col gap-2">
+                        <button id="menu-btn-test-tools" class="w-full menu-btn bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Test-Werkzeuge</button>
+                        <button id="logout-btn" class="w-full bg-red-800 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Abmelden</button>
+                    </div>
                  </div>
             </div>
 
-            <!-- Main Content -->
-            <div id="main-content-container" class="flex-grow flex flex-col gap-4">
-                <div class="bg-gray-800 p-4 rounded-lg shadow-lg text-white flex flex-col h-[350px]">
-                    <div class="flex justify-between items-center mb-2 flex-shrink-0">
-                        <h3 class="font-bold text-lg">Projekt-Übersicht</h3>
-                        <div id="gantt-controls" class="flex items-center gap-4 text-sm">
-                            <label>Projekt: 
-                                <select id="gantt-project-filter" class="bg-gray-900 rounded p-1">
-                                    <option value="">Alle</option>
+            <!-- Main Content (2000er Ebene) -->
+            <div id="div-2000" class="flex-grow flex flex-col gap-4">
+                <div id="div-7000" class="bg-gray-800 p-4 rounded-lg shadow-lg text-white flex flex-col w-[60vw] mx-auto">
+                    <div id="div-7100" class="flex justify-between items-center mb-2 flex-shrink-0">
+                        <div id="div-7200" class="text-left text-sm text-gray-400">
+                            <span id="gantt-current-date-display"></span>
+                        </div>
+                        <div class="flex items-center text-sm gap-4 justify-end">
+                            <label>Skala:
+                                <select id="gantt-timescale-select" class="bg-gray-900 rounded p-1 text-sm">
+                                    <option value="60" selected>60 Min</option>
+                                    <option value="30">30 Min</option>
+                                    <option value="15">15 Min</option>
+                                </select>
+                            </label>                           
+                            <label>Stunden:
+                                <select id="gantt-hours-view-select" class="bg-gray-900 rounded p-1 text-sm">
+                                    <!-- Options are populated dynamically by ganttManager.js -->
+                                    <option value="8">8h</option>
                                 </select>
                             </label>
-                            <label>Startzeit: <input type="time" id="gantt-start-time" value="16:00" step="900" class="bg-gray-900 rounded p-1"></label>
-                            <label>Datum: <input type="date" id="gantt-date" class="bg-gray-900 rounded p-1"></label>
-                            <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" id="gantt-auto-pause-toggle">
-                                <span>Auto. Pause</span>
-                            </label>
-                            <div class="border-l border-gray-600 pl-4">
+                            <div class="border-l border-gray-600 pl-4 flex items-center gap-4">
+                                <button id="gantt-sort-all-btn" class="text-xs bg-purple-800 hover:bg-purple-700 px-2 py-1 rounded">Auto-Sortieren</button>
+                                <div class="border-l border-gray-600 pl-4">
+                                    <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                        <input type="checkbox" id="gantt-pomodoro-toggle" class="form-checkbox bg-gray-700 border-gray-600 text-indigo-500 h-4 w-4">
+                                        <span>Pomodoro</span>
+                                    </label>
+                                    <button id="gantt-pomodoro-settings-btn" class="hidden text-gray-400 hover:text-white" title="Pomodoro-Einstellungen">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0l-.1.41a2 2 0 01-1.42 1.42l-.41.1c-1.56.38-1.56 2.6 0 2.98l.41.1a2 2 0 011.42 1.42l.1.41c.38 1.56 2.6 1.56 2.98 0l.1-.41a2 2 0 011.42-1.42l.41-.1c1.56-.38 1.56-2.6 0-2.98l-.41-.1a2 2 0 01-1.42-1.42l-.1-.41zM10 5a5 5 0 100 10 5 5 0 000-10zM10 8a2 2 0 100 4 2 2 0 000-4z" clip-rule="evenodd" /></svg>
+                                    </button>
+                                </div>
                                 <select id="gantt-view-select" class="bg-gray-700 text-white border-gray-600 rounded p-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                    <option value="day">Tagesansicht</option>
-                                    <option value="week">Wochenansicht</option>
+                                    <option value="day">Mehrzeilen</option>
                                     <option value="single-line">Eine Zeile</option>
                                 </select>
                             </div>
                         </div>
                     </div>
-                    <div class="flex-grow overflow-auto">
-                        <div id="gantt-chart-container" class="grid grid-cols-[250px_1fr] text-sm gap-y-1 relative">
-                        </div> 
+                    <div id="div-7110" class="flex-grow overflow-auto relative grid grid-cols-[150px_1fr] text-sm h-full"> <!-- This ID is used by QuestManager -->
                     </div>
                 </div>
                 
-                <div id="main-content" class="bg-gray-800 p-6 rounded-lg shadow-lg text-white flex-grow">
-                     <div id="focus-quest-container">
-                     </div>
+                <div id="div-6000" class="bg-gray-800 p-6 rounded-lg shadow-lg text-white flex-grow">
+                    <div id="focus-quest-container"></div> <!-- Correct ID for QuestManager -->
                 </div>
             </div>
             
-            <!-- Right Character Sidebar -->
-            <div id="character-sidebar" class="w-96 flex-shrink-0 bg-gray-800 p-4 rounded-lg shadow-lg flex flex-col">
+            <!-- Right Character Sidebar (3000er Ebene) -->
+            <div id="div-3000" class="w-96 flex-shrink-0 bg-gray-800 p-4 rounded-lg shadow-lg flex flex-col">
                 <div class="sidebar-content overflow-y-auto">
-                    <div class="text-center mb-4">
+                    <div id="div-3100" class="text-center mb-4">
                         <div class="flex justify-center items-center gap-2">
                            <h2 id="character-name" class="text-xl font-bold"></h2>
                            <span class="text-sm font-bold text-green-400">(Level <span id="character-level">1</span>)</span>
@@ -218,8 +144,8 @@
                         <div id="active-pets-sidebar" class="flex justify-center items-center gap-2 mt-2 h-8"></div>
                     </div>
                 
-                    <div id="ui-block-player-info">
-                         <div class="mt-2 space-y-3">
+                    <div id="div-3200" class="space-y-4">
+                         <div id="div-3210" class="space-y-3">
                             <div class="flex items-center">
                                 <div class="flex-grow">
                                     <span class="text-sm font-bold text-red-400">HP</span>
@@ -254,7 +180,7 @@
                                  </div>
                              </div>
                         </div>
-                        <div id="xp-section" class="mt-4">
+                        <div id="div-3220">
                             <div id="xp-bar-container" class="w-full bg-gray-600 rounded-full h-2.5">
                                 <div id="xp-bar-progress" class="bg-yellow-400 h-2.5 rounded-full" style="width: 0%"></div>
                             </div>
@@ -265,7 +191,7 @@
                     </div>
                      <hr class="my-4 border-gray-600">
 
-                     <div class="grid grid-cols-2 gap-2 my-4">
+                     <div id="div-3300" class="grid grid-cols-2 gap-2 my-4">
                          <button id="menu-btn-equipment" class="menu-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-2 rounded-lg transition duration-300 text-sm">Ausrüstung</button>
                          <button id="menu-btn-inventory" class="menu-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-2 rounded-lg transition duration-300 text-sm">Inventar</button>
                          <button id="menu-btn-achievements" class="menu-btn bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-2 rounded-lg transition duration-300 text-sm">Erfolge</button>
@@ -273,7 +199,7 @@
                      </div>
                      
                      <div class="flex gap-4">
-                        <div id="ui-block-character-stats" class="space-y-3 text-left flex-1">
+                        <div id="div-3400" class="space-y-3 text-left flex-1">
                              <h3 class="text-lg font-bold text-center mb-2">Attribute</h3>
                             <div class="flex justify-between items-center text-sm"><span><span>❤️</span> Vitalität: <span id="stat-vitality">10</span></span><div class="flex items-center relative gap-1"><button data-stat="vitality" data-amount="1" class="stat-increase-btn hidden bg-green-500 hover:bg-green-600 px-2 rounded text-xs">+</button><button data-stat="vitality" data-amount="5" class="stat-increase-btn hidden bg-blue-500 hover:bg-blue-600 px-2 rounded text-xs">+5</button></div></div>
                             <div class="flex justify-between items-center text-sm"><span><span>💪</span> Stärke: <span id="stat-strength">10</span></span><div class="flex items-center relative gap-1"><button data-stat="strength" data-amount="1" class="stat-increase-btn hidden bg-green-500 hover:bg-green-600 px-2 rounded text-xs">+</button><button data-stat="strength" data-amount="5" class="stat-increase-btn hidden bg-blue-500 hover:bg-blue-600 px-2 rounded text-xs">+5</button></div></div>
@@ -282,7 +208,7 @@
                             <div class="flex justify-between items-center text-sm"><span><span>🏃</span> Ausdauer: <span id="stat-stamina">10</span></span><div class="flex items-center relative gap-1"><button data-stat="stamina" data-amount="1" class="stat-increase-btn hidden bg-green-500 hover:bg-green-600 px-2 rounded text-xs">+</button><button data-stat="stamina" data-amount="5" class="stat-increase-btn hidden bg-blue-500 hover:bg-blue-600 px-2 rounded text-xs">+5</button></div></div>
                             <div class="flex justify-between items-center text-sm"><span><span>🍀</span> Glück: <span id="stat-luck">10</span></span><div class="flex items-center relative gap-1"><button data-stat="luck" data-amount="1" class="stat-increase-btn hidden bg-green-500 hover:bg-green-600 px-2 rounded text-xs">+</button><button data-stat="luck" data-amount="5" class="stat-increase-btn hidden bg-blue-500 hover:bg-blue-600 px-2 rounded text-xs">+5</button></div></div>
                         </div>
-                        <div id="sidebar-derived-stats" class="space-y-2 text-left text-sm flex-1">
+                        <div id="div-3500" class="space-y-2 text-left text-sm flex-1">
                             <h3 class="text-lg font-bold text-center mb-2">Kampfwerte</h3>
                             <p>Physischer Dmg: <span id="derived-stat-phys-dmg" class="font-bold text-green-400">0</span></p>
                             <p>Verteidigung: <span id="derived-stat-def" class="font-bold text-green-400">0</span></p>
@@ -305,11 +231,11 @@
     <!-- #################### -->
 
     <!-- My Quests Modal -->
-    <div id="my-quests-modal" class="modal hidden fixed top-1/4 left-1/3 w-[800px] h-[70vh] z-40">
+    <div id="div-1110" class="modal hidden fixed top-1/4 left-1/3 w-[800px] h-[70vh] z-40">
         <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-             <div class="p-4 pb-2 flex justify-between items-center cursor-move modal-header relative">
-                <h3 class="font-bold">Meine Quests</h3>
-                <button class="modal-close-btn absolute top-2 right-2 text-2xl font-bold hover:text-red-500">&times;</button>
+             <div id="header-1110" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 id="title-1110" class="font-bold">Meine Quests</h3>
+                <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
             <div id="quest-list-filters" class="p-2 flex items-center gap-4 border-b border-gray-700 text-sm">
                 <label>Sortieren nach:
@@ -326,18 +252,18 @@
                     <button data-filter="dueThisWeek" class="quest-filter-btn px-2 py-1 bg-gray-600 rounded text-sm">Woche fällig</button>
                 </div>
             </div>
-            <div id="todo-list" class="p-4 space-y-2 overflow-y-auto flex-grow"></div>
+            <div id="content-1110" class="p-4 space-y-2 overflow-y-auto flex-grow"></div>
         </div>
     </div>
 
     <!-- New Quest Modal -->
-    <div id="new-quest-modal" class="modal hidden fixed top-1/4 left-1/3 w-[600px] z-40">
+    <div id="div-1120" class="modal hidden fixed top-1/4 left-1/3 w-[600px] z-40">
         <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-            <div class="p-4 pb-2 flex justify-between items-center cursor-move modal-header relative">
-                <h3 class="font-bold">Neue Quest erstellen</h3>
-                <button class="modal-close-btn absolute top-2 right-2 text-2xl font-bold hover:text-red-500">&times;</button>
+            <div id="header-1120" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 id="title-1120" class="font-bold">Neue Quest erstellen</h3>
+                <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-            <div class="p-4 overflow-y-auto">
+            <div id="content-1120" class="p-4 overflow-y-auto">
                  <form id="add-todo-form" class="space-y-4 text-sm">
                     <!-- Step 1: Type -->
                      <div id="quest-step-1" class="quest-wizard-step space-y-4">
@@ -346,9 +272,7 @@
                             <label class="block text-xs font-medium text-gray-400 mb-1">Typ</label>
                             <select id="todo-task-type" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 <option value="Aufgabe">Aufgabe</option>
-                                <option value="Projektaufgabe">Projektaufgabe</option>
-                                <option value="Projekt">Projekt</option>
-                            </select>
+                                <option value="Projektaufgabe">Projektaufgabe</option></select>
                         </div>
                         <div id="todo-parent-project-container" class="hidden">
                              <label class="block text-xs font-medium text-gray-400 mb-1">Übergeordnetes Projekt</label>
@@ -371,6 +295,20 @@
                     <!-- Step 3: Duration -->
                      <div id="quest-step-3" class="quest-wizard-step hidden space-y-4">
                         <h4 class="text-lg font-semibold text-center text-gray-400">Schritt 3: Dauer (Pflichtfeld)</h4>
+                        <div class="space-y-2">
+                            <label class="block text-xs font-medium text-gray-400">Planungsstil</label>
+                            <div class="flex gap-4 rounded-lg bg-gray-900 p-1">
+                                <label class="flex-1 text-center p-2 rounded-md cursor-pointer text-sm transition-colors" for="duration-style-pomodoro">
+                                    <input type="radio" name="duration-style" id="duration-style-pomodoro" value="pomodoro" class="sr-only" checked>
+                                    <span>Pomodoro</span>
+                                </label>
+                                <label class="flex-1 text-center p-2 rounded-md cursor-pointer text-sm transition-colors" for="duration-style-manual">
+                                    <input type="radio" name="duration-style" id="duration-style-manual" value="manual" class="sr-only">
+                                    <span>Manuell</span>
+                                </label>
+                            </div>
+                        </div>
+
                         <div id="duration-container-task">
                             <div class="flex justify-between items-center mb-2">
                                 <label class="block text-xs font-medium text-gray-400">Dauer</label>
@@ -390,6 +328,12 @@
                                 <input type="text" id="quest-duration-free-input" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2" placeholder="z.B. 1h 30m, 90m, 2h...">
                             </div>
                         </div>
+                        <div id="quest-split-container" class="hidden pt-2">
+                            <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg bg-indigo-900/50 hover:bg-indigo-900/80">
+                                <input type="checkbox" id="quest-split-toggle" class="form-checkbox bg-gray-700 border-gray-600 text-indigo-500 h-5 w-5">
+                                <span>Quest in 45-Minuten-Blöcke aufteilen</span>
+                            </label>
+                        </div>
                         <div id="duration-container-project" class="hidden">
                             <label class="block text-xs font-medium text-gray-400 mb-1">Dauer (Tage)</label>
                             <input type="number" id="project-duration-days" min="1" value="7" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2">
@@ -398,13 +342,25 @@
                      <!-- Step 4: Deadline & Repeat -->
                       <div id="quest-step-4" class="quest-wizard-step hidden space-y-4">
                         <h4 class="text-lg font-semibold text-center text-gray-400">Schritt 4: Deadline & Wiederholung</h4>
-                         <div id="deadline-container">
-                            <label class="block text-xs font-medium text-gray-400 mb-1">Deadline (Pflichtfeld)</label>
-                            <input type="date" id="todo-deadline" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2">
-                        </div>
-                        <div id="start-date-container" class="hidden">
-                            <label class="block text-xs font-medium text-gray-400 mb-1">Start-Datum (Pflichtfeld)</label>
-                            <input type="date" id="project-start-date" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div id="deadline-container">
+                                <label class="block text-xs font-medium text-gray-400 mb-1">Deadline</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="date" id="todo-deadline" class="clickable-date w-full bg-gray-700 text-white rounded-lg px-3 py-2">
+                                    <button type="button" id="deadline-today-btn" class="bg-blue-600 hover:bg-blue-500 rounded px-3 py-2 text-sm">Heute</button>
+                                </div>
+                            </div>
+                            <div id="start-date-container" class="hidden">
+                                <label class="block text-xs font-medium text-gray-400 mb-1">Start-Datum (Pflichtfeld)</label>
+                                <input type="date" id="project-start-date" class="clickable-date w-full bg-gray-700 text-white rounded-lg px-3 py-2">
+                            </div>
+                            <div id="scheduled-date-container">
+                                <label class="block text-xs font-medium text-gray-400 mb-1">Bearbeitungstag (optional)</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="date" id="todo-scheduled-date" class="clickable-date w-full bg-gray-700 text-white rounded-lg px-3 py-2">
+                                    <button type="button" id="schedule-today-btn" class="bg-blue-600 hover:bg-blue-500 rounded px-3 py-2 text-sm">Heute</button>
+                                </div>
+                            </div>
                         </div>
                         <div class="pt-2" id="repeat-section">
                             <label class="flex items-center gap-2">
@@ -439,34 +395,36 @@
                     </div>
                 </form>
                 <div id="quest-wizard-progress" class="flex justify-center gap-2 mt-4"></div>
-                <div id="quest-wizard-nav" class="mt-6 flex justify-between">
+                <div id="quest-wizard-nav" class="mt-6 flex justify-between items-center">
+                    <div class="flex gap-2">
+                        <button id="quest-next-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 disabled:bg-gray-500 disabled:cursor-not-allowed" disabled>Weiter</button>
+                        <button id="quest-submit-btn" type="submit" form="add-todo-form" class="hidden bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Quest Hinzufügen</button>
+                    </div>
                     <button id="quest-back-btn" class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Zurück</button>
-                    <button id="quest-next-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 disabled:bg-gray-500 disabled:cursor-not-allowed" disabled>Weiter</button>
-                    <button id="quest-submit-btn" type="submit" form="add-todo-form" class="hidden bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Quest Hinzufügen</button>
                 </div>
             </div>
         </div>
     </div>
     
     <!-- Journal Modal -->
-    <div id="journal-modal" class="modal hidden fixed top-1/4 left-1/2 w-[500px] z-40">
+    <div id="div-1130" class="modal hidden fixed top-1/4 left-1/2 w-[500px] z-40" data-parent="div-1000">
         <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-             <div class="p-4 pb-2 flex justify-between items-center cursor-move modal-header relative">
-                <h3 class="font-bold">Journal</h3>
-                <button class="modal-close-btn absolute top-2 right-2 text-2xl font-bold hover:text-red-500">&times;</button>
+             <div id="header-1130" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 id="title-1130" class="font-bold">Journal</h3>
+                <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-            <div id="journal-list" class="p-4 space-y-2 overflow-y-auto"></div>
+            <div id="content-1130" class="p-4 space-y-2 overflow-y-auto"></div>
         </div>
     </div>
     
     <!-- Achievements Modal -->
-    <div id="achievements-modal" class="modal hidden fixed top-1/4 left-1/2 w-[700px] z-40 ">
-        <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col relative">
-            <div class="p-4 pb-2 flex justify-between items-center cursor-move modal-header">
-                <h3 class="font-bold">Erfolge</h3>
+    <div id="div-3330" class="modal hidden fixed top-1/4 left-1/2 w-[700px] z-40" data-parent="div-3000">
+        <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
+            <div id="header-3330" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 id="title-3330" class="font-bold">Erfolge</h3>
                 <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-            <div class="flex p-4 flex-grow gap-4 overflow-hidden">
+            <div id="content-3330" class="flex p-4 flex-grow gap-4 overflow-hidden">
                 <div id="achievements-list" class="w-5/6 space-y-3 overflow-y-auto pr-2"></div>
                 <div class="w-1/6 border-l border-gray-600 pl-4">
                     <h4 class="text-sm font-bold text-gray-400 mb-2 text-center">Angezeigte Symbole</h4>
@@ -477,14 +435,14 @@
     </div>
 
     <!-- Equipment Modal -->
-    <div id="equipment-modal" class="modal hidden fixed top-1/4 left-1/3 w-[1035px] h-[750px] z-40">
-        <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col relative">
-            <div class="p-4 pb-2 flex justify-between items-center">
-                <h3 class="font-bold cursor-move modal-header flex-grow">Ausrüstung</h3>
-                <button id="unequip-all-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-2 rounded-lg text-xs mr-4">Alles ablegen</button>
-                <button class="modal-close-btn absolute top-2 right-2 text-2xl font-bold hover:text-red-500">&times;</button>
+    <div id="div-3310" class="modal hidden fixed top-1/4 left-1/3 w-[1035px] h-[750px] z-40" data-parent="div-3000">
+        <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
+            <div id="header-3310" class="p-2 bg-gray-700 flex justify-between items-center">
+                <h3 id="title-3310" class="font-bold cursor-move modal-header flex-grow">Ausrüstung</h3>
+                <button id="unequip-all-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-2 rounded-lg text-xs mr-2">Alles ablegen</button>
+                <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-             <div id="equipment-slots-container" class="flex p-4 flex-grow gap-4 overflow-auto">
+             <div id="content-3310" class="flex p-4 flex-grow gap-4 overflow-auto">
                  <!-- Column 1: Weapons, Tools & Stats -->
                 <div class="w-1/3 flex-shrink-0 flex flex-col gap-4">
                     <div>
@@ -524,13 +482,13 @@
     </div>
     
     <!-- Pomodoro Timer Modal -->
-    <div id="pomodoro-modal" class="modal hidden fixed top-1/4 left-1/3 w-[400px] z-40">
+    <div id="div-1140" class="modal hidden fixed top-1/4 left-1/3 w-[400px] z-40" data-parent="div-1000">
         <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-            <div class="p-4 pb-2 flex justify-between items-center cursor-move modal-header relative">
-                <h3 class="font-bold">Pomodoro Timer</h3>
-                <button class="modal-close-btn absolute top-2 right-2 text-2xl font-bold hover:text-red-500">&times;</button>
+            <div id="header-1140" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 id="title-1140" class="font-bold">Pomodoro Timer</h3>
+                <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-            <div class="p-4 flex flex-col items-center">
+            <div id="content-1140" class="p-4 flex flex-col items-center">
                 <div id="timer-display" class="text-6xl font-mono text-center my-4">25:00</div>
                 <p id="timer-mode-display" class="mb-4 text-gray-400">Modus: Arbeit</p>
                 <div class="mb-4">
@@ -558,24 +516,24 @@
     </div>
 
     <!-- Inventory Modal -->
-    <div id="inventory-modal" class="modal hidden fixed top-1/4 left-1/2 w-[700px] h-[500px] z-40">
+    <div id="div-3320" class="modal hidden fixed top-1/4 left-1/2 w-[700px] h-[500px] z-40" data-parent="div-3000">
         <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-            <div class="p-4 pb-2 flex justify-between items-center cursor-move modal-header relative">
-                 <h3 class="font-bold">Inventar</h3>
-                <button class="modal-close-btn absolute top-2 right-2 text-2xl font-bold hover:text-red-500">&times;</button>
+            <div id="header-3320" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                 <h3 id="title-3320" class="font-bold">Inventar</h3>
+                <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
              <div class="p-2 border-b border-gray-700 flex gap-2 text-xs flex-wrap" id="inventory-sort-buttons">
                 <button data-sort-category="all" class="px-2 py-1 bg-indigo-600 rounded">Alle</button>
                 <button data-sort-category="weapon" class="px-2 py-1 bg-gray-600 rounded">Waffen</button>
                 <button data-sort-category="armor" class="px-2 py-1 bg-gray-600 rounded">Rüstung</button>
-                <button data-sort-category="accessory" class="px-2 py-1 bg-gray-600 rounded">Accessoires</button>
+                <button data-sort-category="accessory" class="px-2 py-1 bg-gray-600 rounded">Schmuck</button>
                 <button data-sort-category="tool" class="px-2 py-1 bg-gray-600 rounded">Werkzeuge</button>
                 <button data-sort-category="consumable" class="px-2 py-1 bg-gray-600 rounded">Tränke</button>
                 <button data-sort-category="spell" class="px-2 py-1 bg-gray-600 rounded">Zauber</button>
                 <button data-sort-category="card" class="px-2 py-1 bg-gray-600 rounded">Karten</button>
                 <button data-sort-category="pet" class="px-2 py-1 bg-gray-600 rounded">Pets</button>
             </div>
-            <div class="flex p-4 flex-grow gap-4 overflow-hidden">
+            <div id="content-3320" class="flex p-4 flex-grow gap-4 overflow-hidden">
                 <div id="inventory-list-container" class="space-y-3 overflow-y-auto flex-grow pr-2"></div>
                  <div id="inventory-item-details" class="w-2/5 flex-shrink-0 bg-gray-900 p-4 rounded-lg border border-gray-600 flex flex-col">
                  </div>
@@ -589,13 +547,13 @@
     </div>
 
     <!-- Edit Quest Modal -->
-    <div id="edit-quest-modal" class="modal hidden fixed top-1/4 left-1/3 w-[500px] z-40">
+    <div id="div-1112" class="modal hidden fixed top-1/4 left-1/3 w-[500px] z-40" data-parent="div-1000">
         <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-            <div class="p-4 pb-2 flex justify-between items-center cursor-move modal-header relative">
-                <h3 class="font-bold">Quest bearbeiten</h3>
-                <button class="modal-close-btn absolute top-2 right-2 text-2xl font-bold hover:text-red-500">&times;</button>
+            <div id="header-1112" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 id="title-1112" class="font-bold">Quest bearbeiten</h3>
+                <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-            <div class="p-4 overflow-y-auto">
+            <div id="content-1112" class="p-4 overflow-y-auto">
                 <form id="edit-quest-form" class="space-y-3 text-sm">
                     <input type="hidden" id="edit-quest-id">
                     <div>
@@ -620,11 +578,14 @@
                             <input type="date" id="edit-quest-deadline" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2">
                         </div>
                         <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1">Bearbeitungstag</label>
+                            <input type="date" id="edit-quest-scheduled-date" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2">
+                        </div>
+                        <div>
                             <label class="block text-xs font-medium text-gray-400 mb-1">Typ</label>
                             <select id="edit-quest-type" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2">
                                 <option value="Aufgabe">Aufgabe</option>
                                 <option value="Projektaufgabe">Projektaufgabe</option>
-                                <option value="Projekt">Projekt</option>
                             </select>
                         </div>
                     </div>
@@ -636,20 +597,101 @@
                         <label class="block text-xs font-medium text-gray-400 mb-1">Tag</label>
                         <div id="edit-quest-tags-container" class="flex flex-wrap gap-x-4 gap-y-2 p-2 rounded-lg border border-gray-700"></div>
                     </div>
-                    <button type="button" class="w-full mt-4 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg">Änderungen speichern</button>
+                    <div>
+                        <label for="edit-quest-color" class="block text-xs font-medium text-gray-400 mb-1">Quest Farbe</label>
+                        <input type="color" id="edit-quest-color" class="w-full h-10 bg-gray-700 rounded-lg p-1">
+                    </div>
+                    <button type="submit" class="w-full mt-4 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg">Änderungen speichern</button>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Pets Modal -->
-    <div id="pets-modal" class="modal hidden fixed top-1/4 left-1/3 w-[800px] z-40">
+    <!-- Test Tools Modal -->
+    <div id="div-8110" class="modal hidden fixed top-1/4 left-1/3 w-[450px] z-40" data-parent="div-8000">
         <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-            <div class="p-4 pb-2 flex justify-between items-center cursor-move modal-header relative">
-                <h3 class="font-bold">Meine Pets</h3>
-                <button class="modal-close-btn absolute top-2 right-2 text-2xl font-bold hover:text-red-500">&times;</button>
+            <div id="header-8110" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 id="title-8110" class="font-bold">Test-Werkzeuge</h3>
+                <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-            <div class="flex p-4 flex-grow gap-4 overflow-hidden">
+            <div id="content-8110" class="p-4 space-y-2 overflow-y-auto">
+                <details class="bg-gray-700 rounded-lg p-2" open>
+                    <summary class="cursor-pointer font-semibold">Charakter & Währung</summary>
+                    <div class="grid grid-cols-2 gap-2 mt-2 text-xs">
+                        <button id="test-levelup-btn" class="test-btn bg-yellow-600 hover:bg-yellow-500 p-2 rounded">Level Up (+100 XP)</button>
+                        <button id="test-add-bronze-btn" class="test-btn bg-yellow-700 hover:bg-yellow-600 p-2 rounded">+125 Bronze</button>
+                        <button id="test-add-hp-btn" class="test-btn bg-red-600 hover:bg-red-500 p-2 rounded">+50 HP</button>
+                        <button id="test-add-mana-btn" class="test-btn bg-blue-600 hover:bg-blue-500 p-2 rounded">+50 Mana</button>
+                        <button id="toggle-ui-borders-btn" class="test-btn bg-gray-500 hover:bg-gray-400 p-2 rounded col-span-2">UI-Rahmen an/aus</button>
+                    </div>
+                </details>
+                <details class="bg-gray-700 rounded-lg p-2">
+                    <summary class="cursor-pointer font-semibold">Quests</summary>
+                     <div class="grid grid-cols-2 gap-2 mt-2 text-xs">
+                        <button id="test-add-today-quests-btn" class="test-btn bg-blue-600 hover:bg-blue-500 p-2 rounded">+5 Quests für Heute</button>
+                        <button id="test-complete-all-quests-btn" class="test-btn bg-red-600 hover:bg-red-500 p-2 rounded">Alle Quests erledigen</button>
+                        <button data-count="5" data-priority="Leicht" class="add-test-quests-btn test-btn bg-gray-600 hover:bg-gray-500 p-2 rounded">+5 Leichte Quests</button>
+                        <button data-count="5" data-priority="Mittel" class="add-test-quests-btn test-btn bg-gray-600 hover:bg-gray-500 p-2 rounded">+5 Mittlere Quests</button>
+                        <button data-count="5" data-priority="Schwer" class="add-test-quests-btn test-btn bg-gray-600 hover:bg-gray-500 p-2 rounded">+5 Schwere Quests</button>
+                    </div>
+                </details>
+                 <details class="bg-gray-700 rounded-lg p-2">
+                    <summary class="cursor-pointer font-semibold">Sonstiges</summary>
+                     <div class="grid grid-cols-2 gap-2 mt-2 text-xs">
+                        <button id="test-simulate-drop-btn" class="test-btn bg-orange-600 hover:bg-orange-500 p-2 rounded">Item-Drop simulieren</button>
+                        <button id="test-gain-pet-xp-btn" class="test-btn bg-purple-600 hover:bg-purple-500 p-2 rounded">Pet XP (+50)</button>
+                        <button id="test-delete-breaks-btn" class="test-btn bg-orange-700 hover:bg-orange-600 p-2 rounded">Test: Pausen löschen</button>
+                    </div>
+                </details>
+                <details class="bg-gray-700 rounded-lg p-2" open>
+                    <summary class="cursor-pointer font-semibold">Gantt & Zeit</summary>
+                     <div class="grid grid-cols-2 gap-2 mt-2 text-xs">
+                        <button id="test-gantt-btn" class="test-btn bg-teal-600 hover:bg-teal-500 p-2 rounded">Test Gantt</button>
+                        <button id="test-focus-timer-btn" class="test-btn bg-pink-600 hover:bg-pink-500 p-2 rounded">Fokus-Timer auf 1s</button>
+                        <button id="test-add-break-bars-btn" class="test-btn bg-cyan-700 hover:bg-cyan-600 p-2 rounded">Test: Pausenbalken</button>
+                        <button id="test-timer-ff-btn" class="test-btn bg-pink-700 hover:bg-pink-600 p-2 rounded">Timer -44:57</button>
+                        <button id="test-show-pomodoro-breaks-btn" class="test-btn bg-indigo-700 hover:bg-indigo-600 p-2 rounded">Pomodoro Pausen-Liste</button>
+                        <button id="test-date-plus-one-day-btn" class="test-btn bg-lime-600 hover:bg-lime-500 p-2 rounded">Datum +1 Tag</button>
+                        <button id="test-date-today-btn" class="test-btn bg-lime-700 hover:bg-lime-600 p-2 rounded">Datum Heute</button>
+                    </div>
+                </details>
+                <details class="bg-gray-700 rounded-lg p-2">
+                    <summary class="cursor-pointer font-semibold">Datenbank-Abfrage</summary>
+                    <div class="grid grid-cols-2 gap-2 mt-2 text-xs">
+                        <div class="col-span-2">
+                            <label for="db-path-select" class="block text-xs font-medium text-gray-400 mb-1">Datenbankpfad</label>
+                            <select id="db-path-select" class="w-full bg-gray-900 text-white rounded-lg px-2 py-1 text-xs">
+                                <option>Lade Pfade...</option>
+                            </select>
+                        </div>
+                        <button id="test-db-query-btn" class="test-btn bg-cyan-600 hover:bg-cyan-500 p-2 rounded col-span-2">Wert abfragen</button>
+                    </div>
+                </details>
+                <details class="bg-gray-700 rounded-lg p-2">
+                    <summary class="cursor-pointer font-semibold">Logging-Einstellungen</summary>
+                    <div class="mt-2 space-y-2 text-sm">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="log-toggle-quests" class="form-checkbox bg-gray-600 border-gray-500 text-indigo-500" checked>
+                            <span>Quest-Positionierung loggen</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="log-toggle-breaks" class="form-checkbox bg-gray-600 border-gray-500 text-indigo-500" checked>
+                            <span>Pausen-Rendering loggen</span>
+                        </label>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pets Modal -->
+    <div id="div-5110" class="modal hidden fixed top-1/4 left-1/3 w-[800px] z-40" data-parent="div-5000">
+        <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
+            <div id="header-5110" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 id="title-5110" class="font-bold">Meine Pets</h3>
+                <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
+            </div>
+            <div id="content-5110" class="flex p-4 flex-grow gap-4 overflow-hidden">
                 <!-- Left Column: Pet Inventory -->
                 <div class="w-2/5 flex flex-col gap-3">
                     <div id="pets-inventory-filters" class="flex-shrink-0 flex gap-2 text-sm">
@@ -689,16 +731,16 @@
     </div>
     
     <!-- Skill Tree Modal -->
-    <div id="skill-tree-modal" class="modal hidden fixed top-1/4 left-1/3 w-[800px] h-[70vh] z-40">
+    <div id="div-3340" class="modal hidden fixed top-1/4 left-1/3 w-[800px] h-[70vh] z-40" data-parent="div-3000">
         <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-             <div class="p-4 pb-2 flex justify-between items-center cursor-move modal-header relative">
-                <h3 class="font-bold">Charakter-Skills</h3>
-                <button class="modal-close-btn absolute top-2 right-2 text-2xl font-bold hover:text-red-500">&times;</button>
+             <div id="header-3340" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 id="title-3340" class="font-bold">Charakter-Skills</h3>
+                <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
             <div class="p-4 border-b border-gray-700 text-center">
                 Verfügbare Skill-Punkte: <span id="skill-points-display" class="font-bold text-yellow-400 text-lg">0</span>
             </div>
-            <div id="skill-tree-container" class="p-4 flex gap-4 overflow-hidden flex-grow">
+            <div id="content-3340" class="p-4 flex gap-4 overflow-hidden flex-grow">
                 <div id="skill-list-panel" class="w-1/3 space-y-2 overflow-y-auto pr-2 border-r border-gray-600">
                     <!-- Skill icons will be rendered here -->
                 </div>
@@ -714,7 +756,7 @@
 
 
     <!-- Item Found Modal -->
-    <div id="item-found-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div id="div-4000" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-gray-700 p-6 rounded-lg text-center shadow-xl text-white">
             <h3 class="text-xl mb-4">Gegenstand gefunden!</h3>
             <div id="modal-item-icon" class="text-5xl mb-2"></div>
@@ -727,13 +769,13 @@
     </div>
 
     <!-- Simple Quest Test Modal -->
-    <div id="simple-quest-modal" class="modal hidden fixed top-1/4 left-1/2 w-[400px] z-40">
+    <div id="div-1150" class="modal hidden fixed top-1/4 left-1/2 w-[400px] z-40" data-parent="div-1000">
         <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-             <div class="p-4 pb-2 flex justify-between items-center cursor-move modal-header relative">
-                <h3 class="font-bold">Simple Quest Test</h3>
-                <button class="modal-close-btn absolute top-2 right-2 text-2xl font-bold hover:text-red-500">&times;</button>
+             <div id="header-1150" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 id="title-1150" class="font-bold">Simple Quest Test</h3>
+                <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-            <div class="p-4">
+            <div id="content-1150" class="p-4">
                 <form id="simple-quest-form" class="space-y-4">
                     <input type="text" id="simple-quest-input" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2" placeholder="Test Quest Titel..." required>
                     <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg">Create Test Quest</button>
@@ -743,7 +785,7 @@
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <div id="delete-confirm-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div id="div-4010" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-gray-700 p-6 rounded-lg text-center shadow-xl text-white">
             <h3 class="text-xl mb-4">Wirklich löschen?</h3>
             <p id="delete-confirm-text" class="text-gray-300 mb-4">Diese Aktion kann nicht rückgängig gemacht werden.</p>
@@ -755,37 +797,205 @@
     </div>
     
     <!-- Break Popup Modal -->
-    <div id="break-popup-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[60]">
+    <div id="div-4020" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[60]">
         <div class="bg-gray-800 p-8 rounded-lg text-center shadow-xl text-white w-96">
             <h3 class="text-2xl font-bold mb-4">Zeit für eine Pause!</h3>
             <div id="break-timer-display" class="text-7xl font-mono my-6">05:00</div>
             <div class="flex justify-center gap-4 mb-6">
-                <button id="extend-break-5-btn" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">+5 Min</button>
-                <button id="extend-break-25-btn" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">+25 Min</button>
+                <button data-extend-break="5" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">5 Min</button>
+                <button data-extend-break="10" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">10 Min</button>
+                <button data-extend-break="30" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">30 Min</button>
             </div>
-            <button id="close-break-popup-btn" class="text-sm text-gray-400 hover:text-white">Popup schließen (Timer läuft weiter)</button>
+            <button id="close-break-popup-btn" class="text-sm text-gray-400 hover:text-white">Popup schließen</button>
         </div>
     </div>
 
     <!-- Post-Break Continue Modal -->
-    <div id="post-break-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[60]">
+    <div id="div-4030" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[60]">
         <div class="bg-gray-800 p-8 rounded-lg text-center shadow-xl text-white">
             <h3 class="text-2xl font-bold mb-4">Pause vorbei!</h3>
             <p class="mb-6">Bereit, weiterzumachen?</p>
-            <button id="continue-quest-btn" class="bg-green-600 hover:bg-green-700 px-6 py-3 rounded font-bold">Weiter</button>
+            <div class="flex justify-center gap-4">
+                <button id="continue-quest-btn" class="bg-green-600 hover:bg-green-700 px-6 py-2 rounded font-bold">Weiter</button>
+                <button id="end-focus-btn" class="bg-gray-600 hover:bg-gray-500 px-6 py-2 rounded font-bold">Beenden</button>
+            </div>
         </div>
     </div>
     
     <!-- Gantt Test Modal -->
-    <div id="gantt-test-modal" class="modal hidden fixed top-1/4 left-1/4 w-[1000px] h-[60vh] z-40">
+    <div id="div-8200" class="modal hidden fixed top-1/4 left-1/4 w-[1000px] h-[60vh] z-40" data-parent="div-8000">
         <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-             <div class="p-4 pb-2 flex justify-between items-center cursor-move modal-header relative">
-                <h3 class="font-bold">Gantt Chart (Test)</h3>
-                <button class="modal-close-btn absolute top-2 right-2 text-2xl font-bold hover:text-red-500">&times;</button>
+             <div id="header-8200" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 id="title-8200" class="font-bold">Gantt Chart (Test)</h3>
+                <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-            <div id="gantt-test-container" class="p-4 flex-grow overflow-auto text-sm"></div>
+            <div id="content-8200" class="p-4 flex-grow overflow-auto text-sm"></div>
         </div>
     </div>
+
+    <!-- Pomodoro Activation Modal -->
+    <div id="div-7120" class="modal hidden fixed top-1/4 left-1/3 w-[450px] z-40" data-parent="div-7000">
+        <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
+            <div id="header-7120" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 id="title-7120" class="font-bold">Pomodoro-Modus aktivieren</h3>
+                <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
+            </div>
+            <div id="content-7120" class="p-4 space-y-4">
+                <p class="text-sm">Wähle die erste Quest (Prio 1), die an den Anfang des Tages gesetzt werden soll.</p>
+                
+                <div>
+                    <label for="pomodoro-quest-search" class="sr-only">Suche</label>
+                    <input type="search" id="pomodoro-quest-search" placeholder="Quest suchen..." class="w-full bg-gray-700 text-white rounded-lg px-4 py-2 text-sm mb-2">
+                    <div id="pomodoro-quest-selection" class="bg-gray-900 p-2 rounded-lg border border-gray-600 h-28 overflow-y-auto space-y-1">
+                        <!-- Quest list will be populated here -->
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4 pt-2">
+                    <label for="pomodoro-initial-start-time" class="text-sm font-medium text-gray-300">Startzeit:</label>
+                    <input type="time" id="pomodoro-initial-start-time" value="09:00" class="flex-grow bg-gray-700 text-white rounded-lg px-4 py-2">
+                </div>
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <label for="pomodoro-initial-break-duration" class="block text-xs font-medium text-gray-400 mb-1">Kurze Pause:</label>
+                        <select id="pomodoro-initial-break-duration" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2">
+                            <option value="5">5 Min</option>
+                            <option value="10" selected>10 Min</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="pomodoro-work-interval" class="block text-xs font-medium text-gray-400 mb-1">Arbeitsintervall:</label>
+                        <select id="pomodoro-work-interval" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2">
+                            <option value="45" selected>45 Min</option>
+                            <option value="25">25 Min</option>
+                        </select>
+                    </div>
+                </div>
+                <button id="pomodoro-activate-btn" class="w-full mt-2 bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded disabled:bg-gray-500 disabled:cursor-not-allowed" disabled>Aktivieren & Sortieren</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pomodoro Breaks Test Modal -->
+    <div id="div-8120" class="modal hidden fixed top-1/4 left-1/3 w-[600px] h-[60vh] z-40" data-parent="div-8000">
+        <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
+            <div id="header-8120" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 id="title-8120" class="font-bold">Test: Pomodoro Pausen-Liste</h3>
+                <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
+            </div>
+            <div id="content-8120" class="p-4 space-y-2 overflow-y-auto flex-grow">
+                <!-- Break list will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Pomodoro Settings Modal -->
+    <div id="div-7130" class="modal hidden fixed top-1/4 left-1/3 w-[500px] z-40" data-parent="div-7000">
+        <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
+            <div id="header-7130" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 id="title-7130" class="font-bold">Pomodoro-Einstellungen</h3>
+                <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
+            </div>
+            <div id="content-7130" class="p-4 space-y-4 overflow-y-auto text-sm">
+                <div>
+                    <label for="pomodoro-long-break-duration" class="block text-xs font-medium text-gray-400 mb-1">Dauer der langen Pause (nach 4 Quests)</label>
+                    <input type="number" id="pomodoro-long-break-duration" value="30" min="15" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2">
+                </div>
+                <div>
+                    <label for="pomodoro-start-time" class="block text-xs font-medium text-gray-400 mb-1">Tages-Startzeit</label>
+                    <input type="time" id="pomodoro-start-time" value="08:00" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-400 mb-1">Anzeigestil der Pausen</label>
+                    <div class="flex gap-2 rounded-lg bg-gray-900 p-1">
+                        <label class="flex-1 text-center p-1 rounded-md cursor-pointer text-xs transition-colors" for="pomodoro-style-bar">
+                            <input type="radio" name="pomodoro-style" id="pomodoro-style-bar" value="bar" class="sr-only" checked><span>Balken</span>
+                        </label>
+                        <label class="flex-1 text-center p-1 rounded-md cursor-pointer text-xs transition-colors" for="pomodoro-style-line">
+                            <input type="radio" name="pomodoro-style" id="pomodoro-style-line" value="line" class="sr-only"><span>Linie</span>
+                        </label>
+                    </div>
+                </div>
+                <!-- Bar Style Settings -->
+                <div id="pomodoro-bar-settings" class="space-y-4 border-t border-gray-700 pt-4 mt-4">
+                    <h4 class="text-sm font-semibold text-gray-300">Balken-Einstellungen</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="pomodoro-bar-outline-thickness" class="block text-xs font-medium text-gray-400 mb-1">Umrandungsdicke (px)</label>
+                            <input type="number" id="pomodoro-bar-outline-thickness" value="1" min="0" max="5" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2">
+                        </div>
+                        <div>
+                            <label for="pomodoro-break-bar-border-color" class="block text-xs font-medium text-gray-400 mb-1">Umrandungsfarbe</label>
+                            <input type="color" id="pomodoro-break-bar-border-color" value="#FBBF24" class="w-full h-10 bg-gray-700 rounded-lg p-1">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="pomodoro-short-break-color" class="block text-xs font-medium text-gray-400 mb-1">Farbe kurze Pause</label>
+                            <input type="color" id="pomodoro-short-break-color" value="#FBBF24" class="w-full h-10 bg-gray-700 rounded-lg p-1">
+                        </div>
+                        <div>
+                            <label for="pomodoro-long-break-color" class="block text-xs font-medium text-gray-400 mb-1">Farbe lange Pause</label>
+                            <input type="color" id="pomodoro-long-break-color" value="#F59E0B" class="w-full h-10 bg-gray-700 rounded-lg p-1">
+                        </div>
+                    </div>
+                    <div class="pt-2">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="pomodoro-break-bar-rounded-corners" class="form-checkbox bg-gray-700 border-gray-600 text-indigo-500 h-4 w-4">
+                            <span>Abgerundete Ecken</span>
+                        </label>
+                    </div>
+                </div>
+                <!-- Line Style Settings -->
+                <div id="pomodoro-line-settings" class="hidden space-y-4 border-t border-gray-700 pt-4 mt-4">
+                    <h4 class="text-sm font-semibold text-gray-300">Linien-Einstellungen</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="pomodoro-line-color" class="block text-xs font-medium text-gray-400 mb-1">Linienfarbe</label>
+                            <input type="color" id="pomodoro-line-color" value="#FBBF24" class="w-full h-10 bg-gray-700 rounded-lg p-1">
+                        </div>
+                        <div>
+                            <label for="pomodoro-line-thickness" class="block text-xs font-medium text-gray-400 mb-1">Liniendicke (px)</label>
+                            <input type="number" id="pomodoro-line-thickness" value="2" min="1" max="10" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2">
+                        </div>
+                    </div>
+                </div>
+                <div class="border-t border-gray-700 pt-3">
+                    <h4 class="font-semibold mb-2">Fixe Pausenblöcke</h4>
+                    <div id="pomodoro-fixed-breaks-container" class="space-y-2">
+                        <!-- Fixed breaks will be rendered here -->
+                    </div>
+                    <button id="pomodoro-add-fixed-break-btn" class="mt-2 text-xs bg-green-700 hover:bg-green-600 px-3 py-1 rounded">+ Block hinzufügen</button>
+                    <p class="text-xs text-gray-500 mt-2">Füge hier feste Termine wie Mittagspausen, Fahrtzeiten etc. ein. Quests werden automatisch um diese Blöcke herum geplant.</p>
+                </div>
+                <div class="flex justify-end pt-4">
+                    <button id="pomodoro-settings-save-btn" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded">Speichern</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pomodoro Quest Split Modal -->
+    <div id="div-7140" class="modal hidden fixed top-1/4 left-1/3 w-[500px] z-40" data-parent="div-7000">
+        <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
+            <div id="header-7140" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 id="title-7140" class="font-bold">Quest aufteilen</h3>
+                <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
+            </div>
+            <div id="content-7140" class="p-4 space-y-4 text-sm">
+                <p>Diese Quest wird in mehrere kleinere Arbeitsblöcke aufgeteilt, die durch Pausen getrennt sind. Sie haben die Wahl:</p>
+                <ul class="list-disc list-inside text-gray-400 space-y-1">
+                    <li><b>Als eine Quest belassen:</b> Die Quest wird visuell aufgeteilt, bleibt aber ein einzelner Eintrag.</li>
+                    <li><b>In Sub-Quests umwandeln:</b> Die Quest wird in mehrere, einzeln plan- und abschließbare Sub-Quests umgewandelt.</li>
+                </ul>
+                <div class="flex justify-end pt-4">
+                    <button id="quest-split-confirm-btn" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded">Jetzt Teilen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Main Application Logic -->
     <script type="application/json" id="skills-data">[

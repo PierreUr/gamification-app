@@ -7,22 +7,24 @@ export class InventoryManager {
         this.showDeleteConfirm = showDeleteConfirmCallback;
         this.rarityTiers = config.rarityTiers;
 
-        // DOM-Elemente
-        this.equipmentModal = document.getElementById('equipment-modal');
-        this.inventoryModal = document.getElementById('inventory-modal');
-        this.equipmentSlotsContainer = document.getElementById('equipment-slots-container');
+        // DOM Elements
+        this.equipmentModal = document.getElementById('div-3310');
+        this.inventoryModal = document.getElementById('div-3320');
+        this.equipmentSlotsContainer = document.getElementById('content-3310');
         this.equipmentItemDetails = document.getElementById('equipment-item-details');
         this.inventoryListContainer = document.getElementById('inventory-list-container');
         this.inventoryItemDetails = document.getElementById('inventory-item-details');
+        this.hpPotionCountEl = document.getElementById('hp-potion-count');
+        this.manaPotionCountEl = document.getElementById('mana-potion-count');
+        this.unequipAllBtn = document.getElementById('unequip-all-btn');
+        this.useHpPotionBtn = document.getElementById('use-hp-potion-btn');
+        this.useManaPotionBtn = document.getElementById('use-mana-potion-btn');
+
+        // Pagination and Sorting
         this.inventoryPagePrev = document.getElementById('inventory-page-prev');
         this.inventoryPageNext = document.getElementById('inventory-page-next');
         this.inventoryPageInfo = document.getElementById('inventory-page-info');
         this.inventorySortButtons = document.getElementById('inventory-sort-buttons');
-        this.unequipAllBtn = document.getElementById('unequip-all-btn');
-        this.hpPotionCountEl = document.getElementById('hp-potion-count');
-        this.manaPotionCountEl = document.getElementById('mana-potion-count');
-        this.useHpPotionBtn = document.getElementById('use-hp-potion-btn');
-        this.useManaPotionBtn = document.getElementById('use-mana-potion-btn');
 
         // Zustand
         this.currentUser = null;
@@ -52,7 +54,6 @@ export class InventoryManager {
 
         this.renderEquipmentSlots();
 
-        // Check for and process initial items
         if (userProfile.itemsToAddToInventory) {
             this.processInitialInventory(user.uid, userProfile.itemsToAddToInventory);
         }
@@ -78,7 +79,7 @@ export class InventoryManager {
     }
 
     renderEquipmentSlots() {
-        if (!this.userProfile) return;
+        if (!this.userProfile || !this.equipmentSlotsContainer) return;
         this.equipmentSlotsContainer.querySelectorAll('.equipment-slot').forEach(slotEl => {
             const slotType = slotEl.dataset.slotType;
             const equippedItem = this.userProfile.equipment?.[slotType];
@@ -317,23 +318,38 @@ export class InventoryManager {
         }
     }
 
-    async addItemToInventory(userId, itemToAdd, forceNewStack = false) {
-        if (!userId || !itemToAdd) return;
-        const inventoryRef = collection(this.db, 'users', userId, 'inventory');
-
-        if (itemToAdd.type !== 'consumable' || forceNewStack) {
-            const docRef = doc(inventoryRef);
-            await setDoc(docRef, { ...itemToAdd, docId: docRef.id, quantity: 1 });
+    async addItemToInventory(userId, itemData, quantity = 1) {
+        if (!userId || !itemData) {
+            console.error("addItemToInventory: Missing userId or itemData");
             return;
         }
+    
+        const inventoryColRef = collection(this.db, 'users', userId, 'inventory');
 
-        const q = query(inventoryRef, where("id", "==", itemToAdd.id));
-        const querySnapshot = await getDocs(q);
+        // For stackable items, use a predictable document ID to enable safe transactions
+        if (itemData.type === 'consumable') {
+            const predictableDocId = `stack_${itemData.id}`;
+            const itemRef = doc(inventoryColRef, predictableDocId);
 
-        if (!querySnapshot.empty) {
-            await updateDoc(querySnapshot.docs[0].ref, { quantity: increment(1) });
+            try {
+                await runTransaction(this.db, async (transaction) => {
+                    const itemDoc = await transaction.get(itemRef);
+                    if (itemDoc.exists()) {
+                        // If the stack exists, increment its quantity.
+                        transaction.update(itemRef, { quantity: increment(quantity) });
+                    } else {
+                        // If the stack doesn't exist, create it with the predictable docId.
+                        transaction.set(itemRef, { ...itemData, docId: predictableDocId, quantity: quantity }); // Ensure docId is set correctly
+                    }
+                });
+            } catch (e) {
+                console.error("Item stacking transaction failed: ", e);
+                this.showNotification("Fehler beim Stapeln des Gegenstands.", "error");
+            }
         } else {
-            await addDoc(inventoryRef, { ...itemToAdd, quantity: 1 });
+            // For non-stackable items (equipment), always add a new document with a unique ID.
+            const newItemRef = doc(inventoryColRef);
+            await setDoc(newItemRef, { ...itemData, docId: newItemRef.id, quantity: 1 }); // Ensure docId is set correctly
         }
     }
 
@@ -361,7 +377,7 @@ export class InventoryManager {
             this.inventoryModal.classList.remove('hidden');
         });
         this.inventoryModal.querySelector('.modal-close-btn').addEventListener('click', () => this.inventoryModal.classList.add('hidden'));
-
+        
         this.equipmentSlotsContainer.addEventListener('click', (e) => {
             const slot = e.target.closest('.equipment-slot');
             if (slot && this.currentUser) {
@@ -372,6 +388,13 @@ export class InventoryManager {
                 this.updateItemDetails(this.equipmentItemDetails, item, { unequip: true });
             }
         });
+        
+        if (this.unequipAllBtn) {
+            this.unequipAllBtn.addEventListener('click', () => {
+                const userId = this.currentUser?.uid;
+                if (userId) this.unequipAllItems(userId);
+            });
+        }
 
         this.equipmentItemDetails.addEventListener('click', e => {
             const button = e.target.closest('button[data-action="unequip"]');
@@ -394,7 +417,7 @@ export class InventoryManager {
         });
 
         this.inventoryListContainer.addEventListener('click', async (event) => {
-            const userId = this.currentUser?.uid;
+            const userId = this.currentUser.uid;
             if (!userId) return;
 
             const equipBtn = event.target.closest('button[data-action="equip"]');
@@ -423,6 +446,20 @@ export class InventoryManager {
                 }
                 return;
             }
+
+            // Handle selecting an item to show its details
+            const itemEl = event.target.closest('.group[data-item-id]');
+            if (itemEl) {
+                this.inventoryListContainer.querySelectorAll('.group.selected').forEach(el => el.classList.remove('selected'));
+                itemEl.classList.add('selected');
+
+                const itemId = itemEl.dataset.itemId;
+                const item = this.allInventoryItems.find(i => i.docId === itemId);
+                if (item) {
+                    const options = { equip: item.type === 'weapon' || item.type === 'armor' || item.type === 'tool', use: item.type === 'consumable' };
+                    this.updateItemDetails(this.inventoryItemDetails, item, options);
+                }
+            }
         });
 
         this.inventoryPagePrev.addEventListener('click', () => {
@@ -443,9 +480,9 @@ export class InventoryManager {
 
         this.useHpPotionBtn.addEventListener('click', () => {
             const hpPotion = this.allInventoryItems.find(item => item.id === 'potion_hp_small');
-            if (hpPotion && this.currentUser) {
-                // this.useItem(this.currentUser.uid, hpPotion.docId); // useItem needs to be implemented
-                this.showNotification("Heiltrank benutzt (Logik fehlt noch).", "info");
+            const userId = this.currentUser?.uid;
+            if (hpPotion && userId) {
+                this.useItem(userId, hpPotion.docId);
             } else {
                 this.showNotification("Keine Heiltränke vorhanden!", "error");
             }
@@ -453,17 +490,11 @@ export class InventoryManager {
 
         this.useManaPotionBtn.addEventListener('click', () => {
             const manaPotion = this.allInventoryItems.find(item => item.id === 'potion_mana_small');
-            if (manaPotion && this.currentUser) {
-                // this.useItem(this.currentUser.uid, manaPotion.docId); // useItem needs to be implemented
-                this.showNotification("Manatrank benutzt (Logik fehlt noch).", "info");
+            const userId = this.currentUser?.uid;
+            if (manaPotion && userId) {
+                this.useItem(userId, manaPotion.docId);
             } else {
                 this.showNotification("Keine Manatränke vorhanden!", "error");
-            }
-        });
-
-        this.unequipAllBtn.addEventListener('click', () => {
-            if (this.currentUser) {
-                this.unequipAllItems(this.currentUser.uid);
             }
         });
     }
@@ -493,7 +524,7 @@ export class InventoryManager {
         const userRef = doc(this.db, 'users', userId);
 
         try {
-            await runTransaction(this.db, async (transaction) => {
+            const transactionResult = await runTransaction(this.db, async (transaction) => {
                 const itemDoc = await transaction.get(itemRef);
                 const userDoc = await transaction.get(userRef);
 
@@ -504,33 +535,41 @@ export class InventoryManager {
 
                 if (item.quantity <= 0) throw "Keine Tränke mehr übrig.";
 
+                let wasUsed = false;
+
                 if (item.effect?.type === 'heal') {
-                    if (user.hp.current >= user.hp.max) {
-                        this.showNotification("Volle Lebenspunkte!", "info");
-                        return; // Abort transaction by not writing anything
+                    if (user.hp.current < user.hp.max) {
+                        const newHp = Math.min(user.hp.current + item.effect.amount, user.hp.max);
+                        transaction.update(userRef, { 'hp.current': newHp });
+                        wasUsed = true;
                     }
-                    const newHp = Math.min(user.hp.current + item.effect.amount, user.hp.max);
-                    transaction.update(userRef, { 'hp.current': newHp });
                 } else if (item.effect?.type === 'mana') {
-                     if (user.mana.current >= user.mana.max) {
-                        this.showNotification("Volles Mana!", "info");
-                        return; // Abort transaction
+                     if (user.mana.current < user.mana.max) {
+                        const newMana = Math.min(user.mana.current + item.effect.amount, user.mana.max);
+                        transaction.update(userRef, { 'mana.current': newMana });
+                        wasUsed = true;
                     }
-                    const newMana = Math.min(user.mana.current + item.effect.amount, user.mana.max);
-                    transaction.update(userRef, { 'mana.current': newMana });
                 }
 
-                // Decrement quantity or delete if it's the last one
-                if (item.quantity > 1) {
-                    transaction.update(itemRef, { quantity: increment(-1) });
-                } else {
-                    transaction.delete(itemRef);
+                if (wasUsed) {
+                    // Decrement quantity or delete if it's the last one
+                    if (item.quantity > 1) {
+                        transaction.update(itemRef, { quantity: increment(-1) });
+                    } else {
+                        transaction.delete(itemRef);
+                    }
+                    return true; // Signal success to the caller
                 }
+                // If not used, signal failure
+                return false;
             });
-            this.showNotification("Trank benutzt!", "success");
+
+            // The onSnapshot listener in main.js will handle the UI update.
+            // We only show a notification based on the transaction's outcome.
+            if (transactionResult) this.showNotification("Trank benutzt!", "success");
+            else this.showNotification("Bereits volle Lebenspunkte/Mana!", "info");
+
         } catch (error) {
-            // Don't show error if it's just a notification from the transaction
-            if (error.message.includes("Volle")) return;
             console.error("Error using item:", error);
             this.showNotification(`Benutzen fehlgeschlagen: ${error.message}`, "error");
         }

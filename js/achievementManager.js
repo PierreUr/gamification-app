@@ -1,4 +1,4 @@
-import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+import { doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
 export class AchievementManager {
     constructor(db, showNotificationCallback, config) {
@@ -6,14 +6,14 @@ export class AchievementManager {
         this.showNotification = showNotificationCallback;
         this.achievementDatabase = config.achievementDatabase;
 
-        // DOM-Elemente
-        this.modal = document.getElementById('achievements-modal');
+        // DOM Elements
+        this.modal = document.getElementById('div-3330'); // This was already correct, but I'll ensure it stays.
         this.openBtn = document.getElementById('menu-btn-achievements');
         this.closeBtn = this.modal.querySelector('.modal-close-btn');
         this.listContainer = document.getElementById('achievements-list');
         this.iconsSelectionContainer = document.getElementById('achievement-icons-selection');
 
-        // Zustand
+        // State
         this.currentUser = null;
         this.userProfile = null;
     }
@@ -21,67 +21,62 @@ export class AchievementManager {
     updateUserData(user, userProfile) {
         this.currentUser = user;
         this.userProfile = userProfile;
-        if (!this.modal.classList.contains('hidden')) {
-            this.render();
-        }
     }
 
     render() {
-        if (!this.userProfile || !this.listContainer) return;
+        if (!this.userProfile) return;
 
         this.listContainer.innerHTML = '';
-        const userAchievements = this.userProfile.achievements || {};
-
         this.achievementDatabase.forEach(ach => {
-            const isUnlocked = userAchievements[ach.id];
+            const isUnlocked = this.userProfile.achievements && this.userProfile.achievements[ach.id];
             const achEl = document.createElement('div');
-            achEl.className = `p-3 rounded-lg flex items-center gap-4 border ${isUnlocked ? 'bg-green-900 border-green-700' : 'bg-gray-700 border-gray-600 opacity-60'}`;
-
+            achEl.className = `p-3 rounded-lg flex items-center gap-4 border-2 ${isUnlocked ? 'bg-gray-700 border-yellow-500' : 'bg-gray-800 border-gray-600 opacity-60'}`;
+            
             achEl.innerHTML = `
                 <div class="text-4xl">${ach.icon}</div>
                 <div>
-                    <h4 class="font-bold">${ach.name}</h4>
-                    <p class="text-sm text-gray-300">${ach.description}</p>
-                    ${isUnlocked ? `<p class="text-xs text-green-400 font-bold mt-1">Freigeschaltet</p>` : ''}
+                    <h4 class="font-bold ${isUnlocked ? 'text-yellow-400' : ''}">${ach.name}</h4>
+                    <p class="text-sm text-gray-400">${ach.description}</p>
+                    ${isUnlocked ? `<p class="text-xs text-green-400 font-semibold mt-1">Freigeschaltet</p>` : ''}
                 </div>
             `;
             this.listContainer.appendChild(achEl);
         });
 
-        this._renderIconSelection();
+        this.renderIconSelection();
     }
 
-    _renderIconSelection() {
+    renderIconSelection() {
         this.iconsSelectionContainer.innerHTML = '';
-        const unlockedAchievements = this.achievementDatabase.filter(ach => this.userProfile.achievements?.[ach.id]);
-        const displayedAchievements = this.userProfile.displayedAchievements || [];
-
+        const unlockedAchievements = this.achievementDatabase.filter(ach => this.userProfile.achievements && this.userProfile.achievements[ach.id]);
+        
         unlockedAchievements.forEach(ach => {
             const iconEl = document.createElement('div');
-            iconEl.className = 'achievement-icon-selector w-8 h-8 flex items-center justify-center text-lg bg-gray-600 rounded cursor-pointer';
+            const isDisplayed = (this.userProfile.displayedAchievements || []).includes(ach.id);
+            iconEl.className = `achievement-icon-selector text-2xl p-1 rounded-md cursor-pointer ${isDisplayed ? 'selected' : ''}`;
             iconEl.textContent = ach.icon;
             iconEl.dataset.achievementId = ach.id;
-            if (displayedAchievements.includes(ach.id)) {
-                iconEl.classList.add('selected');
-            }
+            iconEl.title = ach.name;
             this.iconsSelectionContainer.appendChild(iconEl);
         });
     }
 
-    async _toggleDisplayedIcon(achievementId) {
+    async _toggleDisplayedAchievement(achievementId) {
         if (!this.currentUser) return;
-
+        const userDocRef = doc(this.db, 'users', this.currentUser.uid);
         let displayed = [...(this.userProfile.displayedAchievements || [])];
+
         if (displayed.includes(achievementId)) {
             displayed = displayed.filter(id => id !== achievementId);
-        } else if (displayed.length < 3) {
-            displayed.push(achievementId);
         } else {
-            this.showNotification("Du kannst maximal 3 Erfolge anzeigen.", "info");
-            return;
+            if (displayed.length < 3) {
+                displayed.push(achievementId);
+            } else {
+                this.showNotification("Du kannst maximal 3 Erfolge anzeigen.", "info");
+                return;
+            }
         }
-
-        await updateDoc(doc(this.db, 'users', this.currentUser.uid), { displayedAchievements: displayed });
+        await updateDoc(userDocRef, { displayedAchievements: displayed });
     }
 
     _attachEventListeners() {
@@ -90,11 +85,15 @@ export class AchievementManager {
             this.modal.classList.remove('hidden');
         });
 
-        this.closeBtn.addEventListener('click', () => this.modal.classList.add('hidden'));
+        this.closeBtn.addEventListener('click', () => {
+            this.modal.classList.add('hidden');
+        });
 
         this.iconsSelectionContainer.addEventListener('click', e => {
-            const iconEl = e.target.closest('[data-achievement-id]');
-            if (iconEl) this._toggleDisplayedIcon(iconEl.dataset.achievementId);
+            const iconEl = e.target.closest('.achievement-icon-selector');
+            if (iconEl && iconEl.dataset.achievementId) {
+                this._toggleDisplayedAchievement(iconEl.dataset.achievementId);
+            }
         });
     }
 }

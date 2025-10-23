@@ -16,6 +16,9 @@ import { TestToolsManager } from './testToolsManager.js';
 import { QuestManager } from './questManager.js';
 import { TimerManager } from './timerManager.js';
 import { AchievementManager } from './achievementManager.js';
+import { JournalManager } from './journalManager.js';
+import { GanttSortManager } from './ganttSortManager.js';
+import { formatDuration } from './utils.js';
 
 class GamificationApp {
     constructor() {
@@ -24,6 +27,7 @@ class GamificationApp {
         this.app = initializeApp(this.firebaseConfig);
         this.auth = getAuth(this.app);
         this.db = getFirestore(this.app);
+        console.log("Firebase client initialized.");
 
         // Configuration
         this.config = {
@@ -76,7 +80,7 @@ class GamificationApp {
         this.loginBtn = document.getElementById('login-btn');
         this.logoutBtn = document.getElementById('logout-btn');
         this.notificationArea = document.getElementById('notification-area');
-        this.itemFoundModal = document.getElementById('item-found-modal');
+        this.itemFoundModal = document.getElementById('div-4000');
         this.goldAmountDisplay = document.getElementById('gold-amount');
         this.silverAmountDisplay = document.getElementById('silver-amount');
         this.bronzeAmountDisplay = document.getElementById('bronze-amount');
@@ -85,7 +89,7 @@ class GamificationApp {
         this.modalItemName = document.getElementById('modal-item-name');
         this.modalKeepBtn = document.getElementById('modal-keep-btn');
         this.modalDiscardBtn = document.getElementById('modal-discard-btn');
-        this.deleteConfirmModal = document.getElementById('delete-confirm-modal');
+        this.deleteConfirmModal = document.getElementById('div-4010');
         this.deleteConfirmText = document.getElementById('delete-confirm-text');
         this.deleteConfirmBtn = document.getElementById('delete-confirm-btn');
         this.deleteCancelBtn = document.getElementById('delete-cancel-btn');
@@ -95,62 +99,124 @@ class GamificationApp {
         // State
         this.currentUser = null;
         this.userProfileUnsubscribe = null;
+        this.ganttScrollPosition = 0;
 
-        // Managers - Hier werden alle zukünftigen Module initialisiert
+        this.managersInitialized = false;
+        this.managers = [];
+    }
+
+    init() {
+        this.attachAuthEventListeners();
+        this.handleAuthState();
+    }
+
+    attachAuthEventListeners() {
+        this.loginBtn.addEventListener('click', () => this.signIn());
+    }
+
+    _initializeManagersAndEventListeners() {
+        if (this.managersInitialized) return;
+
+        this.modalManager = new ModalManager(this._continueQuest.bind(this), this._extendBreak.bind(this), this._endFocus.bind(this));
         this.skillTreeManager = new SkillTreeManager(this.db, this.showNotification.bind(this));
         this.petManager = new PetManager(this.db, this.showNotification.bind(this), this.config);
         this.characterSheetManager = new CharacterSheetManager(this.db, this.auth);
         this.inventoryManager = new InventoryManager(this.db, this.showNotification.bind(this), this.config, this.showDeleteConfirm.bind(this));
-        this.timerManager = new TimerManager(this.showNotification.bind(this), this.handleTimerCompletion.bind(this));
-        this.questManager = new QuestManager(this.db, this.showNotification.bind(this), this.handleXpGain.bind(this), this.processQuestDrop.bind(this), this.showDeleteConfirm.bind(this));
-        this.testToolsManager = new TestToolsManager(this.db, this.auth, this.showNotification.bind(this), this.config, this.handleXpGain.bind(this), this.questManager);
-        this.achievementManager = new AchievementManager(this.db, this.showNotification.bind(this), this.config);
-    }
-
-    init() {
-        this.handleAuthState();
-    }
-
-    attachAllEventListeners() {
-        // This check prevents attaching listeners multiple times on re-authentication
-        if (this.listenersAttached) return;
-
-        this.loginBtn.addEventListener('click', () => this.signIn());
-        this.logoutBtn.addEventListener('click', () => this.deleteUserAndData());
+        this.timerManager = new TimerManager(this.showNotification.bind(this), this.handleTimerCompletion.bind(this), this.modalManager);
         
+        // GanttManager needs to be initialized before QuestManager if QuestManager depends on it.
+        // Let's adjust the structure slightly for clarity.
+        this.questManager = new QuestManager(this.db, this.showNotification.bind(this), this.handleXpGain.bind(this), this.processQuestDrop.bind(this), this.showDeleteConfirm.bind(this));
+        this.questManager.setTimerManager(this.timerManager);
+        this.questManager.ganttManager.setDependencies(this.questManager);
+        this.testToolsManager = new TestToolsManager(this.db, this.auth, this.showNotification.bind(this), this.config, this.handleXpGain.bind(this), this.questManager, this.timerManager);
+        this.journalManager = new JournalManager(this.db);
+        this.achievementManager = new AchievementManager(this.db, this.showNotification.bind(this), this.config);
+        this.managers = [this.modalManager, this.questManager, this.characterSheetManager, this.inventoryManager, this.petManager, this.skillTreeManager, this.testToolsManager, this.timerManager, this.achievementManager, this.journalManager];
+
+        this._attachAllEventListeners();
+        this.managersInitialized = true;
+    }
+
+    _extendBreak(minutes) {
+        // This function will be called from modalManager
+        this.timerManager.extendBreak(minutes);
+    }
+
+    _endFocus() {
+        // This function will be called from modalManager
+        if (this.questManager) {
+            const questId = this.questManager.focusedQuestId;
+            if (this.timerManager && this.timerManager.isQuestTimerRunning(questId)) {
+                this.timerManager.stopQuestTimer();
+            }
+            this.questManager.focusedQuestId = null;
+            this.questManager._renderFocusQuest();
+        }
+    }
+
+    _continueQuest() {
+        // This function will be called from modalManager
+        if (this.timerManager) {
+            // This will now reset the timer and automatically start it.
+            this.timerManager.continueQuestTimer();
+            // A short delay ensures that the timerManager has updated its state before rendering.
+            setTimeout(() => {
+                this.questManager._renderFocusQuest();
+            }, 50);
+        }
+    }
+
+    _attachAllEventListeners() {
+        // Global Listeners that are always active after login
+        this.logoutBtn.addEventListener('click', () => this.deleteUserAndData());
         this.modalKeepBtn.addEventListener('click', () => this._handleKeepItem());
         this.modalDiscardBtn.addEventListener('click', () => this._handleDiscardItem());
-
         this.deleteCancelBtn.addEventListener('click', () => {
             this.deleteConfirmModal.classList.add('hidden');
         });
         this.deleteConfirmBtn.addEventListener('click', () => {
-            if (this.onDeleteConfirmCallback) {
-                this.onDeleteConfirmCallback();
-            }
+            this.onDeleteConfirmCallback?.();
             this.deleteConfirmModal.classList.add('hidden');
         });
 
-        // Manually trigger the attachment of listeners in each manager
-        this.questManager._attachEventListeners();
-        this.testToolsManager._attachEventListeners();
-        this.inventoryManager._attachEventListeners();
-        this.characterSheetManager._attachEventListeners();
-        this.petManager._attachEventListeners();
-        this.skillTreeManager._attachEventListeners();
-        this.timerManager._attachEventListeners();
-        this.achievementManager._attachEventListeners();
-        new ModalManager(); // Initialize modal behaviors now that the app view is ready.
+        document.addEventListener('breakTimerUpdate', (e) => {
+            const { timeLeft } = e.detail;
+            // Update all relevant UI parts from one central place
+            if (this.timerManager.isBreakActive) {
+                this.modalManager.updateBreakPopupTime(timeLeft); // For the main popup
+                this.questManager._renderBreakFocus(timeLeft); // For the focus view when popup is closed
+            }
+            
+            const minimizedTimerDisplay = document.getElementById('minimized-break-timer-display');
+            if (minimizedTimerDisplay) {
+                minimizedTimerDisplay.textContent = formatDuration(timeLeft);
+            }
+        });
+        
+        // Attach listeners for each manager
+        this.managers.forEach(manager => {
+            if (manager && typeof manager._attachEventListeners === 'function') {
+                try {
+                    manager._attachEventListeners();
+                } catch (error) {
+                    console.error(`Error attaching listeners for ${manager.constructor.name}:`, error);
+                }
+            }
+        });
+    }
 
-        this.listenersAttached = true;
+    _restoreGanttScrollPosition() {
+        const scrollContainer = document.querySelector('#gantt-timeline-scroll-container');
+        if (scrollContainer) {
+            scrollContainer.scrollLeft = this.ganttScrollPosition;
+        }
     }
 
     handleAuthState() {
         onAuthStateChanged(this.auth, (user) => {
             if (user) {
                 this.currentUser = user;
-                this.authView.classList.add('hidden');
-                this.appView.classList.remove('hidden');
                 this.listenToUserProfile(user.uid);
             } else {
                 this.currentUser = null;
@@ -178,16 +244,11 @@ class GamificationApp {
             signOut(this.auth).catch(console.error);
             return;
         }
-
         try {
-            // Hide all modals to prevent UI glitches
             document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
-
             const userId = user.uid;
             const userDocRef = doc(this.db, 'users', userId);
             const subcollections = ['inventory', 'journal'];
-
-            // Delete subcollections
             for (const sub of subcollections) {
                 const subRef = collection(this.db, 'users', userId, sub);
                 const snapshot = await getDocs(subRef);
@@ -195,43 +256,26 @@ class GamificationApp {
                 snapshot.forEach(doc => batch.delete(doc.ref));
                 await batch.commit();
             }
-
             await deleteDoc(userDocRef);
             await deleteUser(user);
-
-            this.showNotification("Test-Account und alle Daten gelöscht.");
+            await signOut(this.auth);
+            window.location.reload();
         } catch (error) {
             console.error("Error deleting user data:", error);
             this.showNotification("Fehler beim Löschen. Melde dich manuell ab.", "error");
-            signOut(this.auth); // Sign out even if deletion fails
+            await signOut(this.auth);
         }
     }
 
     listenToUserProfile(userId) {
         const userDocRef = doc(this.db, 'users', userId);
-
-        // Stoppe den alten Listener, falls vorhanden
         if (this.userProfileUnsubscribe) {
             this.userProfileUnsubscribe();
         }
-
         this.userProfileUnsubscribe = onSnapshot(userDocRef, (doc) => {
+            this._initializeManagersAndEventListeners(); // Ensure managers are ready
             if (doc.exists()) {
-                const userProfile = doc.data();
-                // Attach listeners only once when the first profile data arrives
-                this.attachAllEventListeners(); 
-
-                // Hier werden alle Manager mit den neuesten Benutzerdaten versorgt
-                this.skillTreeManager.updateUserData(this.currentUser, userProfile);
-                this.petManager.updateUserData(this.currentUser, userProfile);
-                this.characterSheetManager.update(userProfile);
-                this.inventoryManager.updateUserData(this.currentUser, userProfile);
-                this.testToolsManager.updateUserData(this.currentUser, userProfile);
-                this.questManager.updateUserData(this.currentUser, userProfile);
-                this.achievementManager.updateUserData(this.currentUser, userProfile);
-                this.updateCurrencyDisplay(userProfile.currency, userProfile.crystals);
-                this.renderDisplayedAchievements(userProfile);
-                // ... weitere Manager-Updates
+                this._updateAllManagers(doc.data());
             } else {
                 this.createNewUserProfile(userId);
             }
@@ -240,16 +284,29 @@ class GamificationApp {
         });
     }
 
+    _updateAllManagers(userProfile) {
+        this.authView.classList.add('hidden');
+        this.appView.classList.remove('hidden');
+        if (!this.managersInitialized) {
+            this.appView.classList.remove('hidden');
+            this._initializeManagersAndEventListeners();
+            this.authView.classList.add('hidden');
+        }
+        this.managers.forEach(manager => {
+            if (manager && typeof manager.updateUserData === 'function') {
+                manager.updateUserData(this.currentUser, userProfile);
+            }
+        });
+        // TODO: Move these direct UI updates into their own managers
+        this.updateCurrencyDisplay(userProfile.currency, userProfile.crystals);
+        this.renderDisplayedAchievements(userProfile);
+    }
+
     async createNewUserProfile(userId) {
-        console.log("No user profile found, creating one...");
+        console.log("No Firebase user profile found, creating one...");
         const userDocRef = doc(this.db, 'users', userId);
         try {
             const batch = writeBatch(this.db);
-            const initialMaxHp = this.characterSheetManager._calculateMaxHp(10);
-            const initialMaxMana = this.characterSheetManager._calculateMaxMana(10);
-            const initialMaxStamina = this.characterSheetManager._calculateMaxStamina(10);
-
-            // 1. Define starter equipment
             const defaultEquipment = {};
             const starterItemMap = {
                 head: 'starter_set_head', chest: 'starter_set_chest', legs: 'starter_set_legs',
@@ -259,12 +316,23 @@ class GamificationApp {
                 tool1: 'starter_set_tool1', tool2: 'starter_set_tool2',
             };
 
+            const totalInitialStats = { vitality: 10, strength: 10, stamina: 10, agility: 10, int: 10, luck: 10 };
+
             Object.entries(starterItemMap).forEach(([slot, itemId]) => {
                 const itemData = this.config.itemDatabase.find(i => i.id === itemId);
                 if (itemData) {
                     defaultEquipment[slot] = { ...itemData, docId: `starter_${slot}` };
+                    if (itemData.bonuses) {
+                        for (const [stat, value] of Object.entries(itemData.bonuses)) {
+                            totalInitialStats[stat] = (totalInitialStats[stat] || 0) + value;
+                        }
+                    }
                 }
             });
+
+            const initialMaxHp = this.characterSheetManager._calculateMaxHp(totalInitialStats.vitality);
+            const initialMaxMana = this.characterSheetManager._calculateMaxMana(totalInitialStats.int);
+            const initialMaxStamina = this.characterSheetManager._calculateMaxStamina(totalInitialStats.stamina);
             
             const starterPetIds = ['pet_rock', 'pet_sparky', 'pet_blaze', 'pet_frosty', 'pet_shadow'];
             const starterPets = {};
@@ -272,52 +340,28 @@ class GamificationApp {
                 const petData = this.config.itemDatabase.find(i => i.id === petId);
                 if (petData) {
                     const docId = `starter_${petId}`;
-                    starterPets[docId] = { 
-                        ...petData, 
-                        docId,
-                        level: 1,
-                        xp: 0,
-                        maxXp: 100,
-                        currentStats: { ...(petData.baseStats || {}) }
-                    };
+                    starterPets[docId] = { ...petData, docId, level: 1, xp: 0, maxXp: 100, currentStats: { ...(petData.baseStats || {}) } };
                 }
             });
 
-            // 2. Set the main user document
             batch.set(userDocRef, {
-                xp: 0, level: 1, 
-                statPoints: 50,
-                skillPoints: 0,
-                questsCompleted: 0,
-                pomodorosCompleted: 0,
-                achievements: {},
-                displayedAchievements: [],
-                currency: { gold: 0, silver: 0, bronze: 250 },
-                skills: [],
-                crystals: 5,
+                xp: 0, level: 1, statPoints: 50, skillPoints: 0, questsCompleted: 0, pomodorosCompleted: 0,
+                achievements: {}, displayedAchievements: [], currency: { gold: 0, silver: 0, bronze: 250 },
+                skills: [], crystals: 5,
                 hp: { current: initialMaxHp, max: initialMaxHp },
                 mana: { current: initialMaxMana, max: initialMaxMana },
                 stamina: { current: initialMaxStamina, max: initialMaxStamina },
                 stats: { vitality: 10, strength: 10, stamina: 10, agility: 10, int: 10, luck: 10 },
-                equipment: defaultEquipment,
-                pets: starterPets,
-                activePets: ['starter_pet_rock']
+                equipment: defaultEquipment, pets: starterPets, activePets: ['starter_pet_rock']
             });
 
-            // 3. Add extra items to a temporary field. A separate function will process this.
-            // This avoids the race condition with the inventory listener.
-            const itemsForInventory = [
-                this.config.itemDatabase.find(i => i.id === 'claymore_common'),
-                ...Array(3).fill(this.config.itemDatabase.find(i => i.id === 'potion_hp_small')),
-                ...Array(3).fill(this.config.itemDatabase.find(i => i.id === 'potion_mana_small')),
-            ].filter(Boolean);
-
-            const inventoryToAdd = {};
-            itemsForInventory.forEach((item, index) => {
-                inventoryToAdd[`item_${index}`] = item;
-            });
-            
-            batch.update(userDocRef, { itemsToAddToInventory: inventoryToAdd });
+            const inventoryColRef = collection(this.db, 'users', userId, 'inventory');
+            const hpPotionRef = doc(inventoryColRef, 'stack_potion_hp_small');
+            batch.set(hpPotionRef, { ...this.config.itemDatabase.find(i => i.id === 'potion_hp_small'), docId: 'stack_potion_hp_small', quantity: 3 });
+            const manaPotionRef = doc(inventoryColRef, 'stack_potion_mana_small');
+            batch.set(manaPotionRef, { ...this.config.itemDatabase.find(i => i.id === 'potion_mana_small'), docId: 'stack_potion_mana_small', quantity: 3 });
+            const claymoreRef = doc(inventoryColRef);
+            batch.set(claymoreRef, { ...this.config.itemDatabase.find(i => i.id === 'claymore_common'), docId: claymoreRef.id, quantity: 1 });
 
             await batch.commit();
             this.showNotification("Neuer Charakter erstellt!", "success");
@@ -521,6 +565,49 @@ class GamificationApp {
         setTimeout(() => { this.notificationArea.style.opacity = '0'; }, duration);
     }
 
+     /**
+      * Fügt eine eindeutige, sichtbare ID zu jedem div-Element hinzu.
+      * Dies dient der einfachen Identifizierung von UI-Komponenten.
+      * @private
+      */
+    _injectUiIds() {
+        console.log("Injecting UI-IDs into major UI containers...");
+
+        // Explizite Liste der wichtigsten Container, um Stabilität zu gewährleisten
+        const selectors = [
+            '#main-menu-container', '#main-content-container', '#character-sidebar',
+            '#gantt-chart-container', '#focus-quest-container',
+            '#my-quests-modal', '#new-quest-modal', '#equipment-modal', '#inventory-modal',
+            '#pets-modal', '#skill-tree-modal', '#test-tools-modal', '#achievements-modal',
+            '#ui-block-player-info', '#ui-block-character-stats', '#sidebar-derived-stats'
+        ];
+
+        selectors.forEach((selector, index) => {
+            const element = document.querySelector(selector);
+            if (element && !element.dataset.uiId) {
+                element.dataset.uiId = index;
+
+                if (window.getComputedStyle(element).position === 'static') {
+                    element.style.position = 'relative';
+                }
+
+                // Standardmäßig unten rechts, aber für Gantt oben rechts
+                let idStyle = 'color: #ffd700; background-color: rgba(0,0,0,0.7); padding: 0 2px; border-radius: 2px; font-size: 7px; line-height: 1; z-index: 9999; position: absolute; right: 0;';
+                if (selector === '#gantt-chart-container') {
+                    idStyle += 'top: 0;';
+                } else {
+                    idStyle += 'bottom: 0;';
+                }
+
+                const idElement = document.createElement('span');
+                idElement.textContent = `UI-ID#${index}`;
+                idElement.className = 'ui-id-label';
+                idElement.style.cssText = idStyle;
+                idElement.onclick = (e) => e.stopPropagation();
+                element.appendChild(idElement);
+            }
+        });
+    }
 }
 
 // Initialize app when DOM is ready

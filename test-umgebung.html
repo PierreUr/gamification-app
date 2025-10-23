@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Umgebung - Quest System</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <style>
+        .modal.hidden, .quest-wizard-step.hidden { display: none; }
+        .modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); resize: both; overflow: auto; border: 2px solid #4a5568; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); z-index: 40; }
+        .wizard-progress-dot { width: 10px; height: 10px; border-radius: 50%; background-color: #4b5567; transition: background-color 0.3s; }
+        .wizard-progress-dot.active { background-color: #6366f1; }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200 p-8">
+
+    <h1 class="text-2xl font-bold mb-4">Test Umgebung</h1>
+
+    <!-- Auth Section -->
+    <div id="auth-section" class="mb-8 p-4 bg-gray-800 rounded-lg">
+        <h2 class="text-xl font-bold mb-2">1. Authentifizierung</h2>
+        <div id="auth-view">
+            <button id="login-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg">Anonym Anmelden</button>
+        </div>
+        <div id="app-view" class="hidden">
+            <p>Angemeldet als: <span id="user-id" class="font-mono text-green-400"></span></p>
+            <button id="logout-btn" class="mt-2 bg-red-800 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-lg text-sm">Abmelden & Löschen</button>
+        </div>
+    </div>
+
+    <!-- Test Area -->
+    <div id="test-area" class="hidden p-4 bg-gray-800 rounded-lg">
+        <h2 class="text-xl font-bold mb-4">2. Quest System Test</h2>
+        <button id="menu-btn-new-quest" class="menu-btn bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg">Neue Quest</button>
+    </div>
+
+    <!-- Notification Area -->
+    <div id="notification-area" class="fixed top-5 right-5 bg-blue-500 text-white p-3 rounded-lg shadow-lg opacity-0 transition-opacity duration-500 z-50"></div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-confirm-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-gray-700 p-6 rounded-lg text-center shadow-xl text-white">
+            <h3 class="text-xl mb-4">Wirklich löschen?</h3>
+            <p id="delete-confirm-text" class="text-gray-300 mb-4">Diese Aktion kann nicht rückgängig gemacht werden.</p>
+            <div class="flex justify-center gap-4">
+                <button id="delete-confirm-btn" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded">Ja, löschen</button>
+                <button id="delete-cancel-btn" class="bg-gray-500 hover:bg-gray-600 px-4 py-2 rounded">Abbrechen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- #################### -->
+    <!-- ## MODALS           ## -->
+    <!-- #################### -->
+
+    <!-- New Quest Modal (copied from index.html) -->
+    <div id="new-quest-modal" class="modal hidden w-[600px] bg-gray-800 text-white rounded-lg">
+        <div class="p-4 pb-2 flex justify-between items-center cursor-move modal-header relative">
+            <h3 class="font-bold">Neue Quest erstellen</h3>
+            <button class="modal-close-btn absolute top-2 right-2 text-2xl font-bold hover:text-red-500">&times;</button>
+        </div>
+        <div class="p-4 overflow-y-auto">
+             <form id="add-todo-form" class="space-y-4 text-sm">
+                <!-- Step 1: Type -->
+                 <div id="quest-step-1" class="quest-wizard-step space-y-4">
+                    <h4 class="text-lg font-semibold text-center text-gray-400">Schritt 1: Typ</h4>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1">Typ</label>
+                        <select id="todo-task-type" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="Aufgabe">Aufgabe</option>
+                            <option value="Projektaufgabe">Projektaufgabe</option>
+                            <option value="Projekt">Projekt</option>
+                        </select>
+                    </div>
+                    <div id="todo-parent-project-container" class="hidden">
+                         <label class="block text-xs font-medium text-gray-400 mb-1">Übergeordnetes Projekt</label>
+                         <select id="todo-parent-project" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                             <option value="">Kein Projekt ausgewählt</option>
+                         </select>
+                     </div>
+                </div>
+                <!-- Step 2: Basic Info -->
+                <div id="quest-step-2" class="quest-wizard-step hidden space-y-4">
+                    <h4 class="text-lg font-semibold text-center text-gray-400">Schritt 2: Titel & Beschreibung</h4>
+                    <input type="text" id="todo-input" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Quest-Titel..." required>
+                    <div>
+                        <button type="button" id="toggle-details-btn" class="text-sm text-indigo-400 hover:text-indigo-300">Beschreibung hinzufügen +</button>
+                        <div id="details-toggle-content" class="hidden mt-2">
+                            <textarea id="todo-details" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2 h-24 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Zusätzliche Notizen..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <!-- Step 3: Duration -->
+                 <div id="quest-step-3" class="quest-wizard-step hidden space-y-4">
+                    <h4 class="text-lg font-semibold text-center text-gray-400">Schritt 3: Dauer (Pflichtfeld)</h4>
+                    <div id="duration-container-task">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="block text-xs font-medium text-gray-400">Dauer</label>
+                            <button type="button" id="duration-mode-toggle" class="text-xs text-indigo-400 hover:text-indigo-300">Manuelle Eingabe</button>
+                        </div>
+                        <div id="Bearbeitungsdauer-Pomodoro">
+                            <div class="flex items-center gap-4 p-2 bg-gray-900 rounded-lg">
+                                <span id="quest-duration-display" class="font-mono text-2xl font-bold text-white">0m</span>
+                                <div class="flex-grow flex justify-end gap-2">
+                                    <button type="button" data-add-duration="25" class="duration-add-btn bg-blue-600 hover:bg-blue-500 rounded px-3 py-1">+25m</button>
+                                    <button type="button" data-add-duration="45" class="duration-add-btn bg-blue-600 hover:bg-blue-500 rounded px-3 py-1">+45m</button>
+                                    <button type="button" id="duration-reset-btn" class="bg-red-600 hover:bg-red-500 rounded px-3 py-1">Reset</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="Bearbeitungsdauer-Frei" class="hidden">
+                            <input type="text" id="quest-duration-free-input" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2" placeholder="z.B. 1h 30m, 90m, 2h...">
+                        </div>
+                    </div>
+                </div>
+                 <!-- Step 4: Deadline & Repeat -->
+                  <div id="quest-step-4" class="quest-wizard-step hidden space-y-4">
+                    <h4 class="text-lg font-semibold text-center text-gray-400">Schritt 4: Deadline & Wiederholung</h4>
+                     <div id="deadline-container">
+                        <label class="block text-xs font-medium text-gray-400 mb-1">Deadline (Pflichtfeld)</label>
+                        <input type="date" id="todo-deadline" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2">
+                    </div>
+                </div>
+                <!-- Step 5: Details -->
+                 <div id="quest-step-5" class="quest-wizard-step hidden space-y-4">
+                     <h4 class="text-lg font-semibold text-center text-gray-400">Schritt 5: Details</h4>
+                     <div id="priority-container">
+                        <label class="block text-xs font-medium text-gray-400 mb-1">Priorität</label>
+                        <select id="todo-priority" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="Leicht">Leicht</option>
+                            <option value="Mittel" selected>Mittel</option>
+                            <option value="Schwer">Schwer</option>
+                        </select>
+                    </div>
+                    <div>
+                         <label class="block text-sm font-medium text-gray-400 mb-2">Tag (1 auswählen)</label>
+                        <div id="todo-tags-container" class="flex flex-wrap gap-x-4 gap-y-2 p-2 rounded-lg border border-transparent"></div>
+                    </div>
+                </div>
+            </form>
+            <div id="quest-wizard-progress" class="flex justify-center gap-2 mt-4"></div>
+            <div id="quest-wizard-nav" class="mt-6 flex justify-between">
+                <button id="quest-back-btn" class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Zurück</button>
+                <button id="quest-next-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 disabled:bg-gray-500 disabled:cursor-not-allowed" disabled>Weiter</button>
+                <button id="quest-submit-btn" type="submit" form="add-todo-form" class="hidden bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Quest Hinzufügen</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signOut, deleteUser } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+        import { getFirestore, collection, deleteDoc, getDocs, query, where, writeBatch } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+        import { QuestManager } from './js/questManager.js';
+
+        const firebaseConfig = { apiKey: "AIzaSyBJgfy6sgA5HyNhFZDuzAaMCi16UyDtazA", authDomain: "gamification-core.firebaseapp.com", projectId: "gamification-core", storageBucket: "gamification-core.appspot.com", messagingSenderId: "187541389621", appId: "1:187541389621:web:7d9acbd0ea15a953188c7c" };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const notificationArea = document.getElementById('notification-area');
+        const showNotification = (message, type = 'info') => {
+            const colors = { 'info': 'bg-blue-500', 'success': 'bg-green-500', 'error': 'bg-red-500' };
+            notificationArea.textContent = message;
+            notificationArea.className = `fixed top-5 right-5 text-white p-3 rounded-lg shadow-lg transition-opacity duration-500 z-50 ${colors[type] || colors.info}`;
+            notificationArea.style.opacity = '1';
+            setTimeout(() => { notificationArea.style.opacity = '0'; }, 3000);
+        };
+
+        const questManager = new QuestManager(db, showNotification);
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('auth-view').classList.add('hidden');
+                document.getElementById('app-view').classList.remove('hidden');
+                document.getElementById('test-area').classList.remove('hidden');
+                document.getElementById('user-id').textContent = user.uid;
+                questManager.updateUserData(user, {}); // Pass empty profile for now
+            } else {
+                document.getElementById('auth-view').classList.remove('hidden');
+                document.getElementById('app-view').classList.add('hidden');
+                document.getElementById('test-area').classList.add('hidden');
+                questManager.updateUserData(null, null);
+            }
+        });
+
+        document.getElementById('login-btn').addEventListener('click', () => signInAnonymously(auth));
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            const user = auth.currentUser;
+            if (user && confirm('Willst du diesen Test-User und alle seine Quests wirklich löschen?')) {
+                const todosQuery = query(collection(db, 'todos'), where("userId", "==", user.uid));
+                const todosSnapshot = await getDocs(todosQuery);
+                const batch = writeBatch(db);
+                todosSnapshot.forEach(doc => batch.delete(doc.ref));
+                await batch.commit();
+                await deleteUser(user);
+                showNotification('Test-User und Quests gelöscht.', 'success');
+            }
+        });
+
+        // Initialize managers and listeners
+        questManager._attachEventListeners();
+
+    </script>
+</body>
+</html>

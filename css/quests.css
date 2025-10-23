@@ -1,0 +1,11 @@
+/* --- My Quests (Group 1xxx) --- */
+.quest-filter-btn.active { background-color: #4f46e5; font-weight: bold; }
+
+/* --- Quest Wizard (Group 1xxx) --- */
+.wizard-progress-dot { width: 10px; height: 10px; border-radius: 50%; background-color: #4b5567; transition: background-color 0.3s; }
+.wizard-progress-dot.active { background-color: #6366f1; }
+
+/* --- Focus Quest (Group 6xxx) --- */
+@keyframes blink { 50% { border-color: #ef4444; } }
+#main-content.blinking-border { animation: blink 1.5s linear infinite; border-style: solid; border-width: 2px; border-color: #4b5567; }
+#focus-timer-visual-fill { transition: height 0.5s linear; }

@@ -8,7 +8,7 @@ export class PetManager {
         this.rarityColors = config.rarityColors;
 
         // DOM-Elemente
-        this.modal = document.getElementById('pets-modal');
+        this.modal = document.getElementById('div-5110');
         this.openBtn = document.getElementById('menu-btn-pets');
         this.closeBtn = this.modal.querySelector('.modal-close-btn');
         this.inventoryList = document.getElementById('pets-inventory-list');
