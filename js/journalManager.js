@@ -8,7 +8,7 @@ export class JournalManager {
 
         // DOM Elements
         this.journalModal = document.getElementById('div-1130');
-        this.journalListContainer = document.getElementById('div-1132');
+        this.journalListContainer = document.getElementById('div-1133');
         this.openBtn = document.getElementById('menu-btn-journal');
         this.closeBtn = this.journalModal?.querySelector('.modal-close-btn');
     }

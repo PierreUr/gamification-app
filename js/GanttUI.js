@@ -106,13 +106,14 @@ class GanttInteractionManager {
         this.barRoundedCornersCheckbox = document.getElementById('pomodoro-break-bar-rounded-corners');
         this.barOutlineThicknessInput = document.getElementById('pomodoro-bar-outline-thickness');
         this.lineThicknessInput = document.getElementById('pomodoro-line-thickness');
-        this.logQuestToggle = document.getElementById('log-toggle-quests');
+        this.logQuestToggle = document.getElementById('log-toggle-quests'); // Corrected ID
         this.logBreakToggle = document.getElementById('log-toggle-breaks');
         this.testShowPomodoroBreaksBtn = document.getElementById('test-show-pomodoro-breaks-btn');
         this.pomodoroBreaksTestModal = document.getElementById('div-5300');
         this.pomodoroSplitModal = document.getElementById('div-4360');
         this.ganttHeader = null; // Wird in attachEventListeners initialisiert
 
+        this.ganttHeader = document.getElementById('div-4310'); // Initialize ganttHeader here
         if (this.sortAllBtn) this.sortAllBtn.addEventListener('click', () => this.ganttManager.sortManager.sortAllQuests());
         if (this.pomodoroToggle) {
             this.pomodoroToggle.addEventListener('change', (e) => {

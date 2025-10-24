@@ -14,7 +14,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎮</text></svg>">
     
 </head>
-<body class="bg-gray-900 text-gray-200 pl-[3%]">
+<body class="bg-gray-900 text-gray-200">
 
     <!-- ID: div-4050 - Globale obere Leiste für Währungsanzeige. Gruppe: Globale UI. -->
     <div id="div-4050" class="h-16 bg-gray-800 flex items-center justify-end px-6 border-b border-gray-700">
@@ -59,7 +59,7 @@
     </div>
     <!-- App View -->
     <!-- ID: div-4000 - Hauptcontainer der gesamten App nach dem Login. Gruppe: Globale UI. -->
-    <div id="div-4000" class="hidden w-full max-w-screen-2xl mx-auto flex gap-4 p-4 mt-4">
+    <div id="div-4000" class="hidden w-full max-w-screen-2xl mx-auto flex gap-4 p-4">
         <!-- ID: div-1000 - Hauptcontainer für das linke Navigationsmenü. Gruppe: Quest-System. -->
         <div id="div-1000" class="w-48 flex-shrink-0 bg-gray-800 p-4 rounded-lg shadow-lg flex flex-col gap-4">
                  <h2 class="text-xl font-bold text-center border-b border-gray-600 pb-2">Menü</h2>
@@ -348,50 +348,33 @@
                      <!-- ID: div-1128 - Wizard Schritt 3: Dauer. Gruppe: Quest-System. -->
                      <div id="div-1128" class="quest-wizard-step hidden space-y-4">
                         <h4 class="text-lg font-semibold text-center text-gray-400">Schritt 3: Dauer (Pflichtfeld)</h4>
-                        <!-- ID: div-1129 - Wrapper für Planungsstil-Auswahl. Gruppe: Quest-System. -->
-                        <div id="div-1129" class="space-y-2">
-                            <label class="block text-xs font-medium text-gray-400">Planungsstil</label>
-                            <!-- ID: div-1131 - Radio-Button-Gruppe für Planungsstil. Gruppe: Quest-System. -->
-                            <div id="div-1131" class="flex gap-4 rounded-lg bg-gray-900 p-1">
-                                <label class="flex-1 text-center p-2 rounded-md cursor-pointer text-sm transition-colors" for="duration-style-pomodoro">
-                                    <input type="radio" name="duration-style" id="duration-style-pomodoro" value="pomodoro" class="sr-only" checked>
-                                    <span>Pomodoro</span>
-                                </label>
-                                <label class="flex-1 text-center p-2 rounded-md cursor-pointer text-sm transition-colors" for="duration-style-manual">
-                                    <input type="radio" name="duration-style" id="duration-style-manual" value="manual" class="sr-only">
-                                    <span>Manuell</span>
-                                </label>
+
+                        <!-- Modus-Umschalter -->
+                        <div class="flex justify-center">
+                            <div class="inline-flex rounded-md shadow-sm" role="group">
+                                <button type="button" id="duration-mode-manual-btn" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-gray-600 rounded-l-lg hover:bg-indigo-700 focus:z-10 focus:ring-2 focus:ring-indigo-500">
+                                    Manuell
+                                </button>
+                                <button type="button" id="duration-mode-pomodoro-btn" class="px-4 py-2 text-sm font-medium text-gray-300 bg-gray-700 border-t border-b border-r border-gray-600 rounded-r-md hover:bg-gray-600 hover:text-white focus:z-10 focus:ring-2 focus:ring-indigo-500">
+                                    Pomodoro
+                                </button>
                             </div>
                         </div>
 
                         <!-- ID: div-1132 - Container für Dauer-Eingabe (Aufgabe). Gruppe: Quest-System. -->
-                        <div id="div-1132">
-                            <div class="flex justify-between items-center mb-2">
-                                <label class="block text-xs font-medium text-gray-400">Dauer</label>
-                                <button type="button" id="duration-mode-toggle" class="text-xs text-indigo-400 hover:text-indigo-300">Manuelle Eingabe</button>
-                            </div>
-                            <!-- ID: div-1133 - Container für Pomodoro-Dauer-Buttons. Gruppe: Quest-System. -->
-                            <div id="div-1133">
-                                <div class="flex items-center gap-4 p-2 bg-gray-900 rounded-lg"> <!-- Wrapper -->
-                                    <span id="quest-duration-display" class="font-mono text-2xl font-bold text-white">0m</span>
-                                    <div class="flex-grow flex justify-end gap-2"> <!-- Button-Gruppe -->
-                                        <button type="button" data-add-duration="25" class="duration-add-btn bg-blue-600 hover:bg-blue-500 rounded px-3 py-1">+25m</button>
-                                        <button type="button" data-add-duration="45" class="duration-add-btn bg-blue-600 hover:bg-blue-500 rounded px-3 py-1">+45m</button>
-                                        <button type="button" id="duration-reset-btn" class="bg-red-600 hover:bg-red-500 rounded px-3 py-1">Reset</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="Bearbeitungsdauer-Frei" class="hidden">
-                                <!-- ID: div-1134 - Container für freie Dauer-Eingabe. Gruppe: Quest-System. -->
-                                <input type="text" id="quest-duration-free-input" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2" placeholder="z.B. 1h 30m, 90m, 2h...">
-                            </div>
+                        <div id="div-1132" class=""> <!-- Manuelle Eingabe, initial sichtbar -->
+                            <label for="quest-duration-input" class="block text-xs font-medium text-gray-400 mb-1">Dauer frei eingeben</label>
+                            <input type="text" id="quest-duration-input" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2" placeholder="z.B. 1h 30m, 90m...">
                         </div>
                         <!-- ID: div-1135 - Container für Quest-Split-Toggle. Gruppe: Quest-System. -->
-                        <div id="div-1135" class="hidden pt-2">
-                            <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg bg-indigo-900/50 hover:bg-indigo-900/80">
-                                <input type="checkbox" id="quest-split-toggle" class="form-checkbox bg-gray-700 border-gray-600 text-indigo-500 h-5 w-5">
-                                <span>Quest in 45-Minuten-Blöcke aufteilen</span>
-                            </label>
+                        <div id="div-1135" class="hidden"> <!-- Pomodoro/Split Eingabe, initial versteckt -->
+                            <label for="pomodoro-duration-display" class="block text-xs font-medium text-gray-400 mb-1">Dauer in Blöcken festlegen</label>
+                            <div class="flex items-center gap-2">
+                                <input type="text" id="pomodoro-duration-display" class="w-full bg-gray-800 text-gray-400 rounded-lg px-4 py-2 cursor-not-allowed" placeholder="0m" readonly>
+                                <button type="button" data-add-duration="25" class="duration-add-btn flex-shrink-0 bg-blue-600 hover:bg-blue-500 rounded px-3 py-2">+25m</button>
+                                <button type="button" data-add-duration="45" class="duration-add-btn flex-shrink-0 bg-blue-600 hover:bg-blue-500 rounded px-3 py-2">+45m</button>
+                                <button type="button" id="duration-reset-btn" class="flex-shrink-0 bg-red-600 hover:bg-red-500 rounded px-3 py-2">Reset</button>
+                            </div>
                         </div>
                         <!-- ID: div-1136 - Container für Dauer-Eingabe (Projekt). Gruppe: Quest-System. -->
                         <div id="div-1136" class="hidden">
@@ -469,7 +452,7 @@
                 <!-- ID: div-1149 - Navigationsleiste des Wizards. Gruppe: Quest-System. -->
                 <div id="div-1149" class="mt-6 flex justify-between items-center">
                     <div class="flex gap-2"> <!-- Button-Gruppe -->
-                        <button id="quest-next-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 disabled:bg-gray-500 disabled:cursor-not-allowed" disabled>Weiter</button>
+                        <button type="button" id="quest-next-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 disabled:bg-gray-500 disabled:cursor-not-allowed" disabled>Weiter</button>
                         <button id="quest-submit-btn" type="submit" form="add-todo-form" class="hidden bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Quest Hinzufügen</button>
                     </div>
                     <button id="quest-back-btn" class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Zurück</button>
@@ -486,8 +469,8 @@
                 <h3 class="font-bold">Journal</h3>
                 <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-            <!-- ID: div-1132 - Inhaltscontainer für Journaleinträge. Gruppe: Quest-System. -->
-            <div id="div-1132" class="p-4 space-y-2 overflow-y-auto"></div>
+            <!-- ID: div-1133 - Inhaltscontainer für Journaleinträge. Gruppe: Quest-System. -->
+            <div id="div-1133" class="p-4 space-y-2 overflow-y-auto"></div>
         </div>
     </div>
     

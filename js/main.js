@@ -19,6 +19,7 @@ import { AchievementManager } from './achievementManager.js';
 import { JournalManager } from './journalManager.js';
 import { GanttManager } from './ganttManager.js';
 import { formatDuration } from './utils.js';
+import { NewQuestWizardManager } from '../NewQuestWizardManager.js';
 
 class GamificationApp {
     constructor() {
@@ -104,6 +105,15 @@ class GamificationApp {
         this.managersInitialized = false;
         this.managers = [];
     }
+    get availableTags() {
+        return [
+            { name: 'Arbeit', icon: '💼' },
+            { name: 'Privat', icon: '🏠' },
+            { name: 'Lernen', icon: '📚' },
+            { name: 'Haushalt', icon: '🧹' },
+            { name: 'Sport', icon: '🏋️' }
+        ];
+    }
 
     init() {
         this.attachAuthEventListeners();
@@ -132,6 +142,8 @@ class GamificationApp {
         this.testToolsManager = new TestToolsManager(this.db, this.auth, this.showNotification.bind(this), this.config, this.handleXpGain.bind(this), this.questManager, this.timerManager, this.ganttManager);
         this.journalManager = new JournalManager(this.db);
         this.achievementManager = new AchievementManager(this.db, this.showNotification.bind(this), this.config);
+        this.newQuestWizardManager = new NewQuestWizardManager(this.db, this.auth.currentUser.uid, this.availableTags);
+        this.newQuestWizardManager.wizardManager = this; // Provide access to the main app instance
         this.managers = [this.modalManager, this.questManager, this.characterSheetManager, this.inventoryManager, this.petManager, this.skillTreeManager, this.testToolsManager, this.timerManager, this.achievementManager, this.journalManager, this.ganttManager];
 
         this._attachAllEventListeners();
@@ -180,6 +192,15 @@ class GamificationApp {
             this.deleteConfirmModal.classList.add('hidden');
         });
 
+        // --- New Wizard Launchers ---
+        const newQuestBtn = document.getElementById('menu-btn-new-quest');
+        if (newQuestBtn) {
+            // Reroute the old button to the new wizard
+            newQuestBtn.addEventListener('click', () => {
+                this.newQuestWizardManager.open();
+            });
+        }
+
         document.addEventListener('breakTimerUpdate', (e) => {
             const { timeLeft } = e.detail;
             // Update all relevant UI parts from one central place
@@ -196,7 +217,10 @@ class GamificationApp {
         
         // Attach listeners for each manager
         this.managers.forEach(manager => {
-            if (manager && typeof manager._attachEventListeners === 'function') {
+            // Exclude the old questManager's wizard listeners to prevent conflicts.
+            // The new newQuestWizardManager handles the creation process.
+            const isOldQuestManager = manager.constructor.name === 'QuestManager';
+            if (manager && typeof manager._attachEventListeners === 'function' && !isOldQuestManager) {
                 try {
                     manager._attachEventListeners();
                 } catch (error) {

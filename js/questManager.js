@@ -1,7 +1,6 @@
 import { collection, query, where, onSnapshot, addDoc, serverTimestamp, Timestamp, deleteDoc, updateDoc, doc, increment, writeBatch, getDocs } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 import { GanttManager } from './ganttManager.js'; // Path remains the same
 import { QuestListManager } from './questListManager.js';
-import { QuestWizardManager } from './questWizardManager.js';
 import { formatDuration } from './utils.js';
 
 export class QuestManager {
@@ -14,10 +13,13 @@ export class QuestManager {
         this.timerManager = null;
         this.ganttManager = ganttManager;
         this.questListManager = new QuestListManager(db, showNotificationCallback, showDeleteConfirmCallback, this._handleQuestCompletion.bind(this), this._handleFocusRequest.bind(this), this._getXpForPriority.bind(this), this._openEditModal.bind(this));
-        this.questWizardManager = new QuestWizardManager(['Arbeit', 'Privat', 'Lernen', 'Haushalt', 'Sport'], ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']);
 
-        // Re-add availableTags for fallback logic in the edit modal
-        this.availableTags = ['Arbeit', 'Privat', 'Lernen', 'Haushalt', 'Sport'];
+        // DOM Elements - Initialized here to ensure they are available immediately.
+        this.myQuestsModal = document.getElementById('div-1110');
+        this.newQuestModal = document.getElementById('div-1120');
+        this.editQuestModal = document.getElementById('div-1112');
+        this.todoListContainer = document.getElementById('div-1115');
+        this.focusQuestContainer = document.getElementById('div-4400');
 
         // State
         this.currentUser = null;
@@ -54,7 +56,6 @@ export class QuestManager {
             
             this.questListManager.render(this.localQuests, this.focusedQuestId);
             this._renderFocusQuest();
-            this.questWizardManager.populateParentProjectDropdown(this.localQuests);
             this.ganttManager.render(this.localQuests);
         });
     }
@@ -246,32 +247,14 @@ export class QuestManager {
     }
 
     _attachEventListeners() {
-        // DOM Elements - Initialized here to ensure the DOM is ready. This must be done before any other listeners are attached.
-        this.myQuestsModal = document.getElementById('div-1110');
-        this.newQuestModal = document.getElementById('div-1120');
-        this.editQuestModal = document.getElementById('div-1112');
-        this.todoListContainer = document.getElementById('div-1115');
-        this.addTodoForm = document.getElementById('add-todo-form'); // This ID is correct and unique
-        this.focusQuestContainer = document.getElementById('div-4400');
 
         this.questListManager._attachEventListeners();
-        this.questWizardManager._attachEventListeners();
-
-        const newQuestBtn = document.getElementById('menu-btn-new-quest');
 
         // Listen for timer updates from the timerManager
         document.addEventListener('questTimerUpdate', (e) => {
             const { questId, timeLeft, totalDuration } = e.detail;
             this._updateFocusTimerDisplay(questId, timeLeft, totalDuration);
         });
-
-        if (newQuestBtn) {
-            newQuestBtn.addEventListener('click', () => {
-                this.questWizardManager.reset();
-                this.editingQuestId = null;
-                this.newQuestModal.classList.remove('hidden');
-            });
-        }
         if (this.newQuestModal) {
             this.newQuestModal.querySelector('.modal-close-btn').addEventListener('click', () => this.newQuestModal.classList.add('hidden'));
         }
@@ -307,115 +290,6 @@ export class QuestManager {
                 this.showNotification("Simple Test Quest hinzugefügt!", "success");
             });
         }
-
-        this.addTodoForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            // Fix: Sicherstellen, dass das Formular nur gesendet wird, wenn isValid true ist.
-            // Der Submit-Button sollte durch den Wizard deaktiviert sein, aber ein Fallback-Check ist nötig.
-            if (this.questWizardManager.questSubmitBtn.disabled) return; 
-
-            const text = this.questWizardManager.todoInput.value.trim();
-            const selectedTag = this.questWizardManager.todoTagsContainer.querySelector('input:checked')?.value;
-            const isDaily = this.questWizardManager.todoRepeatCheckbox.checked;
-            const taskType = this.questWizardManager.todoTaskTypeInput.value;
-            const scheduledDateValue = document.getElementById('todo-scheduled-date').value;
-            let scheduledAt = null;
-            if (scheduledDateValue) {
-                const date = new Date(scheduledDateValue);
-                scheduledAt = Timestamp.fromDate(date);
-            }
-            const submitButton = this.questWizardManager.questSubmitBtn;
-
-            if (!text || !selectedTag || !this.currentUser) {
-                 this.showNotification("Bitte Titel und Tag ausfüllen.", "error"); return;
-            }
-
-            const newQuest = {
-                userId: this.currentUser.uid,
-                text: text,
-                priority: isDaily ? 'Leicht' : this.questWizardManager.todoPriorityInput.value,
-                details: this.questWizardManager.todoDetailsInput.value,
-                taskType: taskType,
-                tags: [selectedTag],
-                createdAt: serverTimestamp(),
-                isDaily: isDaily,
-                repeatDays: Array.from(this.questWizardManager.todoRepeatDaysContainer.querySelectorAll('input:checked')).map(input => input.value),
-                startTime: isDaily ? this.questWizardManager.todoStartTimeInput.value : null,
-                durationMinutes: 0,
-                scheduledAt: scheduledAt
-            };
-            newQuest.breaks = []; // Initialize breaks array
-
-            if (taskType === 'Projekt') {
-                const durationDays = parseInt(document.getElementById('project-duration-days').value, 10);
-                const startDate = new Date(document.getElementById('project-start-date').value);
-                if (isNaN(startDate.getTime()) || durationDays <= 0) {
-                    this.showNotification("Bitte gültiges Startdatum und Dauer für das Projekt angeben.", "error"); return;
-                }
-                startDate.setHours(0,0,0,0);
-                newQuest.durationMinutes = durationDays * 24 * 60;
-                newQuest.ganttScheduledAt = Timestamp.fromDate(startDate);
-            } else {
-                let durationInMinutes = 0;
-                // KORREKTUR: Zugriff auf die Instanzvariable des Wizards, nicht auf document.getElementById()
-                const isFreeMode = this.questWizardManager.durationFreeContainer && !this.questWizardManager.durationFreeContainer.classList.contains('hidden');
-                
-                if (isFreeMode) {
-                    durationInMinutes = this.questWizardManager._parseDuration(document.getElementById('quest-duration-free-input').value);
-                } else {
-                    durationInMinutes = this.questWizardManager.newQuestDuration;
-                }
-
-                // Pflichtprüfung für Dauer, wenn Deadline oder ScheduledAt gesetzt ist.
-                if ((this.questWizardManager.todoDeadlineInput.value || scheduledDateValue) && durationInMinutes <= 0) {
-                     this.showNotification("Dauer ist Pflicht, wenn ein Datum gesetzt ist.", "error"); return;
-                }
-                newQuest.durationMinutes = durationInMinutes;
-                
-                let deadline;
-                
-                if (this.questWizardManager.todoDeadlineInput.value) {
-                    // Setzt die Gantt-Zeit basierend auf der Deadline (falls vorhanden)
-                    const deadlineDate = new Date(this.questWizardManager.todoDeadlineInput.value);
-                    newQuest.ganttScheduledAt = Timestamp.fromDate(deadlineDate);
-                } else if (scheduledAt) {
-                    // Setzt die Gantt-Zeit basierend auf dem geplanten Datum (falls vorhanden)
-                    newQuest.ganttScheduledAt = scheduledAt;
-                }
-                
-                if(isDaily) {
-                    if (!this.questWizardManager.todoStartTimeInput.value) {
-                         this.showNotification("Bitte eine Startzeit für die tägliche Quest angeben.", "error"); return;
-                    }
-                    // Tägliche Quests haben nur ein Platzhalter-Deadline-Datum
-                    deadline = new Date();
-                } else {
-                     if (!this.questWizardManager.todoDeadlineInput.value) {
-                         this.showNotification("Bitte eine Deadline angeben.", "error"); return;
-                    }
-                    deadline = new Date(this.questWizardManager.todoDeadlineInput.value);
-                }
-                deadline.setHours(23, 59, 59, 999);
-                newQuest.deadline = Timestamp.fromDate(deadline);
-            }
-
-            if (newQuest.taskType === 'Projektaufgabe' && this.questWizardManager.todoParentProjectInput.value) {
-                newQuest.parentProjectId = this.questWizardManager.todoParentProjectInput.value;
-            }
-
-            submitButton.disabled = true;
-            if (this.editingQuestId) {
-                await updateDoc(doc(this.db, 'todos', this.editingQuestId), newQuest);
-                this.showNotification("Quest aktualisiert!", "success");
-                this.editingQuestId = null;
-            } else {
-                await addDoc(collection(this.db, 'todos'), newQuest);
-                this.showNotification("Neue Quest hinzugefügt!", "success");
-            }
-            this.newQuestModal.classList.add('hidden');
-            submitButton.disabled = false;
-        });
 
         if (this.focusQuestContainer) { this.focusQuestContainer.addEventListener('click', async (e) => {
             const button = e.target.closest('button');

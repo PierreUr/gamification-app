@@ -1,9 +1,8 @@
 ?plugins=forms:64 cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation
 (anonymous) @ ?plugins=forms:64
 (anonymous) @ ?plugins=forms:64
-main.js:30 Firebase client initialized.
-questWizardManager.js:194 Uncaught TypeError: Cannot read properties of null (reading 'classList')
-    at QuestWizardManager.reset (questWizardManager.js:194:65)
-    at HTMLButtonElement.<anonymous> (questManager.js:270:41)
-reset @ questWizardManager.js:194
-(anonymous) @ questManager.js:270
+NewQuestWizardManager.js:2  GET http://127.0.0.1:5500/NewStep1_Type.js net::ERR_ABORTED 404 (Not Found)
+NewQuestWizardManager.js:3  GET http://127.0.0.1:5500/NewStep2_Info.js net::ERR_ABORTED 404 (Not Found)
+NewQuestWizardManager.js:4  GET http://127.0.0.1:5500/NewStep3_Duration.js net::ERR_ABORTED 404 (Not Found)
+NewQuestWizardManager.js:5  GET http://127.0.0.1:5500/NewStep4_Deadline.js net::ERR_ABORTED 404 (Not Found)
+NewQuestWizardManager.js:6  GET http://127.0.0.1:5500/NewStep5_Details.js net::ERR_ABORTED 404 (Not Found)

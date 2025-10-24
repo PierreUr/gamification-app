@@ -4,6 +4,9 @@ Diese Datei dient als Übersicht für anstehende Aufgaben, priorisiert nach Einf
 
 ---
 
+- [ ] **Bugfix: Quest Wizard Schritt 3 fehlerhaft**
+  - **Spezifikation:** ToDos/bugfix-quest-wizard-step3.md
+
 ## Priorisierte Aufgabenliste (Neu sortiert)
 - [x] **Gantt-Chart (Bugfix): Einzeilen-Ansicht reparieren**
 - [x] **Refactoring: GanttManager aufteilen**
