@@ -76,6 +76,23 @@
 
 ### 2024-05-22
 
+- **Änderung:** Die `index.html` wurde bereinigt, um doppelte `<body>`- und `<head>`-Tags sowie mehrfach vergebene IDs zu entfernen. Die DOM-Abfragen im Konstruktor von `GamificationApp` in `js/main.js` wurden korrigiert, um auf die nun eindeutigen IDs zu verweisen.
+- **Backup-ID:** `20240522140000`
+- **Betroffene Dateien:**
+  - `index.html`
+  - `js/main.js`
+- **Grund:** Behebung des `TypeError: Cannot read properties of null (reading 'addEventListener')` in `main.js`. Der Fehler wurde durch inkonsistente und doppelte IDs in der `index.html` verursacht, was zu fehlerhaften DOM-Abfragen führte.
+
+### 2024-05-22
+
+- **Änderung:** Fehlerhafte HTML-Strukturen und Kommentare wurden aus dem `<script type="module">`-Block in `index.html` entfernt.
+- **Backup-ID:** `20240522120000`
+- **Betroffene Dateien:**
+  - `index.html`
+- **Grund:** Behebung eines `SyntaxError: HTML comments are not allowed in modules`. Durch einen Kopierfehler war HTML-Code in den JavaScript-Block geraten, was das Laden der Anwendung verhinderte.
+
+### 2024-05-22
+
 - **Änderung:** Die fehlende `import`-Anweisung für den `GanttManager` wurde in `js/main.js` hinzugefügt.
 - **Backup-ID:** `20240522110000`
 - **Betroffene Dateien:**

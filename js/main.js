@@ -75,25 +75,25 @@ class GamificationApp {
         };
 
         // DOM Elements
-        this.authView = document.getElementById('div-9900');
-        this.appView = document.getElementById('div-4000');
-        this.loginBtn = document.getElementById('login-btn');
-        this.logoutBtn = document.getElementById('logout-btn');
-        this.notificationArea = document.getElementById('div-4060');
-        this.itemFoundModal = document.getElementById('div-4100');
-        this.goldAmountDisplay = document.getElementById('gold-amount');
-        this.silverAmountDisplay = document.getElementById('silver-amount');
-        this.bronzeAmountDisplay = document.getElementById('bronze-amount');
-        this.crystalsAmountDisplay = document.getElementById('crystals-amount');
-        this.modalItemIcon = document.getElementById('modal-item-icon');
-        this.modalItemName = document.getElementById('modal-item-name');
-        this.modalKeepBtn = document.getElementById('modal-keep-btn');
-        this.modalDiscardBtn = document.getElementById('modal-discard-btn');
-        this.deleteConfirmModal = document.getElementById('div-4110');
-        this.deleteConfirmText = document.getElementById('delete-confirm-text');
-        this.deleteConfirmBtn = document.getElementById('delete-confirm-btn');
-        this.deleteCancelBtn = document.getElementById('delete-cancel-btn');
-        this.characterAchievementsDisplay = document.getElementById('div-2110');
+        this.authView = document.getElementById('div-9900'); // Correct
+        this.appView = document.getElementById('div-4000'); // Correct
+        this.loginBtn = document.getElementById('login-btn'); // Correct (after HTML cleanup)
+        this.logoutBtn = document.getElementById('logout-btn'); // Correct
+        this.notificationArea = document.getElementById('div-4060'); // Correct
+        this.itemFoundModal = document.getElementById('div-4100'); // Correct
+        this.goldAmountDisplay = document.getElementById('gold-amount'); // Correct
+        this.silverAmountDisplay = document.getElementById('silver-amount'); // Correct
+        this.bronzeAmountDisplay = document.getElementById('bronze-amount'); // Correct
+        this.crystalsAmountDisplay = document.getElementById('crystals-amount'); // Correct
+        this.modalItemIcon = document.getElementById('modal-item-icon'); // Correct
+        this.modalItemName = document.getElementById('modal-item-name'); // Correct
+        this.modalKeepBtn = document.getElementById('modal-keep-btn'); // Correct
+        this.modalDiscardBtn = document.getElementById('modal-discard-btn'); // Correct
+        this.deleteConfirmModal = document.getElementById('div-4110'); // Correct
+        this.deleteConfirmText = document.getElementById('delete-confirm-text'); // Correct
+        this.deleteConfirmBtn = document.getElementById('delete-confirm-btn'); // Correct
+        this.deleteCancelBtn = document.getElementById('delete-cancel-btn'); // Correct
+        this.characterAchievementsDisplay = document.getElementById('div-2110'); // Correct
 
 
         // State

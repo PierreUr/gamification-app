@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gamification Core</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/character.css">
     <link rel="stylesheet" href="css/gantt.css">
@@ -12,13 +12,7 @@
     <link rel="stylesheet" href="css/ui-default.css">
     <link rel="stylesheet" href="css/pets.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎮</text></svg>">
-    
-    <title>Gamification App</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="css/global.css" rel="stylesheet">
-    <link href="css/gantt.css" rel="stylesheet">
 </head>
-<body class="bg-gray-900 text-gray-200 pl-[3%]">
 <body class="bg-gray-800 text-gray-200 font-sans">
 
     <!-- ID: div-4050 - Globale obere Leiste für Währungsanzeige. Gruppe: Globale UI. -->
@@ -42,17 +36,12 @@
                <span title="Bronze">🥉</span><span id="bronze-amount">0</span>
            </div>
         </div>
-    <!-- Auth View -->
-    <div id="auth-view" class="h-screen flex items-center justify-center">
-        <button id="login-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Anonym Anmelden</button>
-    </div>
 
     <!-- Minimized Break Timer -->
     <!-- ID: div-4040 - Minimierte Pausen-Timer-Anzeige. Gruppe: Globale UI. -->
     <div id="div-4040" class="hidden fixed top-4 left-1/2 -translate-x-1/2 z-[90] bg-gray-700 text-white p-2 rounded-lg shadow-lg border border-gray-500">
         <span>Pause: </span><span id="minimized-break-timer-display" class="font-mono">05:00</span>
     </div>
-
 
     <!-- Auth View -->
     <!-- ID: div-9900 - Container für die Authentifizierungsansicht (pre-login). Gruppe: System. -->
@@ -87,9 +76,6 @@
                         <button id="menu-btn-journal" class="menu-btn bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Journal</button>
                     </div>
                  </div>
-    <div id="app-view" class="hidden">
-        <!-- ... other app elements ... -->
-
                 <!-- ID: div-3000 - Menü-Sektion für "Gamification" (Pets). Gruppe: Gamification. -->
                 <div id="div-3000" class="menu-section">
                     <h3 class="menu-section-header text-lg font-semibold cursor-pointer border-b border-gray-700 pb-1 mb-2">Gamification</h3>
@@ -98,9 +84,6 @@
                         <button id="menu-btn-pets" class="menu-btn bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Pets</button>
                     </div>
                 </div>
-        <!-- MODALS & HIDDEN ELEMENTS -->
-        <div id="modal-container">
-
                 <div id="div-8000" class="menu-section mt-auto pt-4 border-t border-gray-600">
                     <h3 class="menu-section-header text-lg font-semibold cursor-pointer border-b border-gray-700 pb-1 mb-2">System</h3>
                     <div id="div-8100" class="menu-section-content pl-2 flex flex-col gap-2">
@@ -161,12 +144,6 @@
                     <!-- ID: div-4320 - Haupt-Grid-Container für das Gantt-Chart (Sidebar + Timeline). Gruppe: Globale UI. -->
                     <div id="div-4320" class="flex-grow overflow-auto relative grid grid-cols-[150px_1fr] text-sm h-full">
                     </div>
-            <!-- New Quest Modal (Wizard) -->
-            <div id="new-quest-modal" class="modal hidden bg-gray-800 border-gray-700 rounded-lg shadow-lg w-1/2" style="position: absolute; top: 10%; left: 25%;">
-                <div class="modal-header bg-gray-900 p-4 flex justify-between items-center cursor-move rounded-t-lg">
-                    <h2 class="text-xl font-bold">Neue Quest erstellen</h2>
-                    <button class="close-modal-btn text-gray-400 hover:text-white">&times;</button>
-                </div>
                 <!-- ID: div-4400 - Container für die Fokus-Quest-Anzeige. Gruppe: Globale UI. -->
                 <div id="div-4400" class="bg-gray-800 p-6 rounded-lg shadow-lg text-white flex-grow">
                     <div id="focus-quest-container"></div> <!-- Dynamischer Inhalt -->
@@ -181,13 +158,6 @@
                         <div class="flex justify-center items-center gap-2">
                            <h2 id="character-name" class="text-xl font-bold"></h2>
                            <span class="text-sm font-bold text-green-400">(Level <span id="character-level">1</span>)</span>
-                <div class="p-6">
-                    <form id="add-todo-form">
-                        <!-- Step 1: Quest Type -->
-                        <div id="div-3210" class="quest-wizard-step">
-                            <h3 class="text-lg font-semibold mb-4">Schritt 1: Wähle den Quest-Typ</h3>
-                            <!-- Content for Step 1 will be injected by JS -->
-                        </div>
                         <!-- ID: div-2110 - Anzeige für Achievement-Icons. Gruppe: Spieler-Team. -->
                         <div id="div-2110" class="flex justify-center flex-wrap gap-1 mt-1 h-6"></div>
                         <img id="character-image" src="https://placehold.co/128x128/374151/e5e7eb.png?text=Charakter" alt="Character Portrait" class="mx-auto my-2 rounded-lg border-2 border-gray-600">
@@ -269,11 +239,6 @@
                             <div class="flex justify-between items-center text-sm"><span><span>🧠</span> Intelligenz: <span id="stat-int">10</span></span><div class="flex items-center relative gap-1"><button data-stat="int" data-amount="1" class="stat-increase-btn hidden bg-green-500 hover:bg-green-600 px-2 rounded text-xs">+</button><button data-stat="int" data-amount="5" class="stat-increase-btn hidden bg-blue-500 hover:bg-blue-600 px-2 rounded text-xs">+5</button></div></div>
                             <div class="flex justify-between items-center text-sm"><span><span>🏃</span> Ausdauer: <span id="stat-stamina">10</span></span><div class="flex items-center relative gap-1"><button data-stat="stamina" data-amount="1" class="stat-increase-btn hidden bg-green-500 hover:bg-green-600 px-2 rounded text-xs">+</button><button data-stat="stamina" data-amount="5" class="stat-increase-btn hidden bg-blue-500 hover:bg-blue-600 px-2 rounded text-xs">+5</button></div></div>
                             <div class="flex justify-between items-center text-sm"><span><span>🍀</span> Glück: <span id="stat-luck">10</span></span><div class="flex items-center relative gap-1"><button data-stat="luck" data-amount="1" class="stat-increase-btn hidden bg-green-500 hover:bg-green-600 px-2 rounded text-xs">+</button><button data-stat="luck" data-amount="5" class="stat-increase-btn hidden bg-blue-500 hover:bg-blue-600 px-2 rounded text-xs">+5</button></div></div>
-                        <!-- Step 2: Title & Description -->
-                        <div id="div-3220" class="quest-wizard-step hidden">
-                            <h3 class="text-lg font-semibold mb-4">Schritt 2: Titel & Beschreibung</h3>
-                            <!-- Content for Step 2 will be injected by JS -->
-                        </div>
                         <!-- ID: div-2600 - Container für die abgeleiteten Kampfwerte. Gruppe: Spieler-Team. -->
                         <div id="div-2600" class="space-y-2 text-left text-sm flex-1">
                             <h3 class="text-lg font-bold text-center mb-2">Kampfwerte</h3>
@@ -346,14 +311,7 @@
                         <!-- Wrapper für Typ-Auswahl -->
                         <div>
                             <label class="block text-xs font-medium text-gray-400 mb-1">Typ</label>
-                            <select id="todo-task-type" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                <option value="Aufgabe">Aufgabe</option>
-                                <option value="Projektaufgabe">Projektaufgabe</option></select>
-                        <!-- Step 3: Duration -->
-                        <div id="div-3230" class="quest-wizard-step hidden">
-                            <h3 class="text-lg font-semibold mb-4">Schritt 3: Dauer</h3>
-                            <!-- Content for Step 3 will be injected by JS -->
-                        </div>
+                            <select id="todo-task-type" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"><option value="Aufgabe">Aufgabe</option><option value="Projektaufgabe">Projektaufgabe</option></select>
                         <div id="todo-parent-project-container" class="hidden">
                              <label class="block text-xs font-medium text-gray-400 mb-1">Übergeordnetes Projekt</label>
                              <select id="todo-parent-project" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -414,11 +372,6 @@
                                 <!-- Container für freie Dauer-Eingabe -->
                                 <input type="text" id="quest-duration-free-input" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2" placeholder="z.B. 1h 30m, 90m, 2h...">
                             </div>
-                        <!-- Step 4: Deadline & Repetition -->
-                        <div id="div-3240" class="quest-wizard-step hidden">
-                            <h3 class="text-lg font-semibold mb-4">Schritt 4: Deadline & Wiederholung</h3>
-                            <!-- Content for Step 4 will be injected by JS -->
-                        </div>
                         <!-- Container für Quest-Split-Toggle -->
                         <div class="hidden pt-2">
                             <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg bg-indigo-900/50 hover:bg-indigo-900/80">
@@ -566,11 +519,6 @@
                             <div data-slot-type="weapon2" class="equipment-slot w-32 h-32 text-gray-400">Waffe 2</div>
                             <div data-slot-type="tool1" class="equipment-slot slot-medium text-gray-400">Werkzeug 1</div>
                             <div data-slot-type="tool2" class="equipment-slot slot-medium text-gray-400">Werkzeug 2</div>
-                        <!-- Step 5: Details -->
-                        <div id="div-3250" class="quest-wizard-step hidden">
-                            <h3 class="text-lg font-semibold mb-4">Schritt 5: Details</h3>
-                            <!-- Content for Step 5 will be injected by JS -->
-                        </div>
                     </div>
                     <!-- ID: div-2414 - Container für die Details des ausgewählten Items. Gruppe: Spieler-Team. -->
                     <div id="div-2414" class="bg-gray-900 p-4 rounded-lg border border-gray-600 mt-4 flex-grow"></div>
@@ -708,12 +656,6 @@
                         <div id="div-1122">
                             <label class="block text-xs font-medium text-gray-400 mb-1">Priorität</label>
                             <select id="edit-quest-priority" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2"></select>
-                        <!-- Navigation -->
-                        <div id="quest-wizard-nav" class="mt-6 flex justify-between">
-                            <button type="button" id="quest-back-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50" disabled>Zurück</button>
-                            <button type="button" id="quest-next-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50" disabled>Weiter</button>
-                            <button type="submit" id="quest-submit-btn" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded hidden">Quest Hinzufügen</button>
-                        </div>
                         <!-- ID: div-1123 - Wrapper für Dauer-Eingabe. Gruppe: Quest-System. -->
                         <div id="div-1123">
                             <label class="block text-xs font-medium text-gray-400 mb-1">Dauer (Minuten)</label>
@@ -894,8 +836,6 @@
                         <span id="pets-page-info">Seite 1 / 1</span>
                         <button id="pets-page-next" class="px-3 py-1 bg-indigo-600 rounded disabled:bg-gray-500">&gt;</button>
                     </div>
-                    </form>
-                </div>
                 <!-- Right Column: Details/Comparison -->
                 <!-- ID: div-3220 - Rechte Spalte (Details/Vergleich). Gruppe: Gamification. -->
                 <div id="div-3220" class="w-3/5 bg-gray-900 p-4 rounded-lg border border-gray-600 flex flex-col">
@@ -932,8 +872,6 @@
         </div>
     </div>
 
-            <!-- ... other modals ... -->
-
     <!-- Item Found Modal -->
     <!-- ID: div-4100 - Generisches Modal für Item-Drops. Gruppe: Globale UI. -->
     <div id="div-4100" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -967,19 +905,6 @@
             </div>
         </div>
     </div>
-    <!-- Firebase and other scripts -->
-    <script type="module">
-        import { GamificationApp } from './js/main.js';
-        
-        const firebaseConfig = {
-            apiKey: "AIzaSyBJgfy6sgA5HyNhFZDuzAaMCi16UyDtazA",
-            authDomain: "gamification-core.firebaseapp.com",
-            databaseURL: "https://gamification-core.firebaseio.com",
-            projectId: "gamification-core",
-            storageBucket: "gamification-core.appspot.com",
-            messagingSenderId: "187541389621",
-            appId: "1:187541389621:web:7d9acbd0ea15a953188c7c"
-        };
 
     <!-- Delete Confirmation Modal -->
     <!-- ID: div-4110 - Generisches Modal für Löschbestätigungen. Gruppe: Globale UI. -->
@@ -1012,10 +937,6 @@
             <button id="close-break-popup-btn" class="text-sm text-gray-400 hover:text-white">Popup schließen</button>
         </div>
     </div>
-        document.addEventListener('DOMContentLoaded', () => {
-            const app = new GamificationApp(firebaseConfig);
-        });
-    </script>
 
     <!-- Post-Break Continue Modal -->
     <div id="div-4030" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[60]">
