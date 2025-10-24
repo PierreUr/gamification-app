@@ -358,7 +358,7 @@ export class QuestManager {
                 newQuest.ganttScheduledAt = Timestamp.fromDate(startDate);
             } else {
                 let durationInMinutes = 0;
-                // Korrekte Abfrage der Sichtbarkeit der Container
+                // KORREKTUR: Zugriff auf die Instanzvariable des Wizards, nicht auf document.getElementById()
                 const isFreeMode = this.questWizardManager.durationFreeContainer && !this.questWizardManager.durationFreeContainer.classList.contains('hidden');
                 
                 if (isFreeMode) {
