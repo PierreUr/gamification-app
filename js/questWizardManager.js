@@ -182,12 +182,16 @@ export class QuestWizardManager {
         this.addTodoForm.reset();
         this.currentQuestStep = 1;
         this.newQuestDuration = 0;
-        document.getElementById('quest-duration-display').textContent = this._formatDuration(0);
+        const durationDisplayContainer = document.getElementById('div-1133');
+        if (durationDisplayContainer) {
+            const durationDisplaySpan = durationDisplayContainer.querySelector('span');
+            if (durationDisplaySpan) durationDisplaySpan.textContent = this._formatDuration(0);
+        }
         this.todoTagsContainer.querySelector('input').checked = true;
         document.getElementById('todo-scheduled-date').value = '';
-        document.getElementById('priority-container').style.display = 'block';
-        document.getElementById('deadline-container').style.display = 'block';
-        document.getElementById('todo-repeat-options-container').classList.add('hidden');
+        document.getElementById('div-1145').style.display = 'block';
+        document.getElementById('div-1138').querySelector('#deadline-container').style.display = 'block';
+        document.getElementById('div-1141').classList.add('hidden');
         this.todoPriorityInput.value = 'Mittel';
         this.todoStartTimeInput.value = '10:00';
         document.getElementById('project-start-date').valueAsDate = new Date();
