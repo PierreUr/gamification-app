@@ -135,7 +135,7 @@ export class GanttManager {
         this.db = db;
         this.showNotification = showNotificationCallback;
 
-
+        // 1. DOM-ELEMENTE ZUERST INITIALISIEREN (Fix für TypeError)
         this._initializeDOMElements();
 
         // State
@@ -147,7 +147,7 @@ export class GanttManager {
         this.pendingChanges = new Map(); // Sammelt ungespeicherte Änderungen
         this.logQuestPositioning = true; // Default logging state
 
-        // Sub-Managers
+        // Sub-Managers (Können nun auf this.ganttChartContainer zugreifen)
         this.breakManager = new GanttBreakManager(this.db, this.showNotification, () => this.localQuests);
         this.breakManager.ganttManager = this;
         this.uiManager = new GanttUIManager(this);
@@ -156,6 +156,17 @@ export class GanttManager {
         this.sortManager = new GanttSortManager(this); // Initialize the new SortManager
 
     }
+
+    _initializeDOMElements() {
+        // DOM Elements are initialized here, ensuring they are available for sub-managers
+        this.ganttChartContainer = document.getElementById('div-4320');
+        this.ganttViewSelect = document.getElementById('gantt-view-select');
+        this.ganttTimescaleSelect = document.getElementById('gantt-timescale-select');
+        this.ganttHoursViewSelect = document.getElementById('gantt-hours-view-select');
+        this.sortAllBtn = document.getElementById('gantt-sort-all-btn');
+        this.pomodoroToggle = document.getElementById('gantt-pomodoro-toggle');
+    }
+
     setDependencies(questManager) {
         // When dependencies are set, check if we need to show the activation modal on startup
         const settings = questManager?.userProfile?.pomodoroSettings;
@@ -168,19 +179,9 @@ export class GanttManager {
         this.uiManager.setDependencies(questManager);
     }
 
-    _initializeDOMElements() {
-        this.ganttChartContainer = document.getElementById('div-4320');
-        this.ganttViewSelect = document.getElementById('gantt-view-select');
-        this.ganttTimescaleSelect = document.getElementById('gantt-timescale-select');
-        this.ganttHoursViewSelect = document.getElementById('gantt-hours-view-select');
-        this.sortAllBtn = document.getElementById('gantt-sort-all-btn');
-        this.pomodoroToggle = document.getElementById('gantt-pomodoro-toggle');
-    }
-
     _attachEventListeners() {
         this.uiManager.attachEventListeners();
         this._updateHoursViewOptions(); // Now called here
-
         if (this.ganttViewSelect) this.ganttViewSelect.addEventListener('change', () => this.render(this.localQuests));
         if (this.ganttTimescaleSelect) this.ganttTimescaleSelect.addEventListener('change', () => {
             this._updateHoursViewOptions();

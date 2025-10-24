@@ -74,6 +74,22 @@
   - `js/questManager.js`
 - **Grund:** Behebung eines kritischen Konsolenfehlers nach dem Refactoring.
 
+### 2024-05-23
+
+- **Änderung:** Die Layout-Klassen des Haupt-App-Containers (`div-4000`) in `index.html` wurden korrigiert. Die feste Höhenberechnung und die Zentrierung (`mx-auto`) wurden entfernt und durch ein Padding ersetzt.
+- **Backup-ID:** `20240523110000`
+- **Betroffene Dateien:**
+  - `index.html`
+- **Grund:** Behebung eines Layout-Fehlers, bei dem die Anwendung breiter als der Bildschirm war und Elemente nach oben verschoben wurden. Die Korrektur stellt ein flexibles, korrektes Drei-Spalten-Layout wieder her.
+
+### 2024-05-23
+
+- **Änderung:** Die HTML-Struktur in `index.html` wurde korrigiert, indem der überflüssige Wrapper `div-4200` entfernt wurde. Die Layout-Klassen wurden direkt auf die Container für das Gantt-Chart (`div-4300`) und die Fokus-Quest (`div-4400`) angewendet.
+- **Backup-ID:** `20240523100000`
+- **Betroffene Dateien:**
+  - `index.html`
+- **Grund:** Behebung des Layout-Fehlers, bei dem die mittleren Inhaltselemente übereinander gestapelt wurden. Die Wiederherstellung der flachen Layout-Struktur aus der `index - OLD.html` korrigiert die Flexbox-Anordnung.
+
 ### 2024-05-22
 
 - **Änderung:** Die fehlende `flex`-Klasse wurde zum Haupt-App-Container (`div-4000`) in `index.html` hinzugefügt.
