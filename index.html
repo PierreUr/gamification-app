@@ -13,8 +13,13 @@
     <link rel="stylesheet" href="css/pets.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎮</text></svg>">
     
+    <title>Gamification App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="css/global.css" rel="stylesheet">
+    <link href="css/gantt.css" rel="stylesheet">
 </head>
 <body class="bg-gray-900 text-gray-200 pl-[3%]">
+<body class="bg-gray-800 text-gray-200 font-sans">
 
     <!-- ID: div-4050 - Globale obere Leiste für Währungsanzeige. Gruppe: Globale UI. -->
     <div id="div-4050" class="h-16 bg-gray-800 flex items-center justify-end px-6 border-b border-gray-700">
@@ -37,6 +42,9 @@
                <span title="Bronze">🥉</span><span id="bronze-amount">0</span>
            </div>
         </div>
+    <!-- Auth View -->
+    <div id="auth-view" class="h-screen flex items-center justify-center">
+        <button id="login-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Anonym Anmelden</button>
     </div>
 
     <!-- Minimized Break Timer -->
@@ -79,6 +87,8 @@
                         <button id="menu-btn-journal" class="menu-btn bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Journal</button>
                     </div>
                  </div>
+    <div id="app-view" class="hidden">
+        <!-- ... other app elements ... -->
 
                 <!-- ID: div-3000 - Menü-Sektion für "Gamification" (Pets). Gruppe: Gamification. -->
                 <div id="div-3000" class="menu-section">
@@ -88,6 +98,8 @@
                         <button id="menu-btn-pets" class="menu-btn bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Pets</button>
                     </div>
                 </div>
+        <!-- MODALS & HIDDEN ELEMENTS -->
+        <div id="modal-container">
 
                 <div id="div-8000" class="menu-section mt-auto pt-4 border-t border-gray-600">
                     <h3 class="menu-section-header text-lg font-semibold cursor-pointer border-b border-gray-700 pb-1 mb-2">System</h3>
@@ -149,6 +161,11 @@
                     <!-- ID: div-4320 - Haupt-Grid-Container für das Gantt-Chart (Sidebar + Timeline). Gruppe: Globale UI. -->
                     <div id="div-4320" class="flex-grow overflow-auto relative grid grid-cols-[150px_1fr] text-sm h-full">
                     </div>
+            <!-- New Quest Modal (Wizard) -->
+            <div id="new-quest-modal" class="modal hidden bg-gray-800 border-gray-700 rounded-lg shadow-lg w-1/2" style="position: absolute; top: 10%; left: 25%;">
+                <div class="modal-header bg-gray-900 p-4 flex justify-between items-center cursor-move rounded-t-lg">
+                    <h2 class="text-xl font-bold">Neue Quest erstellen</h2>
+                    <button class="close-modal-btn text-gray-400 hover:text-white">&times;</button>
                 </div>
                 <!-- ID: div-4400 - Container für die Fokus-Quest-Anzeige. Gruppe: Globale UI. -->
                 <div id="div-4400" class="bg-gray-800 p-6 rounded-lg shadow-lg text-white flex-grow">
@@ -164,6 +181,12 @@
                         <div class="flex justify-center items-center gap-2">
                            <h2 id="character-name" class="text-xl font-bold"></h2>
                            <span class="text-sm font-bold text-green-400">(Level <span id="character-level">1</span>)</span>
+                <div class="p-6">
+                    <form id="add-todo-form">
+                        <!-- Step 1: Quest Type -->
+                        <div id="div-3210" class="quest-wizard-step">
+                            <h3 class="text-lg font-semibold mb-4">Schritt 1: Wähle den Quest-Typ</h3>
+                            <!-- Content for Step 1 will be injected by JS -->
                         </div>
                         <!-- ID: div-2110 - Anzeige für Achievement-Icons. Gruppe: Spieler-Team. -->
                         <div id="div-2110" class="flex justify-center flex-wrap gap-1 mt-1 h-6"></div>
@@ -246,6 +269,10 @@
                             <div class="flex justify-between items-center text-sm"><span><span>🧠</span> Intelligenz: <span id="stat-int">10</span></span><div class="flex items-center relative gap-1"><button data-stat="int" data-amount="1" class="stat-increase-btn hidden bg-green-500 hover:bg-green-600 px-2 rounded text-xs">+</button><button data-stat="int" data-amount="5" class="stat-increase-btn hidden bg-blue-500 hover:bg-blue-600 px-2 rounded text-xs">+5</button></div></div>
                             <div class="flex justify-between items-center text-sm"><span><span>🏃</span> Ausdauer: <span id="stat-stamina">10</span></span><div class="flex items-center relative gap-1"><button data-stat="stamina" data-amount="1" class="stat-increase-btn hidden bg-green-500 hover:bg-green-600 px-2 rounded text-xs">+</button><button data-stat="stamina" data-amount="5" class="stat-increase-btn hidden bg-blue-500 hover:bg-blue-600 px-2 rounded text-xs">+5</button></div></div>
                             <div class="flex justify-between items-center text-sm"><span><span>🍀</span> Glück: <span id="stat-luck">10</span></span><div class="flex items-center relative gap-1"><button data-stat="luck" data-amount="1" class="stat-increase-btn hidden bg-green-500 hover:bg-green-600 px-2 rounded text-xs">+</button><button data-stat="luck" data-amount="5" class="stat-increase-btn hidden bg-blue-500 hover:bg-blue-600 px-2 rounded text-xs">+5</button></div></div>
+                        <!-- Step 2: Title & Description -->
+                        <div id="div-3220" class="quest-wizard-step hidden">
+                            <h3 class="text-lg font-semibold mb-4">Schritt 2: Titel & Beschreibung</h3>
+                            <!-- Content for Step 2 will be injected by JS -->
                         </div>
                         <!-- ID: div-2600 - Container für die abgeleiteten Kampfwerte. Gruppe: Spieler-Team. -->
                         <div id="div-2600" class="space-y-2 text-left text-sm flex-1">
@@ -313,16 +340,19 @@
             <!-- ID: div-1122 - Inhaltscontainer des "Neue Quest"-Modals. Gruppe: Quest-System. -->
             <div id="div-1122" class="p-4 overflow-y-auto">
                  <form id="add-todo-form" class="space-y-4 text-sm">
-                    <!-- Step 1: Type -->
-                     <!-- ID: div-1123 - Wizard Schritt 1: Typ. Gruppe: Quest-System. -->
-                     <div id="div-1123" class="quest-wizard-step space-y-4">
+                    <!-- Step 1: Type (wird zu div-1123) -->
+                     <div id="div-1123" class="quest-wizard-step space-y-4" data-step-id="1">
                         <h4 class="text-lg font-semibold text-center text-gray-400">Schritt 1: Typ</h4>
-                        <!-- ID: div-1124 - Wrapper für Typ-Auswahl. Gruppe: Quest-System. -->
-                        <div id="div-1124">
+                        <!-- Wrapper für Typ-Auswahl -->
+                        <div>
                             <label class="block text-xs font-medium text-gray-400 mb-1">Typ</label>
                             <select id="todo-task-type" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 <option value="Aufgabe">Aufgabe</option>
                                 <option value="Projektaufgabe">Projektaufgabe</option></select>
+                        <!-- Step 3: Duration -->
+                        <div id="div-3230" class="quest-wizard-step hidden">
+                            <h3 class="text-lg font-semibold mb-4">Schritt 3: Dauer</h3>
+                            <!-- Content for Step 3 will be injected by JS -->
                         </div>
                         <div id="todo-parent-project-container" class="hidden">
                              <label class="block text-xs font-medium text-gray-400 mb-1">Übergeordnetes Projekt</label>
@@ -331,29 +361,27 @@
                              </select>
                          </div>
                     </div>
-                    <!-- Step 2: Basic Info -->
-                    <!-- ID: div-1125 - Wizard Schritt 2: Titel & Beschreibung. Gruppe: Quest-System. -->
-                    <div id="div-1125" class="quest-wizard-step hidden space-y-4">
+                    <!-- Step 2: Basic Info (wird zu div-1125) -->
+                    <div id="div-1125" class="quest-wizard-step hidden space-y-4" data-step-id="2">
                         <h4 class="text-lg font-semibold text-center text-gray-400">Schritt 2: Titel & Beschreibung</h4>
                         <input type="text" id="todo-input" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Quest-Titel..." required>
-                        <!-- ID: div-1126 - Wrapper für Details-Toggle. Gruppe: Quest-System. -->
-                        <div id="div-1126">
+                        <!-- Wrapper für Details-Toggle -->
+                        <div>
                             <button type="button" id="toggle-details-btn" class="text-sm text-indigo-400 hover:text-indigo-300">Beschreibung hinzufügen +</button>
-                            <!-- ID: div-1127 - Container für das Textarea der Beschreibung. Gruppe: Quest-System. -->
-                            <div id="div-1127" class="hidden mt-2">
+                            <!-- Container für das Textarea der Beschreibung -->
+                            <div id="details-toggle-content" class="hidden mt-2">
                                 <textarea id="todo-details" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2 h-24 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Zusätzliche Notizen, Ziele oder Template-Text..."></textarea>
                             </div>
                         </div>
                     </div>
-                    <!-- Step 3: Duration -->
-                     <!-- ID: div-1128 - Wizard Schritt 3: Dauer. Gruppe: Quest-System. -->
-                     <div id="div-1128" class="quest-wizard-step hidden space-y-4">
+                    <!-- Step 3: Duration (wird zu div-1128) -->
+                     <div id="div-1128" class="quest-wizard-step hidden space-y-4" data-step-id="3">
                         <h4 class="text-lg font-semibold text-center text-gray-400">Schritt 3: Dauer (Pflichtfeld)</h4>
-                        <!-- ID: div-1129 - Wrapper für Planungsstil-Auswahl. Gruppe: Quest-System. -->
-                        <div id="div-1129" class="space-y-2">
+                        <!-- Wrapper für Planungsstil-Auswahl -->
+                        <div class="space-y-2">
                             <label class="block text-xs font-medium text-gray-400">Planungsstil</label>
-                            <!-- ID: div-1131 - Radio-Button-Gruppe für Planungsstil. Gruppe: Quest-System. -->
-                            <div id="div-1131" class="flex gap-4 rounded-lg bg-gray-900 p-1">
+                            <!-- Radio-Button-Gruppe für Planungsstil -->
+                            <div class="flex gap-4 rounded-lg bg-gray-900 p-1">
                                 <label class="flex-1 text-center p-2 rounded-md cursor-pointer text-sm transition-colors" for="duration-style-pomodoro">
                                     <input type="radio" name="duration-style" id="duration-style-pomodoro" value="pomodoro" class="sr-only" checked>
                                     <span>Pomodoro</span>
@@ -365,14 +393,14 @@
                             </div>
                         </div>
 
-                        <!-- ID: div-1132 - Container für Dauer-Eingabe (Aufgabe). Gruppe: Quest-System. -->
-                        <div id="div-1132">
+                        <!-- Container für Dauer-Eingabe (Aufgabe) -->
+                        <div>
                             <div class="flex justify-between items-center mb-2">
                                 <label class="block text-xs font-medium text-gray-400">Dauer</label>
                                 <button type="button" id="duration-mode-toggle" class="text-xs text-indigo-400 hover:text-indigo-300">Manuelle Eingabe</button>
                             </div>
-                            <!-- ID: div-1133 - Container für Pomodoro-Dauer-Buttons. Gruppe: Quest-System. -->
-                            <div id="div-1133">
+                            <!-- Container für Pomodoro-Dauer-Buttons -->
+                            <div>
                                 <div class="flex items-center gap-4 p-2 bg-gray-900 rounded-lg"> <!-- Wrapper -->
                                     <span id="quest-duration-display" class="font-mono text-2xl font-bold text-white">0m</span>
                                     <div class="flex-grow flex justify-end gap-2"> <!-- Button-Gruppe -->
@@ -383,29 +411,32 @@
                                 </div>
                             </div>
                             <div id="Bearbeitungsdauer-Frei" class="hidden">
-                                <!-- ID: div-1134 - Container für freie Dauer-Eingabe. Gruppe: Quest-System. -->
+                                <!-- Container für freie Dauer-Eingabe -->
                                 <input type="text" id="quest-duration-free-input" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2" placeholder="z.B. 1h 30m, 90m, 2h...">
                             </div>
+                        <!-- Step 4: Deadline & Repetition -->
+                        <div id="div-3240" class="quest-wizard-step hidden">
+                            <h3 class="text-lg font-semibold mb-4">Schritt 4: Deadline & Wiederholung</h3>
+                            <!-- Content for Step 4 will be injected by JS -->
                         </div>
-                        <!-- ID: div-1135 - Container für Quest-Split-Toggle. Gruppe: Quest-System. -->
-                        <div id="div-1135" class="hidden pt-2">
+                        <!-- Container für Quest-Split-Toggle -->
+                        <div class="hidden pt-2">
                             <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg bg-indigo-900/50 hover:bg-indigo-900/80">
                                 <input type="checkbox" id="quest-split-toggle" class="form-checkbox bg-gray-700 border-gray-600 text-indigo-500 h-5 w-5">
                                 <span>Quest in 45-Minuten-Blöcke aufteilen</span>
                             </label>
                         </div>
-                        <!-- ID: div-1136 - Container für Dauer-Eingabe (Projekt). Gruppe: Quest-System. -->
-                        <div id="div-1136" class="hidden">
+                        <!-- Container für Dauer-Eingabe (Projekt) -->
+                        <div class="hidden">
                             <label class="block text-xs font-medium text-gray-400 mb-1">Dauer (Tage)</label>
                             <input type="number" id="project-duration-days" min="1" value="7" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2">
                         </div>
                     </div>
-                     <!-- Step 4: Deadline & Repeat -->
-                      <!-- ID: div-1137 - Wizard Schritt 4: Deadline & Wiederholung. Gruppe: Quest-System. -->
-                      <div id="div-1137" class="quest-wizard-step hidden space-y-4">
+                     <!-- Step 4: Deadline & Repeat (wird zu div-1137) -->
+                      <div id="div-1137" class="quest-wizard-step hidden space-y-4" data-step-id="4">
                         <h4 class="text-lg font-semibold text-center text-gray-400">Schritt 4: Deadline & Wiederholung</h4>
-                        <!-- ID: div-1138 - Grid-Container für Datums-Eingaben. Gruppe: Quest-System. -->
-                        <div id="div-1138" class="grid grid-cols-2 gap-4">
+                        <!-- Grid-Container für Datums-Eingaben -->
+                        <div class="grid grid-cols-2 gap-4">
                             <div id="deadline-container">
                                 <label class="block text-xs font-medium text-gray-400 mb-1">Deadline</label>
                                 <div class="flex items-center gap-2">
@@ -425,31 +456,30 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- ID: div-1139 - Container für Wiederholungs-Optionen. Gruppe: Quest-System. -->
-                        <div id="div-1139" class="pt-2">
+                        <!-- Container für Wiederholungs-Optionen -->
+                        <div class="pt-2">
                             <label class="flex items-center gap-2">
                                 <input type="checkbox" id="todo-repeat" class="form-checkbox bg-gray-700 border-gray-600 text-indigo-500 focus:ring-indigo-500">
                                 <span>Tägliche Quest? (Wiederholbar)</span>
                             </label>
-                            <!-- ID: div-1141 - Container für detaillierte Wiederholungs-Einstellungen. Gruppe: Quest-System. -->
-                            <div id="div-1141" class="hidden mt-2 space-y-2">
+                            <!-- Container für detaillierte Wiederholungs-Einstellungen -->
+                            <div id="todo-repeat-options-container" class="hidden mt-2 space-y-2">
                                 <p class="text-xs text-yellow-400 p-2 bg-yellow-900 bg-opacity-40 rounded-lg">Tägliche Quests sind immer 'Leicht', geben +30 Bronze und kosten 5 HP, wenn sie verpasst werden.</p>
-                                <!-- ID: div-1142 - Wrapper für Startzeit-Eingabe. Gruppe: Quest-System. -->
-                                <div id="div-1142">
+                                <!-- Wrapper für Startzeit-Eingabe -->
+                                <div>
                                     <label class="block text-xs font-medium text-gray-400 mb-1">Startzeit (Pflichtfeld)</label>
                                     <input type="time" id="todo-start-time" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2">
                                 </div>
-                                <!-- ID: div-1143 - Container für die Auswahl der Wochentage. Gruppe: Quest-System. -->
-                                <div id="div-1143" class="flex flex-wrap gap-x-3 gap-y-1 text-sm text-gray-300"></div>
+                                <!-- Container für die Auswahl der Wochentage -->
+                                <div id="todo-repeat-days-container" class="flex flex-wrap gap-x-3 gap-y-1 text-sm text-gray-300"></div>
                             </div>
                         </div>
                     </div>
-                    <!-- Step 5: Details -->
-                     <!-- ID: div-1144 - Wizard Schritt 5: Details. Gruppe: Quest-System. -->
-                     <div id="div-1144" class="quest-wizard-step hidden space-y-4">
+                    <!-- Step 5: Details (wird zu div-1144) -->
+                     <div id="div-1144" class="quest-wizard-step hidden space-y-4" data-step-id="5">
                          <h4 class="text-lg font-semibold text-center text-gray-400">Schritt 5: Details</h4>
-                         <!-- ID: div-1145 - Wrapper für Prioritäts-Auswahl. Gruppe: Quest-System. -->
-                         <div id="div-1145">
+                         <!-- Wrapper für Prioritäts-Auswahl -->
+                         <div>
                             <label class="block text-xs font-medium text-gray-400 mb-1">Priorität</label>
                             <select id="todo-priority" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 <option value="Leicht">Leicht</option>
@@ -457,11 +487,11 @@
                                 <option value="Schwer">Schwer</option>
                             </select>
                         </div>
-                        <!-- ID: div-1146 - Wrapper für Tag-Auswahl. Gruppe: Quest-System. -->
-                        <div id="div-1146">
+                        <!-- Wrapper für Tag-Auswahl -->
+                        <div>
                              <label class="block text-sm font-medium text-gray-400 mb-2">Tag (1 auswählen)</label>
-                            <!-- ID: div-1147 - Container für die Tag-Buttons. Gruppe: Quest-System. -->
-                            <div id="div-1147" class="flex flex-wrap gap-x-4 gap-y-2 p-2 rounded-lg border border-transparent"></div>
+                            <!-- Container für die Tag-Buttons -->
+                            <div id="todo-tags-container" class="flex flex-wrap gap-x-4 gap-y-2 p-2 rounded-lg border border-transparent"></div>
                         </div>
                     </div>
                 </form>
@@ -536,6 +566,10 @@
                             <div data-slot-type="weapon2" class="equipment-slot w-32 h-32 text-gray-400">Waffe 2</div>
                             <div data-slot-type="tool1" class="equipment-slot slot-medium text-gray-400">Werkzeug 1</div>
                             <div data-slot-type="tool2" class="equipment-slot slot-medium text-gray-400">Werkzeug 2</div>
+                        <!-- Step 5: Details -->
+                        <div id="div-3250" class="quest-wizard-step hidden">
+                            <h3 class="text-lg font-semibold mb-4">Schritt 5: Details</h3>
+                            <!-- Content for Step 5 will be injected by JS -->
                         </div>
                     </div>
                     <!-- ID: div-2414 - Container für die Details des ausgewählten Items. Gruppe: Spieler-Team. -->
@@ -674,6 +708,11 @@
                         <div id="div-1122">
                             <label class="block text-xs font-medium text-gray-400 mb-1">Priorität</label>
                             <select id="edit-quest-priority" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2"></select>
+                        <!-- Navigation -->
+                        <div id="quest-wizard-nav" class="mt-6 flex justify-between">
+                            <button type="button" id="quest-back-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50" disabled>Zurück</button>
+                            <button type="button" id="quest-next-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50" disabled>Weiter</button>
+                            <button type="submit" id="quest-submit-btn" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded hidden">Quest Hinzufügen</button>
                         </div>
                         <!-- ID: div-1123 - Wrapper für Dauer-Eingabe. Gruppe: Quest-System. -->
                         <div id="div-1123">
@@ -855,6 +894,7 @@
                         <span id="pets-page-info">Seite 1 / 1</span>
                         <button id="pets-page-next" class="px-3 py-1 bg-indigo-600 rounded disabled:bg-gray-500">&gt;</button>
                     </div>
+                    </form>
                 </div>
                 <!-- Right Column: Details/Comparison -->
                 <!-- ID: div-3220 - Rechte Spalte (Details/Vergleich). Gruppe: Gamification. -->
@@ -892,6 +932,7 @@
         </div>
     </div>
 
+            <!-- ... other modals ... -->
 
     <!-- Item Found Modal -->
     <!-- ID: div-4100 - Generisches Modal für Item-Drops. Gruppe: Globale UI. -->
@@ -926,6 +967,19 @@
             </div>
         </div>
     </div>
+    <!-- Firebase and other scripts -->
+    <script type="module">
+        import { GamificationApp } from './js/main.js';
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyBJgfy6sgA5HyNhFZDuzAaMCi16UyDtazA",
+            authDomain: "gamification-core.firebaseapp.com",
+            databaseURL: "https://gamification-core.firebaseio.com",
+            projectId: "gamification-core",
+            storageBucket: "gamification-core.appspot.com",
+            messagingSenderId: "187541389621",
+            appId: "1:187541389621:web:7d9acbd0ea15a953188c7c"
+        };
 
     <!-- Delete Confirmation Modal -->
     <!-- ID: div-4110 - Generisches Modal für Löschbestätigungen. Gruppe: Globale UI. -->
@@ -958,6 +1012,10 @@
             <button id="close-break-popup-btn" class="text-sm text-gray-400 hover:text-white">Popup schließen</button>
         </div>
     </div>
+        document.addEventListener('DOMContentLoaded', () => {
+            const app = new GamificationApp(firebaseConfig);
+        });
+    </script>
 
     <!-- Post-Break Continue Modal -->
     <div id="div-4030" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[60]">

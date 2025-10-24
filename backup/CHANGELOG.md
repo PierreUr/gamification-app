@@ -74,6 +74,22 @@
   - `js/questManager.js`
 - **Grund:** Behebung eines kritischen Konsolenfehlers nach dem Refactoring.
 
+### 2024-05-22
+
+- **Änderung:** Die fehlende `import`-Anweisung für den `GanttManager` wurde in `js/main.js` hinzugefügt.
+- **Backup-ID:** `20240522110000`
+- **Betroffene Dateien:**
+  - `js/main.js`
+- **Grund:** Behebung eines `ReferenceError`, der beim Initialisieren der Manager-Klassen auftrat. Die Klasse `GanttManager` wurde verwendet, bevor sie importiert wurde, was zu einem Absturz der Anwendung führte.
+
+### 2024-05-22
+
+- **Änderung:** Die IDs der `div`-Container für die Schritte des Quest-Wizards in `index.html` wurden korrigiert, um mit den in der `Anwendungsarchitektur.json` definierten `div-XXXX`-IDs übereinzustimmen (z.B. `quest-step-1` zu `div-1123`).
+- **Backup-ID:** `20240522101500`
+- **Betroffene Dateien:**
+  - `index.html`
+- **Grund:** Behebung des Konsolenfehlers `TypeError: Cannot read properties of null (reading 'appendChild')`. Der Fehler trat auf, weil die JavaScript-Module auf die dokumentierten, aber im HTML falsch benannten `div`-Container zugreifen wollten.
+
 ### 2024-05-17
 
 - **Änderung:** Das "Neue Quest"- und "Quest bearbeiten"-Fenster wurde um ein optionales Datumsfeld "Bearbeitungstag" (`scheduledAt`) erweitert. Die Logik in `questManager.js` wurde angepasst, um diesen Wert zu speichern und zu laden. Zusätzlich wird die Quest-Dauer nun in der "Meine Quests"-Liste angezeigt.

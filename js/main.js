@@ -17,7 +17,7 @@ import { QuestManager } from './questManager.js';
 import { TimerManager } from './timerManager.js';
 import { AchievementManager } from './achievementManager.js';
 import { JournalManager } from './journalManager.js';
-import { GanttSortManager } from './ganttSortManager.js';
+import { GanttManager } from './ganttManager.js';
 import { formatDuration } from './utils.js';
 
 class GamificationApp {
