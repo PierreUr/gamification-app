@@ -76,6 +76,70 @@
 
 ### 2024-05-22
 
+- **Änderung:** Die fehlende `flex`-Klasse wurde zum Haupt-App-Container (`div-4000`) in `index.html` hinzugefügt.
+- **Backup-ID:** `20240522220000`
+- **Betroffene Dateien:**
+  - `index.html`
+- **Grund:** Behebung des grundlegenden Layout-Fehlers, bei dem die drei Hauptspalten der Anwendung vertikal gestapelt statt horizontal angeordnet wurden.
+
+### 2024-05-22
+
+- **Änderung:** Die Breitenangabe (`w-[60vw]`) und die horizontale Zentrierung (`mx-auto`) wurden vom Gantt-Chart-Container (`div-4300`) in `index.html` entfernt.
+- **Backup-ID:** `20240522210000`
+- **Betroffene Dateien:**
+  - `index.html`
+- **Grund:** Behebung eines Layout-Fehlers, bei dem Elemente im mittleren Bereich übereinander gestapelt wurden. Die feste Breitenangabe eines Flex-Items führte zu Konflikten mit dem übergeordneten Flex-Container.
+
+### 2024-05-22
+
+- **Änderung:** Die Reihenfolge der Elemente in der rechten Charakter-Seitenleiste (`div-2000`) in `index.html` wurde korrigiert, um die gewünschte visuelle Hierarchie (Charakterdetails -> Menü-Buttons -> Statusleisten/Attribute) wiederherzustellen.
+- **Backup-ID:** `20240522200000`
+- **Betroffene Dateien:**
+  - `index.html`
+- **Grund:** Behebung eines Layout-Fehlers, bei dem die Elemente in der rechten Spalte nicht in der vorgesehenen Reihenfolge angeordnet waren.
+
+### 2024-05-22
+
+- **Änderung:** Dem Gantt-Chart-Container (`div-4300`) in `index.html` wurde eine feste Höhe (`h-[350px]`) hinzugefügt.
+- **Backup-ID:** `20240522190000`
+- **Betroffene Dateien:**
+  - `index.html`
+- **Grund:** Behebung eines Layout-Fehlers, bei dem das Gantt-Chart und der Fokus-Quest-Container übereinander gerendert wurden. Die feste Höhe stellt die korrekte vertikale Anordnung im Flex-Container wieder her.
+
+### 2024-05-22
+
+- **Änderung:** Die Breiten- und Flex-Klassen für die Haupt-Layout-Container (`div-1000`, `div-4200`, `div-2000`) in `index.html` wurden wiederhergestellt.
+- **Backup-ID:** `20240522180000`
+- **Betroffene Dateien:**
+  - `index.html`
+- **Grund:** Behebung eines defekten UI-Layouts. Nach vorherigen Aufräumarbeiten fehlten den Hauptspalten die Breitenangaben, wodurch die gesamte Anwendungsansicht kollabierte.
+
+### 2024-05-22
+
+- **Änderung:** Die DOM-Element-Zuweisungen im `GanttManager` wurden vom `_attachEventListeners` in eine neue `_initializeDOMElements`-Methode verschoben und werden nun direkt im Konstruktor aufgerufen.
+- **Backup-ID:** `20240522170000`
+- **Betroffene Dateien:**
+  - `js/ganttManager.js`
+- **Grund:** Behebung einer Race Condition (`TypeError: Cannot read properties of undefined (reading 'parentElement')`). Sub-Manager haben auf DOM-Referenzen zugegriffen, bevor diese initialisiert waren.
+
+### 2024-05-22
+
+- **Änderung:** Die fehlenden `div`-Container (`gantt-sidebar-container`, `gantt-timeline-scroll-container`, `gantt-timeline-container`) für das Gantt-Chart wurden in `index.html` innerhalb von `div-4320` hinzugefügt.
+- **Backup-ID:** `20240522160000`
+- **Betroffene Dateien:**
+  - `index.html`
+- **Grund:** Behebung eines `TypeError: Cannot read properties of null (reading 'appendChild')` im `GanttManager`. Der Fehler trat auf, weil die Ziel-Container für die Gantt-UI-Elemente (Sidebar, Timeline) nicht im DOM vorhanden waren.
+
+### 2024-05-22
+
+- **Änderung:** Die veralteten Inline-`<style>`-Blöcke in `index-1.html` wurden entfernt und durch Links zu den zentralen CSS-Dateien (`global.css`, `character.css`, etc.) ersetzt.
+- **Backup-ID:** `20240522150000`
+- **Betroffene Dateien:**
+  - `index-1.html`
+- **Grund:** Vereinheitlichung des CSS-Styling-Systems in der gesamten Anwendung. Die redundanten und inkonsistenten Inline-Stile wurden entfernt, um die Wartbarkeit zu verbessern und Styling-Konflikte zu vermeiden.
+
+### 2024-05-22
+
 - **Änderung:** Die `index.html` wurde bereinigt, um doppelte `<body>`- und `<head>`-Tags sowie mehrfach vergebene IDs zu entfernen. Die DOM-Abfragen im Konstruktor von `GamificationApp` in `js/main.js` wurden korrigiert, um auf die nun eindeutigen IDs zu verweisen.
 - **Backup-ID:** `20240522140000`
 - **Betroffene Dateien:**

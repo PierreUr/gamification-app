@@ -56,7 +56,7 @@
     </div>
     <!-- App View -->
     <!-- ID: div-4000 - Hauptcontainer der gesamten App nach dem Login. Gruppe: Globale UI. -->
-    <div id="div-4000" class="hidden w-full max-w-screen-2xl flex gap-4 p-4 mt-4">
+    <div id="div-4000" class="hidden w-full max-w-screen-2xl p-4 mt-4 mx-auto flex gap-4">
         <!-- ID: div-1000 - Hauptcontainer für das linke Navigationsmenü. Gruppe: Quest-System. -->
         <div id="div-1000" class="w-48 flex-shrink-0 bg-gray-800 p-4 rounded-lg shadow-lg flex flex-col gap-4">
                  <h2 class="text-xl font-bold text-center border-b border-gray-600 pb-2">Menü</h2>
@@ -98,7 +98,7 @@
             <div id="div-4200" class="flex-grow flex flex-col gap-4">
                 <!-- ID: div-4200 - Hauptinhaltsbereich, der das Gantt-Chart und die Fokus-Quest enthält. Gruppe: Globale UI. -->
                 <!-- ID: div-4300 - Container für das Gantt-Chart. Gruppe: Globale UI. -->
-                <div id="div-4300" class="bg-gray-800 p-4 rounded-lg shadow-lg text-white flex flex-col w-[60vw] mx-auto">
+                <div id="div-4300" class="bg-gray-800 p-4 rounded-lg shadow-lg text-white flex flex-col h-[350px]">
                     <!-- ID: div-4310 - Header-Bereich des Gantt-Charts mit Controls. Gruppe: Globale UI. -->
                     <div id="div-4310" class="flex justify-between items-center mb-2 flex-shrink-0">
                         <!-- ID: div-4311 - Datumsanzeige im Gantt-Header. Gruppe: Globale UI. -->
@@ -142,7 +142,13 @@
                         </div>
                     </div>
                     <!-- ID: div-4320 - Haupt-Grid-Container für das Gantt-Chart (Sidebar + Timeline). Gruppe: Globale UI. -->
-                    <div id="div-4320" class="flex-grow overflow-auto relative grid grid-cols-[150px_1fr] text-sm h-full">
+                    <div id="div-4320" class="flex-grow overflow-hidden relative grid grid-cols-[150px_1fr] text-sm h-full">
+                        <!-- Sidebar for quest titles -->
+                        <div id="gantt-sidebar-container" class="border-r border-gray-700 overflow-y-hidden"></div>
+                        <!-- Scrollable container for the timeline -->
+                        <div id="gantt-timeline-scroll-container" class="overflow-x-auto overflow-y-hidden gantt-multiline-scrollbar">
+                            <div id="gantt-timeline-container" class="relative"></div>
+                        </div>
                     </div>
                 <!-- ID: div-4400 - Container für die Fokus-Quest-Anzeige. Gruppe: Globale UI. -->
                 <div id="div-4400" class="bg-gray-800 p-6 rounded-lg shadow-lg text-white flex-grow">
@@ -164,6 +170,16 @@
                         <!-- ID: div-2120 - Anzeige für aktive Pets. Gruppe: Spieler-Team. -->
                         <div id="div-2120" class="flex justify-center items-center gap-2 mt-2 h-8"></div>
                     </div>
+
+                     <hr class="my-4 border-gray-600">
+
+                     <!-- ID: div-2400 - Container für die Charakter-Aktionsbuttons (Ausrüstung, Inventar etc.). Gruppe: Spieler-Team. -->
+                     <div id="div-2400" class="grid grid-cols-2 gap-2 my-4">
+                         <button id="menu-btn-equipment" class="menu-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-2 rounded-lg transition duration-300 text-sm">Ausrüstung</button>
+                         <button id="menu-btn-inventory" class="menu-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-2 rounded-lg transition duration-300 text-sm">Inventar</button>
+                         <button id="menu-btn-achievements" class="menu-btn bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-2 rounded-lg transition duration-300 text-sm">Erfolge</button>
+                         <button id="open-skills-btn" class="menu-btn bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-2 rounded-lg transition duration-300 text-sm">Skills</button>
+                     </div>
                 
                     <!-- ID: div-2150 - Container für alle Statusbalken. Gruppe: Spieler-Team. -->
                     <div id="div-2150" class="space-y-4">
@@ -221,13 +237,6 @@
                      <hr class="my-4 border-gray-600">
 
                      <!-- ID: div-2400 - Container für die Charakter-Aktionsbuttons (Ausrüstung, Inventar etc.). Gruppe: Spieler-Team. -->
-                     <div id="div-2400" class="grid grid-cols-2 gap-2 my-4">
-                         <button id="menu-btn-equipment" class="menu-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-2 rounded-lg transition duration-300 text-sm">Ausrüstung</button>
-                         <button id="menu-btn-inventory" class="menu-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-2 rounded-lg transition duration-300 text-sm">Inventar</button>
-                         <button id="menu-btn-achievements" class="menu-btn bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-2 rounded-lg transition duration-300 text-sm">Erfolge</button>
-                         <button id="open-skills-btn" class="menu-btn bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-2 rounded-lg transition duration-300 text-sm">Skills</button>
-                     </div>
-                     
                      <!-- ID: div-2450 - Container für Attributs- und Kampfwert-Anzeigen. Gruppe: Spieler-Team. -->
                      <div id="div-2450" class="flex gap-4">
                         <!-- ID: div-2500 - Container für die Basis-Attribute. Gruppe: Spieler-Team. -->

@@ -5,85 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gamification Core</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <style>
-        .modal.hidden, .menu-section-content.hidden, .quest-wizard-step.hidden { display: none; }
-        .modal { resize: both; overflow: auto; border: 2px solid #4a5568; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
-        #character-sidebar .sidebar-content { max-height: calc(100vh - 4rem); overflow-y: auto; }
-        .achievement-icon-selector.selected { outline: 2px solid #f59e0b; background-color: #374151; }
-        .gantt-quest-bar { position: absolute; height: 80%; top: 10%; border-radius: 0.25rem; cursor: grab; display: flex; align-items: center; justify-content: space-between; padding-left: 0.5rem; padding-right: 0.25rem; font-size: 0.75rem; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border: 1px solid rgba(0,0,0,0.3); }
-        .gantt-quest-bar:active { cursor: grabbing; }
-        .gantt-quest-bar.project { height: 10px; top: calc(50% - 5px); background-color: #9ca3af; border-radius: 0; }
-        .quest-conflict { border: 2px solid #ef4444; box-shadow: 0 0 8px #ef4444; }
-        #focus-timer-visual-fill { transition: height 0.5s linear; }
-        .text-shadow { text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); }
-        .wizard-progress-dot { width: 10px; height: 10px; border-radius: 50%; background-color: #4b5567; transition: background-color 0.3s; }
-        .wizard-progress-dot.active { background-color: #6366f1; }
-        @keyframes blink { 50% { border-color: #ef4444; } }
-        #main-content.blinking-border { animation: blink 1.5s linear infinite; border-style: solid; border-width: 2px; border-color: #4b5567; }
-        .gantt-conflict-segment { position: absolute; height: 100%; top: 0; background-image: repeating-linear-gradient(45deg, rgba(239, 68, 68, 0.4), rgba(239, 68, 68, 0.4) 5px, transparent 5px, transparent 10px); pointer-events: none; }
-        .pet-selector.selected { border-color: #f59e0b; box-shadow: 0 0 10px #f59e0b; background-color: #374151; }
-    </style>
-    <style id="skills-styles">
-        .skill-node {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.5rem;
-            border: 2px solid #4b5567;
-            border-radius: 0.5rem;
-            background-color: #374151;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-        .skill-node.selected {
-            border-color: #6366f1;
-            background-color: #4338ca;
-        }
-        .skill-node--locked {
-            opacity: 0.5;
-            background-color: #1f2937;
-        }
-        .skill-node--learnable {
-            border-color: #f59e0b;
-        }
-        .skill-node--learnable:hover {
-            background-color: #4b5567;
-        }
-        .skill-node--unlocked {
-            border-color: #22c55e;
-            background-color: #166534;
-        }
-        .skill-icon {
-            font-size: 1.5rem;
-            width: 2.5rem;
-            height: 2.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 0.375rem;
-            background-color: rgba(0,0,0,0.2);
-        }
-    </style>
-    <style id="equipment-styles">
-        .equipment-slot { background-color: #111827; border: 2px solid #4b5567; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; transition: all 0.2s; cursor: pointer; transform: rotate(45deg); border-radius: 0.375rem; }
-        .equipment-slot:hover { border-color: #9ca3af; background-color: #1f2937; }
-        .equipment-slot.selected { border-color: #f59e0b; box-shadow: 0 0 10px #f59e0b; }
-        .equipment-slot.blocked { background-color: #374151; cursor: not-allowed; }
-        .equipment-slot > * { text-align: center; line-height: 1; transform: rotate(-45deg); }
-        .slot-medium { width: 5rem; height: 5rem; }
-        .slot-small { width: 4.5rem; height: 4.5rem; }
-    </style>
-    <style id="my-quests-styles">
-        .quest-filter-btn.active { background-color: #4f46e5; font-weight: bold; }
-    </style>
-    <style id="inventory-styles">
-        #inventory-list-container .group.selected { background-color: #3b82f6; border: 1px solid #60a5fa; }
-    </style>
-    <style id="pets-styles">
-        #pets-inventory-list .active-pet-glow { box-shadow: 0 0 12px #f59e0b, inset 0 0 8px rgba(245, 158, 11, 0.5); }
-    </style>
-    <style id="journal-styles"></style>
-    <style id="character-stats-styles"></style>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/character.css">
+    <link rel="stylesheet" href="css/gantt.css">
+    <link rel="stylesheet" href="css/quests.css">
+    <link rel="stylesheet" href="css/ui-default.css">
+    <link rel="stylesheet" href="css/pets.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎮</text></svg>">
 </head>
 <body class="bg-gray-900 text-gray-200">
 

@@ -136,6 +136,8 @@ export class GanttManager {
         this.showNotification = showNotificationCallback;
 
 
+        this._initializeDOMElements();
+
         // State
         this.localQuests = [];
         this.pomodoroModeActive = false; // State to control rendering of pomodoro elements
@@ -166,17 +168,19 @@ export class GanttManager {
         this.uiManager.setDependencies(questManager);
     }
 
-    _attachEventListeners() {
-        // DOM Elements are initialized here, when the DOM is ready.
+    _initializeDOMElements() {
         this.ganttChartContainer = document.getElementById('div-4320');
         this.ganttViewSelect = document.getElementById('gantt-view-select');
         this.ganttTimescaleSelect = document.getElementById('gantt-timescale-select');
         this.ganttHoursViewSelect = document.getElementById('gantt-hours-view-select');
         this.sortAllBtn = document.getElementById('gantt-sort-all-btn');
         this.pomodoroToggle = document.getElementById('gantt-pomodoro-toggle');
+    }
 
+    _attachEventListeners() {
         this.uiManager.attachEventListeners();
         this._updateHoursViewOptions(); // Now called here
+
         if (this.ganttViewSelect) this.ganttViewSelect.addEventListener('change', () => this.render(this.localQuests));
         if (this.ganttTimescaleSelect) this.ganttTimescaleSelect.addEventListener('change', () => {
             this._updateHoursViewOptions();
