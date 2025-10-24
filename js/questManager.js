@@ -310,6 +310,11 @@ export class QuestManager {
 
         this.addTodoForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            // Fix: Sicherstellen, dass das Formular nur gesendet wird, wenn isValid true ist.
+            // Der Submit-Button sollte durch den Wizard deaktiviert sein, aber ein Fallback-Check ist nötig.
+            if (this.questWizardManager.questSubmitBtn.disabled) return; 
+
             const text = this.questWizardManager.todoInput.value.trim();
             const selectedTag = this.questWizardManager.todoTagsContainer.querySelector('input:checked')?.value;
             const isDaily = this.questWizardManager.todoRepeatCheckbox.checked;
@@ -353,29 +358,37 @@ export class QuestManager {
                 newQuest.ganttScheduledAt = Timestamp.fromDate(startDate);
             } else {
                 let durationInMinutes = 0;
-                const isFreeMode = !document.getElementById('Bearbeitungsdauer-Frei').classList.contains('hidden');
+                // Korrekte Abfrage der Sichtbarkeit der Container
+                const isFreeMode = this.questWizardManager.durationFreeContainer && !this.questWizardManager.durationFreeContainer.classList.contains('hidden');
+                
                 if (isFreeMode) {
                     durationInMinutes = this.questWizardManager._parseDuration(document.getElementById('quest-duration-free-input').value);
                 } else {
                     durationInMinutes = this.questWizardManager.newQuestDuration;
                 }
 
-                if (durationInMinutes <= 0) {
-                     this.showNotification("Bitte eine Dauer von mehr als 0 Minuten angeben.", "error"); return;
+                // Pflichtprüfung für Dauer, wenn Deadline oder ScheduledAt gesetzt ist.
+                if ((this.questWizardManager.todoDeadlineInput.value || scheduledDateValue) && durationInMinutes <= 0) {
+                     this.showNotification("Dauer ist Pflicht, wenn ein Datum gesetzt ist.", "error"); return;
                 }
                 newQuest.durationMinutes = durationInMinutes;
                 
                 let deadline;
-                // Bugfix: Ensure ganttScheduledAt is set if a deadline exists
+                
                 if (this.questWizardManager.todoDeadlineInput.value) {
+                    // Setzt die Gantt-Zeit basierend auf der Deadline (falls vorhanden)
                     const deadlineDate = new Date(this.questWizardManager.todoDeadlineInput.value);
                     newQuest.ganttScheduledAt = Timestamp.fromDate(deadlineDate);
+                } else if (scheduledAt) {
+                    // Setzt die Gantt-Zeit basierend auf dem geplanten Datum (falls vorhanden)
+                    newQuest.ganttScheduledAt = scheduledAt;
                 }
-
+                
                 if(isDaily) {
                     if (!this.questWizardManager.todoStartTimeInput.value) {
                          this.showNotification("Bitte eine Startzeit für die tägliche Quest angeben.", "error"); return;
                     }
+                    // Tägliche Quests haben nur ein Platzhalter-Deadline-Datum
                     deadline = new Date();
                 } else {
                      if (!this.questWizardManager.todoDeadlineInput.value) {

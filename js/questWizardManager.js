@@ -17,19 +17,28 @@ export class QuestWizardManager {
         this.todoRepeatDaysContainer = document.getElementById('div-1143');
         this.todoStartTimeInput = document.getElementById('todo-start-time');
         this.questWizardSteps = document.querySelectorAll('.quest-wizard-step');
-        this.questWizardProgress = document.getElementById('div-1148'); // Korrigierte ID
+        this.questWizardProgress = document.getElementById('div-1148'); 
         this.questBackBtn = document.getElementById('quest-back-btn');
         this.questNextBtn = document.getElementById('quest-next-btn');
         this.questSubmitBtn = document.getElementById('quest-submit-btn');
         this.toggleDetailsBtn = document.getElementById('toggle-details-btn'); 
-        this.detailsToggleContent = document.getElementById('div-1127'); // Korrigierte ID
+        this.detailsToggleContent = document.getElementById('div-1127'); 
         
-        // NEUE DOM-Elemente zur Fehlerbehebung im Reset()
+        // --- Steuerelemente für Logik (Müssen im Konstruktor zugewiesen sein) ---
         this.priorityContainer = document.getElementById('div-1145');
-        this.deadlineContainer = document.getElementById('deadline-container'); // Innerhalb von div-1138
+        this.deadlineContainer = document.getElementById('deadline-container');
+        this.scheduledDateContainer = document.getElementById('scheduled-date-container');
         this.repeatOptionsContainer = document.getElementById('div-1141');
-        this.durationPomodoroContainer = document.getElementById('div-1133'); // Bearbeitungsdauer-Pomodoro
-        this.durationFreeContainer = document.getElementById('Bearbeitungsdauer-Frei'); // Manuelle Eingabe
+        this.startDateContainer = document.getElementById('start-date-container'); 
+        this.durationContainerTask = document.getElementById('div-1132'); 
+        this.durationContainerProject = document.getElementById('div-1136'); 
+        
+        this.durationPomodoroContainer = document.getElementById('div-1133'); 
+        this.durationFreeContainer = document.getElementById('Bearbeitungsdauer-Frei'); 
+        this.durationModeToggle = document.getElementById('duration-mode-toggle');
+
+        this.durationStylePomodoro = document.getElementById('duration-style-pomodoro');
+        this.durationStyleManual = document.getElementById('duration-style-manual');
 
         // State
         this.currentQuestStep = 1;
@@ -41,6 +50,8 @@ export class QuestWizardManager {
 
         this.addTodoForm.addEventListener('input', () => this._validateCurrentQuestStep());
         this.addTodoForm.addEventListener('change', () => this._validateCurrentQuestStep());
+        
+        this.todoTaskTypeInput.addEventListener('change', () => this._handleTaskTypeChange());
 
         this.questNextBtn.addEventListener('click', () => {
             if (this.currentQuestStep < this.questWizardSteps.length) {
@@ -57,7 +68,6 @@ export class QuestWizardManager {
         });
 
         this.toggleDetailsBtn.addEventListener('click', () => {
-            // Verwende this.detailsToggleContent, um das Element zu manipulieren
             this.detailsToggleContent?.classList.toggle('hidden');
             this.toggleDetailsBtn.textContent = this.detailsToggleContent?.classList.contains('hidden') ? 'Beschreibung hinzufügen +' : 'Beschreibung ausblenden -';
         });
@@ -76,18 +86,24 @@ export class QuestWizardManager {
             this._validateCurrentQuestStep();
         });
 
-        document.getElementById('duration-mode-toggle').addEventListener('click', (e) => {
+        this.durationModeToggle?.addEventListener('click', (e) => {
+            // Logik für Umschaltung innerhalb des MANUELLEN Modus
             this.durationPomodoroContainer?.classList.toggle('hidden');
             this.durationFreeContainer?.classList.toggle('hidden');
             e.target.textContent = this.durationPomodoroContainer?.classList.contains('hidden') ? 'Button-Eingabe' : 'Manuelle Eingabe';
             this._validateCurrentQuestStep();
         });
+        
+        this.durationStylePomodoro?.addEventListener('change', () => this._handleDurationStyleChange(true));
+        this.durationStyleManual?.addEventListener('change', () => this._handleDurationStyleChange(false));
 
         this.todoRepeatCheckbox.addEventListener('change', (e) => {
             const isChecked = e.target.checked;
             this.repeatOptionsContainer?.classList.toggle('hidden', !isChecked);
-            // Korrigierte DOM-Referenzen
+            
+            // Logik: Tägliche Quests blenden Deadline/geplanten Tag/Priorität aus
             this.deadlineContainer.style.display = isChecked ? 'none' : 'block';
+            this.scheduledDateContainer.style.display = isChecked ? 'none' : 'block';
             this.priorityContainer.style.display = isChecked ? 'none' : 'block';
             
             if (isChecked) this.todoPriorityInput.value = 'Leicht';
@@ -100,8 +116,57 @@ export class QuestWizardManager {
 
         document.getElementById('deadline-today-btn')?.addEventListener('click', () => {
             document.getElementById('todo-deadline').valueAsDate = new Date();
-            this._validateCurrentQuestStep(); // Trigger validation manually
+            this._validateCurrentQuestStep();
         });
+    }
+
+    _handleTaskTypeChange() {
+        const type = this.todoTaskTypeInput.value;
+        const isProject = type === 'Projekt';
+        const isTask = type === 'Aufgabe' || type === 'Projektaufgabe';
+
+        // Sichtbarkeit der Dauer-Container steuern (Step 3)
+        this.durationContainerTask?.classList.toggle('hidden', !isTask);
+        this.durationContainerProject?.classList.toggle('hidden', !isProject);
+        
+        this.todoParentProjectContainer?.classList.toggle('hidden', type !== 'Projektaufgabe');
+
+        // Sichtbarkeit der Datums-Container steuern (Step 4)
+        this.deadlineContainer.classList.toggle('hidden', isProject);
+        this.startDateContainer.classList.toggle('hidden', !isProject);
+        this.scheduledDateContainer.classList.toggle('hidden', isProject);
+        this.todoRepeatCheckbox.closest('.pt-2')?.classList.toggle('hidden', isProject);
+
+        // Standardmäßig auf Pomodoro zurückschalten, wenn es keine Projekt ist
+        if (isTask) {
+             // Sicherstellen, dass die Radio-Buttons richtig stehen
+            if(this.durationStylePomodoro) this.durationStylePomodoro.checked = true;
+            this._handleDurationStyleChange(true); 
+            this.todoRepeatCheckbox.checked = false;
+        }
+
+        this._validateCurrentQuestStep();
+    }
+    
+    _handleDurationStyleChange(isPomodoro) {
+        // Logik für die Umschaltung der Dauer-UI (Buttons vs. Freitext)
+        
+        // Prüfen, ob wir im Aufgaben-Modus sind
+        if (this.todoTaskTypeInput.value !== 'Aufgabe' && this.todoTaskTypeInput.value !== 'Projektaufgabe') return;
+        
+        if (isPomodoro) {
+            // POMODORO: Standardmäßig Buttons, kein Toggle sichtbar
+            this.durationPomodoroContainer?.classList.remove('hidden');
+            this.durationFreeContainer?.classList.add('hidden');
+            this.durationModeToggle?.classList.add('hidden');
+        } else {
+            // MANUELL: Startet in Buttons-Ansicht, aber Toggle ist sichtbar
+            this.durationPomodoroContainer?.classList.remove('hidden');
+            this.durationFreeContainer?.classList.add('hidden');
+            this.durationModeToggle?.classList.remove('hidden');
+            this.durationModeToggle.textContent = 'Manuelle Eingabe';
+        }
+        this._validateCurrentQuestStep();
     }
 
     _setupNewQuestForm() {
@@ -128,6 +193,9 @@ export class QuestWizardManager {
             label.append(day);
             this.todoRepeatDaysContainer.appendChild(label);
         });
+        
+        // Initialer Zustand festlegen
+        this._handleTaskTypeChange();
     }
 
     _renderQuestWizardProgress() {
@@ -156,18 +224,58 @@ export class QuestWizardManager {
         let isValid = false;
         const isDaily = this.todoRepeatCheckbox.checked;
         const taskType = this.todoTaskTypeInput.value;
+        
+        // Hilfsfunktion, um die aktuelle Dauer zu ermitteln
+        const getCurrentDuration = () => {
+            const isManualFree = this.durationFreeContainer && !this.durationFreeContainer.classList.contains('hidden');
+            return isManualFree ? this._parseDuration(document.getElementById('quest-duration-free-input').value) : this.newQuestDuration;
+        };
+
         switch (this.currentQuestStep) {
             case 1: isValid = true; break;
             case 2: isValid = this.todoInput.value.trim() !== ''; break;
+            
             case 3:
-                if (taskType === 'Projekt') isValid = document.getElementById('project-duration-days').value > 0;
-                else {
-                    const isFreeMode = this.durationFreeContainer && !this.durationFreeContainer.classList.contains('hidden');
-                    if (isFreeMode) isValid = this._parseDuration(document.getElementById('quest-duration-free-input').value) > 0;
-                    else isValid = this.newQuestDuration > 0;
+                if (taskType === 'Projekt') {
+                    isValid = document.getElementById('project-duration-days').value > 0;
+                } else {
+                    const isPomodoroStyle = this.durationStylePomodoro?.checked;
+
+                    if (isPomodoroStyle) {
+                        // POMODORO MODE: Dauer ist PFLICHT
+                        isValid = getCurrentDuration() > 0;
+                    } else {
+                        // MANUELLER MODE: Dauer ist OPTIONAL (Prüfung folgt in Step 4)
+                        const currentDuration = getCurrentDuration();
+                        isValid = currentDuration >= 0; 
+                    }
                 }
                 break;
-            case 4: isValid = isDaily ? this.todoStartTimeInput.value !== '' : this.todoDeadlineInput.value !== ''; break;
+                
+            case 4: 
+                const currentDuration = getCurrentDuration();
+                const hasScheduledDate = document.getElementById('todo-scheduled-date').value !== '';
+                
+                // 1. Validierung des Datumsfeldes selbst
+                if (isDaily) {
+                    isValid = this.todoStartTimeInput.value !== '';
+                } else if (taskType === 'Projekt') {
+                    isValid = document.getElementById('project-start-date').value !== '';
+                } else {
+                    // Nicht-tägliche Aufgabe/Projektaufgabe: Deadline ist Pflicht
+                    isValid = this.todoDeadlineInput.value !== ''; 
+                }
+                
+                // 2. ZUSÄTZLICHE PRÜFUNG: Dauer ist Pflicht, wenn ein Datum gesetzt ist
+                // Dies gilt für alle Aufgaben/Projektaufgaben (nicht für Projekte) und wenn ein Datum relevant ist.
+                const requiresDuration = (isValid || hasScheduledDate) && taskType !== 'Projekt' && !isDaily;
+
+                if (requiresDuration && currentDuration === 0) {
+                    isValid = false; 
+                }
+                
+                break;
+                
             case 5: isValid = !!this.todoTagsContainer.querySelector('input:checked'); break;
             default: isValid = false;
         }
@@ -176,7 +284,6 @@ export class QuestWizardManager {
 
     _showQuestStep(step) {
         this.questWizardSteps.forEach(s => s.classList.add('hidden'));
-        // Die Quest Step IDs in index.html sind jetzt div-1123, div-1125, div-1128, div-1137, div-1144
         const stepIdMap = { 1: 'div-1123', 2: 'div-1125', 3: 'div-1128', 4: 'div-1137', 5: 'div-1144' };
         document.getElementById(stepIdMap[step])?.classList.remove('hidden');
         
@@ -199,7 +306,6 @@ export class QuestWizardManager {
         this.currentQuestStep = 1;
         this.newQuestDuration = 0;
         
-        // KORREKTUREN FÜR DOM-Zugriffe (Sicherheits-Checks hinzugefügt)
         const durationDisplaySpan = document.getElementById('quest-duration-display');
         if (durationDisplaySpan) durationDisplaySpan.textContent = this._formatDuration(0);
 
@@ -207,20 +313,30 @@ export class QuestWizardManager {
 
         const scheduledDateInput = document.getElementById('todo-scheduled-date');
         if (scheduledDateInput) scheduledDateInput.value = '';
+        
+        // Initialer Zustand: Aufgabe, Pomodoro
+        this.todoTaskTypeInput.value = 'Aufgabe';
+        this._handleTaskTypeChange(); // Setzt alle UI-Elemente basierend auf 'Aufgabe'
 
-        // Verwende this.Elemente für bessere Lesbarkeit und Null-Checks
-        this.priorityContainer?.style.removeProperty('display');
+        // Stelle sicher, dass die Pomodoro-Radio-Buttons aktiv sind, bevor _handleDurationStyleChange aufgerufen wird
+        if(this.durationStylePomodoro) this.durationStylePomodoro.checked = true;
+        this._handleDurationStyleChange(true); 
+
+        // Setze Sichtbarkeit von Datumsfeldern zurück
         this.deadlineContainer?.style.removeProperty('display');
+        this.scheduledDateContainer?.style.removeProperty('display');
+        this.startDateContainer?.classList.add('hidden');
+        this.todoRepeatCheckbox.closest('.pt-2')?.classList.remove('hidden'); 
+        this.todoRepeatCheckbox.checked = false;
         this.repeatOptionsContainer?.classList.add('hidden');
         
+        this.priorityContainer?.style.removeProperty('display');
         this.todoPriorityInput.value = 'Mittel';
         this.todoStartTimeInput.value = '10:00';
         
         const projectStartDate = document.getElementById('project-start-date');
         if (projectStartDate) projectStartDate.valueAsDate = new Date();
 
-        this.durationPomodoroContainer?.classList.remove('hidden');
-        this.durationFreeContainer?.classList.add('hidden');
         
         const durationModeToggle = document.getElementById('duration-mode-toggle');
         if (durationModeToggle) durationModeToggle.textContent = 'Manuelle Eingabe';
