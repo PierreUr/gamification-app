@@ -7,11 +7,11 @@ export class AchievementManager {
         this.achievementDatabase = config.achievementDatabase;
 
         // DOM Elements
-        this.modal = document.getElementById('div-3330'); // This was already correct, but I'll ensure it stays.
+        this.modal = document.getElementById('div-2430');
         this.openBtn = document.getElementById('menu-btn-achievements');
         this.closeBtn = this.modal.querySelector('.modal-close-btn');
-        this.listContainer = document.getElementById('achievements-list');
-        this.iconsSelectionContainer = document.getElementById('achievement-icons-selection');
+        this.listContainer = document.getElementById('div-2433');
+        this.iconsSelectionContainer = document.getElementById('div-2435');
 
         // State
         this.currentUser = null;

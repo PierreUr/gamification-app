@@ -112,6 +112,23 @@ Dieser Workflow ist bei **jeder** von dir durchgeführten Code-Änderung (Fehler
 
 ---
 
+## 4.1. Workflow 2.1: Schnelle Fehlerbehebung via `!CE` (Console Errors)
+
+Dieser Workflow ist eine Abkürzung für die direkte Behebung von Laufzeitfehlern.
+
+**Ziel:** Einen Fehler, der in der Konsole aufgetreten ist, schnell und direkt zu beheben.
+
+**Schritte:**
+
+1.  **Auslöser:** Der Benutzer sendet die Anweisung `!CE` oder eine sinngemäße Variante.
+2.  **Fehlerquelle identifizieren:** Lies die Datei `consolen Errors.md`.
+3.  **Analyse:** Interpretiere die Zeilen `Error attaching listeners for...` und die `at...`-Stack-Traces, um die exakte JavaScript-Datei und die Code-Zeile zu finden, die den Fehler verursacht.
+4.  **Kontext prüfen:** Analysiere den fehlerhaften Code im Kontext der umliegenden Logik und der `index.html`, um die Ursache (z.B. veraltete `div-XXXX`-ID) zu verstehen.
+5.  **Korrektur durchführen:** Implementiere den notwendigen Fix.
+6.  **Standard-Workflow befolgen:** Fahre mit dem normalen `Workflow 1` fort (Backup, Changelog).
+
+---
+
 ## 5. Zusammenfassung der kritischen Regeln
 1.  **IMMER** vor einer Änderung ein Backup der betroffenen Dateien im `.backup/`-Ordner erstellen.
 2.  **IMMER** vor einer Änderung die letzten 3 Einträge im `CHANGELOG.md` lesen.

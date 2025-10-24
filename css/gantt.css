@@ -149,7 +149,6 @@
     z-index: 101; /* Above tooltips */
     box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     max-height: 80vh; /* Prevent it from being too tall */
-    overflow-y: auto; /* Add scroll if content overflows */
 }
 .gantt-popover-close {
     background: none;

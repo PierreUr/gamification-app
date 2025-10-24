@@ -10,11 +10,30 @@ export class CharacterSheetManager {
         this.intToManaMultiplier = 8;
         this.staminaToValueMultiplier = 10;
         this.baseMana = 20;
-
+        
+        // DOM-Elemente direkt im Konstruktor initialisieren
+        this.characterNameDisplay = document.getElementById('character-name');
+        this.characterLevelDisplay = document.getElementById('character-level');
+        this.hpBarFill = document.getElementById('hp-bar-fill');
+        this.hpBarText = document.getElementById('hp-bar-text');
+        this.manaBarFill = document.getElementById('mana-bar-fill');
+        this.manaBarText = document.getElementById('mana-bar-text');
+        this.staminaBarFill = document.getElementById('stamina-bar-fill');
+        this.staminaBarText = document.getElementById('stamina-bar-text');
+        this.xpBarProgress = document.getElementById('xp-bar-progress');
+        this.xpCurrentInLevel = document.getElementById('xp-current-in-level');
+        this.xpNeededForLevel = document.getElementById('xp-needed-for-level');
+        this.statPointsContainer = document.getElementById('div-2700');
+        this.statPointsDisplayFooter = document.getElementById('stat-points-display-footer');
+        this.statsContainer = document.getElementById('div-2500');
+        this.derivedStatPhysDmg = document.getElementById('derived-stat-phys-dmg');
+        this.derivedStatDef = document.getElementById('derived-stat-def');
+        this.derivedStatDodge = document.getElementById('derived-stat-dodge');
+        this.derivedStatEleDmg = document.getElementById('derived-stat-ele-dmg');
     }
 
-    update(userProfile) {
-        if (!userProfile) return;
+    updateUserData(user, userProfile) {
+        if (!userProfile || !this.characterNameDisplay) return; // Guard clause
 
         // 1. Berechne die kombinierten Stats von Charakter und Ausrüstung.
         const totalCharacterStats = { ...(userProfile.stats || {}) };
@@ -101,26 +120,6 @@ export class CharacterSheetManager {
     }
 
     _attachEventListeners() {
-        // DOM-Elemente
-        this.characterNameDisplay = document.getElementById('character-name');
-        this.characterLevelDisplay = document.getElementById('character-level');
-        this.hpBarFill = document.getElementById('hp-bar-fill');
-        this.hpBarText = document.getElementById('hp-bar-text');
-        this.manaBarFill = document.getElementById('mana-bar-fill');
-        this.manaBarText = document.getElementById('mana-bar-text');
-        this.staminaBarFill = document.getElementById('stamina-bar-fill');
-        this.staminaBarText = document.getElementById('stamina-bar-text');
-        this.xpBarProgress = document.getElementById('xp-bar-progress');
-        this.xpCurrentInLevel = document.getElementById('xp-current-in-level');
-        this.xpNeededForLevel = document.getElementById('xp-needed-for-level');
-        this.statPointsContainer = document.getElementById('stat-points-container');
-        this.statPointsDisplayFooter = document.getElementById('stat-points-display-footer');
-        this.statsContainer = document.getElementById('div-3400');
-        this.derivedStatPhysDmg = document.getElementById('derived-stat-phys-dmg');
-        this.derivedStatDef = document.getElementById('derived-stat-def');
-        this.derivedStatDodge = document.getElementById('derived-stat-dodge');
-        this.derivedStatEleDmg = document.getElementById('derived-stat-ele-dmg');
-
         this.statsContainer.addEventListener('click', async (event) => {
             const target = event.target.closest('.stat-increase-btn');
             const userId = this.auth.currentUser?.uid;

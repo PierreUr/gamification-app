@@ -8,12 +8,12 @@ export class InventoryManager {
         this.rarityTiers = config.rarityTiers;
 
         // DOM Elements
-        this.equipmentModal = document.getElementById('div-3310');
-        this.inventoryModal = document.getElementById('div-3320');
-        this.equipmentSlotsContainer = document.getElementById('content-3310');
-        this.equipmentItemDetails = document.getElementById('equipment-item-details');
-        this.inventoryListContainer = document.getElementById('inventory-list-container');
-        this.inventoryItemDetails = document.getElementById('inventory-item-details');
+        this.equipmentModal = document.getElementById('div-2410');
+        this.inventoryModal = document.getElementById('div-2420');
+        this.equipmentSlotsContainer = document.getElementById('div-2411');
+        this.equipmentItemDetails = document.getElementById('div-2414');
+        this.inventoryListContainer = document.getElementById('div-2421');
+        this.inventoryItemDetails = document.getElementById('div-2425');
         this.hpPotionCountEl = document.getElementById('hp-potion-count');
         this.manaPotionCountEl = document.getElementById('mana-potion-count');
         this.unequipAllBtn = document.getElementById('unequip-all-btn');
@@ -24,7 +24,7 @@ export class InventoryManager {
         this.inventoryPagePrev = document.getElementById('inventory-page-prev');
         this.inventoryPageNext = document.getElementById('inventory-page-next');
         this.inventoryPageInfo = document.getElementById('inventory-page-info');
-        this.inventorySortButtons = document.getElementById('inventory-sort-buttons');
+        this.inventorySortButtons = document.getElementById('div-2423');
 
         // Zustand
         this.currentUser = null;

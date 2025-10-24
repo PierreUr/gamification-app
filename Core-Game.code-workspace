@@ -7,5 +7,7 @@
 			"path": "C:/Temp/Main/ToDos"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "APP"
+	}
 }

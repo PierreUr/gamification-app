@@ -5,14 +5,14 @@ import { QuestWizardManager } from './questWizardManager.js';
 import { formatDuration } from './utils.js';
 
 export class QuestManager {
-    constructor(db, showNotificationCallback, handleXpGainCallback, processQuestDropCallback, showDeleteConfirmCallback) {
+    constructor(db, showNotificationCallback, handleXpGainCallback, processQuestDropCallback, showDeleteConfirmCallback, ganttManager) {
         this.db = db;
         this.showNotification = showNotificationCallback;
         this.handleXpGain = handleXpGainCallback; // Callback for core game logic
         this.processQuestDrop = processQuestDropCallback;
         this.showDeleteConfirm = showDeleteConfirmCallback;
-        this.timerManager = null; // Will be set by main.js
-        this.ganttManager = new GanttManager(db, showNotificationCallback);
+        this.timerManager = null;
+        this.ganttManager = ganttManager;
         this.questListManager = new QuestListManager(db, showNotificationCallback, showDeleteConfirmCallback, this._handleQuestCompletion.bind(this), this._handleFocusRequest.bind(this), this._getXpForPriority.bind(this), this._openEditModal.bind(this));
         this.questWizardManager = new QuestWizardManager(['Arbeit', 'Privat', 'Lernen', 'Haushalt', 'Sport'], ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']);
 
@@ -250,9 +250,9 @@ export class QuestManager {
         this.myQuestsModal = document.getElementById('div-1110');
         this.newQuestModal = document.getElementById('div-1120');
         this.editQuestModal = document.getElementById('div-1112');
-        this.todoListContainer = document.getElementById('todo-list');
+        this.todoListContainer = document.getElementById('div-1115');
         this.addTodoForm = document.getElementById('add-todo-form'); // This ID is correct and unique
-        this.focusQuestContainer = document.getElementById('focus-quest-container');
+        this.focusQuestContainer = document.getElementById('div-4400');
 
         this.questListManager._attachEventListeners();
         this.questWizardManager._attachEventListeners();
@@ -263,14 +263,6 @@ export class QuestManager {
         document.addEventListener('questTimerUpdate', (e) => {
             const { questId, timeLeft, totalDuration } = e.detail;
             this._updateFocusTimerDisplay(questId, timeLeft, totalDuration);
-        });
-
-        // Listen for timer completion
-        document.addEventListener('questTimerComplete', (e) => {
-            const { questId } = e.detail;
-            if (questId === this.focusedQuestId) {
-                this.showNotification("Arbeitszeit ist um! Zeit für eine Pause.", "success");
-            }
         });
 
         if (newQuestBtn) {

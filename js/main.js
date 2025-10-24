@@ -75,12 +75,12 @@ class GamificationApp {
         };
 
         // DOM Elements
-        this.authView = document.getElementById('auth-view');
-        this.appView = document.getElementById('app-view');
+        this.authView = document.getElementById('div-9900');
+        this.appView = document.getElementById('div-4000');
         this.loginBtn = document.getElementById('login-btn');
         this.logoutBtn = document.getElementById('logout-btn');
-        this.notificationArea = document.getElementById('notification-area');
-        this.itemFoundModal = document.getElementById('div-4000');
+        this.notificationArea = document.getElementById('div-4060');
+        this.itemFoundModal = document.getElementById('div-4100');
         this.goldAmountDisplay = document.getElementById('gold-amount');
         this.silverAmountDisplay = document.getElementById('silver-amount');
         this.bronzeAmountDisplay = document.getElementById('bronze-amount');
@@ -89,11 +89,11 @@ class GamificationApp {
         this.modalItemName = document.getElementById('modal-item-name');
         this.modalKeepBtn = document.getElementById('modal-keep-btn');
         this.modalDiscardBtn = document.getElementById('modal-discard-btn');
-        this.deleteConfirmModal = document.getElementById('div-4010');
+        this.deleteConfirmModal = document.getElementById('div-4110');
         this.deleteConfirmText = document.getElementById('delete-confirm-text');
         this.deleteConfirmBtn = document.getElementById('delete-confirm-btn');
         this.deleteCancelBtn = document.getElementById('delete-cancel-btn');
-        this.characterAchievementsDisplay = document.getElementById('character-achievements-display');
+        this.characterAchievementsDisplay = document.getElementById('div-2110');
 
 
         // State
@@ -123,16 +123,16 @@ class GamificationApp {
         this.characterSheetManager = new CharacterSheetManager(this.db, this.auth);
         this.inventoryManager = new InventoryManager(this.db, this.showNotification.bind(this), this.config, this.showDeleteConfirm.bind(this));
         this.timerManager = new TimerManager(this.showNotification.bind(this), this.handleTimerCompletion.bind(this), this.modalManager);
+        this.ganttManager = new GanttManager(this.db, this.showNotification.bind(this));
         
-        // GanttManager needs to be initialized before QuestManager if QuestManager depends on it.
-        // Let's adjust the structure slightly for clarity.
-        this.questManager = new QuestManager(this.db, this.showNotification.bind(this), this.handleXpGain.bind(this), this.processQuestDrop.bind(this), this.showDeleteConfirm.bind(this));
+        this.questManager = new QuestManager(this.db, this.showNotification.bind(this), this.handleXpGain.bind(this), this.processQuestDrop.bind(this), this.showDeleteConfirm.bind(this), this.ganttManager);
         this.questManager.setTimerManager(this.timerManager);
-        this.questManager.ganttManager.setDependencies(this.questManager);
-        this.testToolsManager = new TestToolsManager(this.db, this.auth, this.showNotification.bind(this), this.config, this.handleXpGain.bind(this), this.questManager, this.timerManager);
+        this.ganttManager.setDependencies(this.questManager);
+
+        this.testToolsManager = new TestToolsManager(this.db, this.auth, this.showNotification.bind(this), this.config, this.handleXpGain.bind(this), this.questManager, this.timerManager, this.ganttManager);
         this.journalManager = new JournalManager(this.db);
         this.achievementManager = new AchievementManager(this.db, this.showNotification.bind(this), this.config);
-        this.managers = [this.modalManager, this.questManager, this.characterSheetManager, this.inventoryManager, this.petManager, this.skillTreeManager, this.testToolsManager, this.timerManager, this.achievementManager, this.journalManager];
+        this.managers = [this.modalManager, this.questManager, this.characterSheetManager, this.inventoryManager, this.petManager, this.skillTreeManager, this.testToolsManager, this.timerManager, this.achievementManager, this.journalManager, this.ganttManager];
 
         this._attachAllEventListeners();
         this.managersInitialized = true;

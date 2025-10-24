@@ -1,12 +1,13 @@
 import { doc, updateDoc, increment, getDoc, runTransaction, addDoc, collection, serverTimestamp, Timestamp, writeBatch } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
 
 export class TestToolsManager {
-    constructor(db, auth, showNotificationCallback, config, handleXpGainCallback, questManager, timerManager) {
+    constructor(db, auth, showNotificationCallback, config, handleXpGainCallback, questManager, timerManager, ganttManager) {
         this.db = db;
         this.auth = auth;
         this.showNotification = showNotificationCallback;
         this.achievementDatabase = config.achievementDatabase;
         this.timerManager = timerManager;
+        this.ganttManager = ganttManager;
         this.handleXpGain = handleXpGainCallback;
         this.questManager = questManager;
         
@@ -62,7 +63,7 @@ export class TestToolsManager {
     }
 
     _attachEventListeners() {
-        this.modal = document.getElementById('div-8110');
+        this.modal = document.getElementById('div-5100');
         this.openBtn = document.getElementById('menu-btn-test-tools');
         this.closeBtn = this.modal.querySelector('.modal-close-btn');
 
@@ -88,10 +89,10 @@ export class TestToolsManager {
                 const isHp = button.id === 'test-add-hp-btn';
                 const type = isHp ? 'hp' : 'mana';
                 await updateDoc(doc(this.db, 'users', userId), { [`${type}.current`]: increment(50) });
-                this.showNotification(`+50 ${isHp ? 'HP' : 'Mana'} hinzugefügt (Test).`);
+                this.showNotification(`+50 ${isHp ? 'HP' : 'Mana'} hinzugefügt.`);
             } else if (button.id === 'test-add-break-bars-btn') {
                 console.log("Test-Button 'Pausenbalken hinzufügen' wurde geklickt.");
-                if (!this.questManager?.ganttManager) {
+                if (!this.ganttManager) {
                     console.error("GanttManager konnte im TestToolsManager nicht gefunden werden.");
                     return;
                 }
@@ -102,73 +103,30 @@ export class TestToolsManager {
                     longBreak: 30,
                     longBreakInterval: 4
                 };
-                this.questManager.ganttManager.renderPomodoroGrid(testSettings);
+                this.ganttManager.renderPomodoroGrid(testSettings);
                 this.showNotification('Pomodoro-Testraster wurde generiert und gerendert.', 'success');
             } else if (button.id === 'test-db-query-btn') {
                 const path = this.dbPathSelect.value;
                 if (path) this._queryDbValue(path);
             } else if (button.id === 'test-delete-breaks-btn') {
-                const ganttManager = this.questManager.ganttManager;
-                if (!ganttManager) return;
-                ganttManager.pomodoroBreaks = [];
-                ganttManager.pomodoroSchedule = [];
-                ganttManager.render(ganttManager.localQuests);
+                if (!this.ganttManager) return;
+                this.ganttManager.pomodoroBreaks = [];
+                this.ganttManager.pomodoroSchedule = [];
+                this.ganttManager.render(this.ganttManager.localQuests);
                 this.showNotification("Alle Test-Pausen und Zeitpläne wurden entfernt.", "info");
             } else if (button.id === 'test-date-plus-one-day-btn' || button.id === 'test-date-today-btn') {
-                const ganttManager = this.questManager.ganttManager;
-                if (!ganttManager) return;
-
+                if (!this.ganttManager) return;
                 const isToday = button.id === 'test-date-today-btn';
-                const newDate = new Date(ganttManager.currentGanttDate);
+                const newDate = new Date(this.ganttManager.currentGanttDate);
                 if (isToday) {
-                    ganttManager.currentGanttDate = new Date();
+                    this.ganttManager.currentGanttDate = new Date();
                 } else {
                     newDate.setDate(newDate.getDate() + 1);
-                    ganttManager.currentGanttDate = newDate;
+                    this.ganttManager.currentGanttDate = newDate;
                 }
-                ganttManager.render(ganttManager.localQuests);
-                this.showNotification(`Gantt-Datum auf ${ganttManager.currentGanttDate.toLocaleDateString()} gesetzt.`, "success");
+                this.ganttManager.render(this.ganttManager.localQuests);
+                this.showNotification(`Gantt-Datum auf ${this.ganttManager.currentGanttDate.toLocaleDateString()} gesetzt.`, "success");
             }
-        });
-
-        document.getElementById('test-add-today-quests-btn').addEventListener('click', async () => {
-            if (!this.currentUser) return;
-            const count = 5;
-            const userId = this.currentUser.uid;
-            
-            this.showNotification(`Füge ${count} Quests für heute hinzu...`);
-
-            const now = new Date();
-            const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 8, 0, 0); // Start at 8 AM
-            let nextAvailableTime = startOfDay.getTime();
-            const questsToAdd = [];
-            const durations = [90, 130, 45, 25, 60]; // Define specific durations for the 5 quests
-
-            for (let i = 0; i < count; i++) {
-                const questDuration = durations[i];
-                questsToAdd.push({
-                    userId: userId,
-                    text: `Test Quest Heute #${i + 1}`,
-                    priority: 'Mittel',
-                    taskType: 'Aufgabe',
-                    tags: ['Arbeit'],
-                    durationMinutes: questDuration,
-                    ganttScheduledAt: new Date(nextAvailableTime).toISOString(),
-                    deadline: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).toISOString()
-                });
-                nextAvailableTime += questDuration * 60 * 1000;
-            }
-
-            const batch = writeBatch(this.db);
-            questsToAdd.forEach(questData => {
-                const newQuestRef = doc(collection(this.db, 'todos'));
-                // Convert ISO strings back to Timestamps for Firestore
-                questData.ganttScheduledAt = Timestamp.fromDate(new Date(questData.ganttScheduledAt));
-                questData.deadline = Timestamp.fromDate(new Date(questData.deadline));
-                questData.createdAt = serverTimestamp();
-                batch.set(newQuestRef, questData);
-            });
-            await batch.commit();
         });
 
         document.getElementById('test-add-today-quests-btn').addEventListener('click', async () => {

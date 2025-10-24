@@ -16,32 +16,41 @@
 </head>
 <body class="bg-gray-900 text-gray-200 pl-[3%]">
 
-    <div id="div-9000" class="h-16 bg-gray-800 flex items-center justify-end px-6 border-b border-gray-700">
-        <div id="global-currency-display" class="flex gap-4 text-sm">
-           <div class="flex items-center gap-1 p-2 bg-gray-900 rounded-lg border border-gray-600">
+    <!-- ID: div-4050 - Globale obere Leiste für Währungsanzeige. Gruppe: Globale UI. -->
+    <div id="div-4050" class="h-16 bg-gray-800 flex items-center justify-end px-6 border-b border-gray-700">
+        <!-- ID: div-4051 - Container für alle Währungsanzeigen. Gruppe: Globale UI. -->
+        <div id="div-4051" class="flex gap-4 text-sm">
+           <!-- ID: div-4052 - Wrapper für Kristall-Anzeige. Gruppe: Globale UI. -->
+           <div id="div-4052" class="flex items-center gap-1 p-2 bg-gray-900 rounded-lg border border-gray-600">
                <span title="Kristalle">💎</span><span id="crystals-amount">0</span>
            </div>
-           <div class="flex items-center gap-1 p-2 bg-gray-900 rounded-lg border border-gray-600">
+           <!-- ID: div-4053 - Wrapper für Gold-Anzeige. Gruppe: Globale UI. -->
+           <div id="div-4053" class="flex items-center gap-1 p-2 bg-gray-900 rounded-lg border border-gray-600">
                <span title="Gold">💰</span><span id="gold-amount">0</span>
            </div>
-           <div class="flex items-center gap-1 p-2 bg-gray-900 rounded-lg border border-gray-600">
+           <!-- ID: div-4054 - Wrapper für Silber-Anzeige. Gruppe: Globale UI. -->
+           <div id="div-4054" class="flex items-center gap-1 p-2 bg-gray-900 rounded-lg border border-gray-600">
                <span title="Silber">🪙</span><span id="silver-amount">0</span>
            </div>
-           <div class="flex items-center gap-1 p-2 bg-gray-900 rounded-lg border border-gray-600">
+           <!-- ID: div-4055 - Wrapper für Bronze-Anzeige. Gruppe: Globale UI. -->
+           <div id="div-4055" class="flex items-center gap-1 p-2 bg-gray-900 rounded-lg border border-gray-600">
                <span title="Bronze">🥉</span><span id="bronze-amount">0</span>
            </div>
         </div>
     </div>
 
     <!-- Minimized Break Timer -->
-    <div id="minimized-break-timer" class="hidden fixed top-4 left-1/2 -translate-x-1/2 z-[90] bg-gray-700 text-white p-2 rounded-lg shadow-lg border border-gray-500">
+    <!-- ID: div-4040 - Minimierte Pausen-Timer-Anzeige. Gruppe: Globale UI. -->
+    <div id="div-4040" class="hidden fixed top-4 left-1/2 -translate-x-1/2 z-[90] bg-gray-700 text-white p-2 rounded-lg shadow-lg border border-gray-500">
         <span>Pause: </span><span id="minimized-break-timer-display" class="font-mono">05:00</span>
     </div>
 
 
     <!-- Auth View -->
-    <div id="auth-view" class="min-h-screen flex items-center justify-center p-4">
-        <div class="bg-gray-800 p-8 rounded-lg shadow-lg text-center max-w-md mx-auto">
+    <!-- ID: div-9900 - Container für die Authentifizierungsansicht (pre-login). Gruppe: System. -->
+    <div id="div-9900" class="min-h-screen flex items-center justify-center p-4">
+        <!-- ID: div-9910 - Wrapper für den Login-Dialog. Gruppe: System. -->
+        <div id="div-9910" class="bg-gray-800 p-8 rounded-lg shadow-lg text-center max-w-md mx-auto">
             <h1 class="text-white text-3xl font-bold mb-6">Willkommen!</h1>
             <button id="login-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
                 Anonym Anmelden
@@ -49,27 +58,33 @@
         </div>
     </div>
     <!-- App View -->
-    <div id="app-view" class="hidden w-full max-w-screen-2xl flex gap-4 p-4 mt-4">
-        <!-- Left Menu -->
+    <!-- ID: div-4000 - Hauptcontainer der gesamten App nach dem Login. Gruppe: Globale UI. -->
+    <div id="div-4000" class="hidden w-full max-w-screen-2xl flex gap-4 p-4 mt-4">
+        <!-- ID: div-1000 - Hauptcontainer für das linke Navigationsmenü. Gruppe: Quest-System. -->
         <div id="div-1000" class="w-48 flex-shrink-0 bg-gray-800 p-4 rounded-lg shadow-lg flex flex-col gap-4">
                  <h2 class="text-xl font-bold text-center border-b border-gray-600 pb-2">Menü</h2>
                  
+                 <!-- ID: div-1100 - Menü-Sektion für "Produktion" (Quests). Gruppe: Quest-System. -->
                  <div id="div-1100" class="menu-section">
                     <h3 class="menu-section-header text-lg font-semibold cursor-pointer border-b border-gray-700 pb-1 mb-2">Produktion</h3>
-                    <div id="div-1100" class="menu-section-content pl-2 flex flex-col gap-2">
+                    <!-- ID: div-1101 - Inhalts-Wrapper für Produktions-Buttons. Gruppe: Quest-System. -->
+                    <div id="div-1101" class="menu-section-content pl-2 flex flex-col gap-2">
                         <button id="menu-btn-new-quest" class="menu-btn bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Neue Quest</button>
                         <button id="menu-btn-simple-quest" class="menu-btn bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded-lg transition duration-300 text-xs">Simple Quest (Test)</button>
                         <button id="menu-btn-my-quests" class="menu-btn bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
                             Meine Quests
-                            <div id="my-quests-counts" class="flex justify-center items-center gap-2 text-xs mt-1"></div>
+                            <!-- ID: div-1102 - Container für Quest-Zähler. Gruppe: Quest-System. -->
+                            <div id="div-1102" class="flex justify-center items-center gap-2 text-xs mt-1"></div>
                         </button>
                         <button id="menu-btn-journal" class="menu-btn bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Journal</button>
                     </div>
                  </div>
 
-                <div id="div-5000" class="menu-section">
+                <!-- ID: div-3000 - Menü-Sektion für "Gamification" (Pets). Gruppe: Gamification. -->
+                <div id="div-3000" class="menu-section">
                     <h3 class="menu-section-header text-lg font-semibold cursor-pointer border-b border-gray-700 pb-1 mb-2">Gamification</h3>
-                     <div id="div-5100" class="menu-section-content pl-2 flex flex-col gap-2">
+                     <!-- ID: div-3100 - Inhalts-Wrapper für Gamification-Buttons. Gruppe: Gamification. -->
+                     <div id="div-3100" class="menu-section-content pl-2 flex flex-col gap-2">
                         <button id="menu-btn-pets" class="menu-btn bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Pets</button>
                     </div>
                 </div>
@@ -84,68 +99,84 @@
             </div>
 
             <!-- Main Content (2000er Ebene) -->
-            <div id="div-2000" class="flex-grow flex flex-col gap-4">
-                <div id="div-7000" class="bg-gray-800 p-4 rounded-lg shadow-lg text-white flex flex-col w-[60vw] mx-auto">
-                    <div id="div-7100" class="flex justify-between items-center mb-2 flex-shrink-0">
-                        <div id="div-7200" class="text-left text-sm text-gray-400">
+            <!-- ID: div-4200 - Hauptcontainer für den mittleren Inhaltsbereich. Gruppe: Globale UI. -->
+            <div id="div-4200" class="flex-grow flex flex-col gap-4">
+                <!-- ID: div-4200 - Hauptinhaltsbereich, der das Gantt-Chart und die Fokus-Quest enthält. Gruppe: Globale UI. -->
+                <!-- ID: div-4300 - Container für das Gantt-Chart. Gruppe: Globale UI. -->
+                <div id="div-4300" class="bg-gray-800 p-4 rounded-lg shadow-lg text-white flex flex-col w-[60vw] mx-auto">
+                    <!-- ID: div-4310 - Header-Bereich des Gantt-Charts mit Controls. Gruppe: Globale UI. -->
+                    <div id="div-4310" class="flex justify-between items-center mb-2 flex-shrink-0">
+                        <!-- ID: div-4311 - Datumsanzeige im Gantt-Header. Gruppe: Globale UI. -->
+                        <div id="div-4311" class="text-left text-sm text-gray-400">
                             <span id="gantt-current-date-display"></span>
                         </div>
-                        <div class="flex items-center text-sm gap-4 justify-end">
-                            <label>Skala:
-                                <select id="gantt-timescale-select" class="bg-gray-900 rounded p-1 text-sm">
-                                    <option value="60" selected>60 Min</option>
-                                    <option value="30">30 Min</option>
-                                    <option value="15">15 Min</option>
-                                </select>
-                            </label>                           
-                            <label>Stunden:
-                                <select id="gantt-hours-view-select" class="bg-gray-900 rounded p-1 text-sm">
-                                    <!-- Options are populated dynamically by ganttManager.js -->
-                                    <option value="8">8h</option>
-                                </select>
-                            </label>
-                            <div class="border-l border-gray-600 pl-4 flex items-center gap-4">
-                                <button id="gantt-sort-all-btn" class="text-xs bg-purple-800 hover:bg-purple-700 px-2 py-1 rounded">Auto-Sortieren</button>
-                                <div class="border-l border-gray-600 pl-4">
+                        <!-- ID: div-4312 - Container für alle Gantt-Steuerelemente. Gruppe: Globale UI. -->
+                        <div id="div-4312" class="flex items-center text-sm gap-4 justify-end w-full">
+                            <div class="flex items-center gap-4"> <!-- Linke Gruppe der Steuerelemente -->
+                                <label class="flex items-center gap-2">Skala:
+                                    <select id="gantt-timescale-select" class="bg-gray-900 rounded p-1 text-sm">
+                                        <option value="60" selected>60m</option>
+                                        <option value="30">30m</option>
+                                        <option value="15">15m</option>
+                                    </select>
+                                </label>                           
+                                <label class="flex items-center gap-2">h:
+                                    <select id="gantt-hours-view-select" class="bg-gray-900 rounded p-1 text-sm">
+                                        <!-- Options are populated dynamically -->
+                                    </select>
+                                </label>
+                                <button id="gantt-sort-all-btn" class="text-xs bg-purple-800 hover:bg-purple-700 px-2 py-1 rounded">Auto Sort</button>
+                                <!-- ID: div-4313 - Container für Pomodoro-Toggle und Settings. Gruppe: Globale UI. -->
+                                <div id="div-4313" class="border-l border-gray-600 pl-4">
                                     <label class="flex items-center gap-2 text-sm cursor-pointer">
                                         <input type="checkbox" id="gantt-pomodoro-toggle" class="form-checkbox bg-gray-700 border-gray-600 text-indigo-500 h-4 w-4">
                                         <span>Pomodoro</span>
                                     </label>
                                     <button id="gantt-pomodoro-settings-btn" class="hidden text-gray-400 hover:text-white" title="Pomodoro-Einstellungen">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0l-.1.41a2 2 0 01-1.42 1.42l-.41.1c-1.56.38-1.56 2.6 0 2.98l.41.1a2 2 0 011.42 1.42l.1.41c.38 1.56 2.6 1.56 2.98 0l.1-.41a2 2 0 011.42-1.42l.41-.1c1.56-.38 1.56-2.6 0-2.98l-.41-.1a2 2 0 01-1.42-1.42l-.1-.41zM10 5a5 5 0 100 10 5 5 0 000-10zM10 8a2 2 0 100 4 2 2 0 000-4z" clip-rule="evenodd" /></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0l-.1.41a2 2 0 01-1.42 1.42l-.41.1c-1.56.38-1.56 2.6 0 2.98l.41.1a2 2 0 011.42 1.42l.1.41c.38 1.56 2.6 1.56 2.98 0l.1-.41a2 2 0 011.42-1.42l.41-.1c1.56-.38-1.56-2.6 0-2.98l-.41-.1a2 2 0 01-1.42-1.42l-.1-.41zM10 5a5 5 0 100 10 5 5 0 000-10zM10 8a2 2 0 100 4 2 2 0 000-4z" clip-rule="evenodd" /></svg>
                                     </button>
                                 </div>
+                            </div>
+                        
+                            <div class="flex items-center"> <!-- Rechte Gruppe der Steuerelemente (nur die Zeilenauswahl) -->
                                 <select id="gantt-view-select" class="bg-gray-700 text-white border-gray-600 rounded p-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                    <option value="day">Mehrzeilen</option>
+                                    <option value="multi-line">Mehrzeilen</option>
                                     <option value="single-line">Eine Zeile</option>
                                 </select>
                             </div>
                         </div>
                     </div>
-                    <div id="div-7110" class="flex-grow overflow-auto relative grid grid-cols-[150px_1fr] text-sm h-full"> <!-- This ID is used by QuestManager -->
+                    <!-- ID: div-4320 - Haupt-Grid-Container für das Gantt-Chart (Sidebar + Timeline). Gruppe: Globale UI. -->
+                    <div id="div-4320" class="flex-grow overflow-auto relative grid grid-cols-[150px_1fr] text-sm h-full">
                     </div>
                 </div>
-                
-                <div id="div-6000" class="bg-gray-800 p-6 rounded-lg shadow-lg text-white flex-grow">
-                    <div id="focus-quest-container"></div> <!-- Correct ID for QuestManager -->
+                <!-- ID: div-4400 - Container für die Fokus-Quest-Anzeige. Gruppe: Globale UI. -->
+                <div id="div-4400" class="bg-gray-800 p-6 rounded-lg shadow-lg text-white flex-grow">
+                    <div id="focus-quest-container"></div> <!-- Dynamischer Inhalt -->
                 </div>
             </div>
             
-            <!-- Right Character Sidebar (3000er Ebene) -->
-            <div id="div-3000" class="w-96 flex-shrink-0 bg-gray-800 p-4 rounded-lg shadow-lg flex flex-col">
+            <!-- ID: div-2000 - Hauptcontainer für die Spieler-Seitenleiste (Charakter-Status, etc.). Gruppe: Spieler-Team. -->
+            <div id="div-2000" class="w-96 flex-shrink-0 bg-gray-800 p-4 rounded-lg shadow-lg flex flex-col">
                 <div class="sidebar-content overflow-y-auto">
-                    <div id="div-3100" class="text-center mb-4">
+                    <!-- ID: div-2100 - Container für die primären Charakterinformationen (Name, Bild, Level). Gruppe: Spieler-Team. -->
+                    <div id="div-2100" class="text-center mb-4">
                         <div class="flex justify-center items-center gap-2">
                            <h2 id="character-name" class="text-xl font-bold"></h2>
                            <span class="text-sm font-bold text-green-400">(Level <span id="character-level">1</span>)</span>
                         </div>
-                        <div id="character-achievements-display" class="flex justify-center flex-wrap gap-1 mt-1 h-6"></div>
+                        <!-- ID: div-2110 - Anzeige für Achievement-Icons. Gruppe: Spieler-Team. -->
+                        <div id="div-2110" class="flex justify-center flex-wrap gap-1 mt-1 h-6"></div>
                         <img id="character-image" src="https://placehold.co/128x128/374151/e5e7eb.png?text=Charakter" alt="Character Portrait" class="mx-auto my-2 rounded-lg border-2 border-gray-600">
-                        <div id="active-pets-sidebar" class="flex justify-center items-center gap-2 mt-2 h-8"></div>
+                        <!-- ID: div-2120 - Anzeige für aktive Pets. Gruppe: Spieler-Team. -->
+                        <div id="div-2120" class="flex justify-center items-center gap-2 mt-2 h-8"></div>
                     </div>
                 
-                    <div id="div-3200" class="space-y-4">
-                         <div id="div-3210" class="space-y-3">
+                    <!-- ID: div-2150 - Container für alle Statusbalken. Gruppe: Spieler-Team. -->
+                    <div id="div-2150" class="space-y-4">
+                         <!-- ID: div-2200 - Container für die primären Statusbalken (HP, Mana, Ausdauer). Gruppe: Spieler-Team. -->
+                         <div id="div-2200" class="space-y-3">
+                            <!-- ID: div-2210 - Wrapper für HP-Balken und Trank-Button. Gruppe: Spieler-Team. -->
                             <div class="flex items-center">
                                 <div class="flex-grow">
                                     <span class="text-sm font-bold text-red-400">HP</span>
@@ -159,6 +190,7 @@
                                     <span id="hp-potion-count" class="text-sm font-bold min-w-[1rem] text-center">0</span>
                                 </button>
                             </div>
+                             <!-- ID: div-2220 - Wrapper für Mana-Balken und Trank-Button. Gruppe: Spieler-Team. -->
                              <div class="flex items-center">
                                 <div class="flex-grow">
                                     <span class="text-sm font-bold text-blue-400">Mana</span>
@@ -172,6 +204,7 @@
                                     <span id="mana-potion-count" class="text-sm font-bold min-w-[1rem] text-center">0</span>
                                 </button>
                             </div>
+                             <!-- ID: div-2230 - Wrapper für Ausdauer-Balken. Gruppe: Spieler-Team. -->
                              <div>
                                  <span class="text-sm font-bold text-green-400">Ausdauer</span>
                                  <div class="w-full bg-gray-600 rounded-full h-4 relative border border-gray-500">
@@ -180,26 +213,32 @@
                                  </div>
                              </div>
                         </div>
-                        <div id="div-3220">
+                        <!-- ID: div-2300 - Container für den XP-Balken. Gruppe: Spieler-Team. -->
+                        <div id="div-2300">
+                            <!-- ID: div-2310 - Wrapper für den XP-Balken selbst. Gruppe: Spieler-Team. -->
                             <div id="xp-bar-container" class="w-full bg-gray-600 rounded-full h-2.5">
                                 <div id="xp-bar-progress" class="bg-yellow-400 h-2.5 rounded-full" style="width: 0%"></div>
                             </div>
                             <p class="text-sm text-right text-gray-300 mt-1">
+                                <!-- ID: div-2320 - Textanzeige für XP. Gruppe: Spieler-Team. -->
                                 <span id="xp-current-in-level">0</span> / <span id="xp-needed-for-level">100</span> XP
                             </p>
                         </div>
                     </div>
                      <hr class="my-4 border-gray-600">
 
-                     <div id="div-3300" class="grid grid-cols-2 gap-2 my-4">
+                     <!-- ID: div-2400 - Container für die Charakter-Aktionsbuttons (Ausrüstung, Inventar etc.). Gruppe: Spieler-Team. -->
+                     <div id="div-2400" class="grid grid-cols-2 gap-2 my-4">
                          <button id="menu-btn-equipment" class="menu-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-2 rounded-lg transition duration-300 text-sm">Ausrüstung</button>
                          <button id="menu-btn-inventory" class="menu-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-2 rounded-lg transition duration-300 text-sm">Inventar</button>
                          <button id="menu-btn-achievements" class="menu-btn bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-2 rounded-lg transition duration-300 text-sm">Erfolge</button>
                          <button id="open-skills-btn" class="menu-btn bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-2 rounded-lg transition duration-300 text-sm">Skills</button>
                      </div>
                      
-                     <div class="flex gap-4">
-                        <div id="div-3400" class="space-y-3 text-left flex-1">
+                     <!-- ID: div-2450 - Container für Attributs- und Kampfwert-Anzeigen. Gruppe: Spieler-Team. -->
+                     <div id="div-2450" class="flex gap-4">
+                        <!-- ID: div-2500 - Container für die Basis-Attribute. Gruppe: Spieler-Team. -->
+                        <div id="div-2500" class="space-y-3 text-left flex-1">
                              <h3 class="text-lg font-bold text-center mb-2">Attribute</h3>
                             <div class="flex justify-between items-center text-sm"><span><span>❤️</span> Vitalität: <span id="stat-vitality">10</span></span><div class="flex items-center relative gap-1"><button data-stat="vitality" data-amount="1" class="stat-increase-btn hidden bg-green-500 hover:bg-green-600 px-2 rounded text-xs">+</button><button data-stat="vitality" data-amount="5" class="stat-increase-btn hidden bg-blue-500 hover:bg-blue-600 px-2 rounded text-xs">+5</button></div></div>
                             <div class="flex justify-between items-center text-sm"><span><span>💪</span> Stärke: <span id="stat-strength">10</span></span><div class="flex items-center relative gap-1"><button data-stat="strength" data-amount="1" class="stat-increase-btn hidden bg-green-500 hover:bg-green-600 px-2 rounded text-xs">+</button><button data-stat="strength" data-amount="5" class="stat-increase-btn hidden bg-blue-500 hover:bg-blue-600 px-2 rounded text-xs">+5</button></div></div>
@@ -208,7 +247,8 @@
                             <div class="flex justify-between items-center text-sm"><span><span>🏃</span> Ausdauer: <span id="stat-stamina">10</span></span><div class="flex items-center relative gap-1"><button data-stat="stamina" data-amount="1" class="stat-increase-btn hidden bg-green-500 hover:bg-green-600 px-2 rounded text-xs">+</button><button data-stat="stamina" data-amount="5" class="stat-increase-btn hidden bg-blue-500 hover:bg-blue-600 px-2 rounded text-xs">+5</button></div></div>
                             <div class="flex justify-between items-center text-sm"><span><span>🍀</span> Glück: <span id="stat-luck">10</span></span><div class="flex items-center relative gap-1"><button data-stat="luck" data-amount="1" class="stat-increase-btn hidden bg-green-500 hover:bg-green-600 px-2 rounded text-xs">+</button><button data-stat="luck" data-amount="5" class="stat-increase-btn hidden bg-blue-500 hover:bg-blue-600 px-2 rounded text-xs">+5</button></div></div>
                         </div>
-                        <div id="div-3500" class="space-y-2 text-left text-sm flex-1">
+                        <!-- ID: div-2600 - Container für die abgeleiteten Kampfwerte. Gruppe: Spieler-Team. -->
+                        <div id="div-2600" class="space-y-2 text-left text-sm flex-1">
                             <h3 class="text-lg font-bold text-center mb-2">Kampfwerte</h3>
                             <p>Physischer Dmg: <span id="derived-stat-phys-dmg" class="font-bold text-green-400">0</span></p>
                             <p>Verteidigung: <span id="derived-stat-def" class="font-bold text-green-400">0</span></p>
@@ -217,14 +257,16 @@
                         </div>
                      </div>
 
-                     <p id="stat-points-container" class="text-center mt-4 hidden pt-2 border-t border-gray-600">Punkte zu vergeben: <span id="stat-points-display-footer">0</span></p>
+                     <!-- ID: div-2700 - Container für die Anzeige der verfügbaren Attributspunkte. Gruppe: Spieler-Team. -->
+                     <div id="div-2700" class="text-center mt-4 hidden pt-2 border-t border-gray-600">Punkte zu vergeben: <span id="stat-points-display-footer">0</span></div>
                 </div>
             </div>
         </div>
     </div>
     
     <!-- Notification Area -->
-    <div id="notification-area" class="fixed top-5 right-5 bg-blue-500 text-white p-3 rounded-lg shadow-lg opacity-0 transition-opacity duration-500 z-50"></div>
+    <!-- ID: div-4060 - Container für Pop-up-Benachrichtigungen. Gruppe: Globale UI. -->
+    <div id="div-4060" class="fixed top-5 right-5 bg-blue-500 text-white p-3 rounded-lg shadow-lg opacity-0 transition-opacity duration-500 z-50"></div>
 
     <!-- #################### -->
     <!-- ## FLOATING MODALS ## -->
@@ -232,12 +274,14 @@
 
     <!-- My Quests Modal -->
     <div id="div-1110" class="modal hidden fixed top-1/4 left-1/3 w-[800px] h-[70vh] z-40">
-        <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-             <div id="header-1110" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
-                <h3 id="title-1110" class="font-bold">Meine Quests</h3>
+        <!-- ID: div-1111 - Innerer Wrapper des "Meine Quests"-Modals. Gruppe: Quest-System. -->
+        <div id="div-1111" class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
+             <div class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 class="font-bold">Meine Quests</h3>
                 <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-            <div id="quest-list-filters" class="p-2 flex items-center gap-4 border-b border-gray-700 text-sm">
+            <!-- ID: div-1113 - Container für die Quest-Listen-Filter. Gruppe: Quest-System. -->
+            <div id="div-1113" class="p-2 flex items-center gap-4 border-b border-gray-700 text-sm">
                 <label>Sortieren nach:
                     <select id="quest-sort-select" class="bg-gray-900 rounded p-1">
                         <option value="priority">Priorität</option>
@@ -246,29 +290,35 @@
                         <option value="xp">XP</option>
                     </select>
                 </label>
-                <div class="border-l border-gray-600 pl-4 flex gap-2">
+                <!-- ID: div-1114 - Container für die Filter-Buttons. Gruppe: Quest-System. -->
+                <div id="div-1114" class="border-l border-gray-600 pl-4 flex gap-2">
                     <button data-filter="all" class="quest-filter-btn px-2 py-1 bg-indigo-600 rounded text-sm active">Alle</button>
                     <button data-filter="dueToday" class="quest-filter-btn px-2 py-1 bg-gray-600 rounded text-sm">Heute fällig</button>
                     <button data-filter="dueThisWeek" class="quest-filter-btn px-2 py-1 bg-gray-600 rounded text-sm">Woche fällig</button>
                 </div>
             </div>
-            <div id="content-1110" class="p-4 space-y-2 overflow-y-auto flex-grow"></div>
+            <!-- ID: div-1115 - Container für die gerenderte Quest-Liste. Gruppe: Quest-System. -->
+            <div id="div-1115" class="p-4 space-y-2 overflow-y-auto flex-grow"></div>
         </div>
     </div>
 
     <!-- New Quest Modal -->
     <div id="div-1120" class="modal hidden fixed top-1/4 left-1/3 w-[600px] z-40">
-        <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-            <div id="header-1120" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
-                <h3 id="title-1120" class="font-bold">Neue Quest erstellen</h3>
+        <!-- ID: div-1121 - Innerer Wrapper des "Neue Quest"-Modals. Gruppe: Quest-System. -->
+        <div id="div-1121" class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
+            <div class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 class="font-bold">Neue Quest erstellen</h3>
                 <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-            <div id="content-1120" class="p-4 overflow-y-auto">
+            <!-- ID: div-1122 - Inhaltscontainer des "Neue Quest"-Modals. Gruppe: Quest-System. -->
+            <div id="div-1122" class="p-4 overflow-y-auto">
                  <form id="add-todo-form" class="space-y-4 text-sm">
                     <!-- Step 1: Type -->
-                     <div id="quest-step-1" class="quest-wizard-step space-y-4">
+                     <!-- ID: div-1123 - Wizard Schritt 1: Typ. Gruppe: Quest-System. -->
+                     <div id="div-1123" class="quest-wizard-step space-y-4">
                         <h4 class="text-lg font-semibold text-center text-gray-400">Schritt 1: Typ</h4>
-                        <div>
+                        <!-- ID: div-1124 - Wrapper für Typ-Auswahl. Gruppe: Quest-System. -->
+                        <div id="div-1124">
                             <label class="block text-xs font-medium text-gray-400 mb-1">Typ</label>
                             <select id="todo-task-type" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 <option value="Aufgabe">Aufgabe</option>
@@ -282,22 +332,28 @@
                          </div>
                     </div>
                     <!-- Step 2: Basic Info -->
-                    <div id="quest-step-2" class="quest-wizard-step hidden space-y-4">
+                    <!-- ID: div-1125 - Wizard Schritt 2: Titel & Beschreibung. Gruppe: Quest-System. -->
+                    <div id="div-1125" class="quest-wizard-step hidden space-y-4">
                         <h4 class="text-lg font-semibold text-center text-gray-400">Schritt 2: Titel & Beschreibung</h4>
                         <input type="text" id="todo-input" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Quest-Titel..." required>
-                        <div>
+                        <!-- ID: div-1126 - Wrapper für Details-Toggle. Gruppe: Quest-System. -->
+                        <div id="div-1126">
                             <button type="button" id="toggle-details-btn" class="text-sm text-indigo-400 hover:text-indigo-300">Beschreibung hinzufügen +</button>
-                            <div id="details-toggle-content" class="hidden mt-2">
+                            <!-- ID: div-1127 - Container für das Textarea der Beschreibung. Gruppe: Quest-System. -->
+                            <div id="div-1127" class="hidden mt-2">
                                 <textarea id="todo-details" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2 h-24 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Zusätzliche Notizen, Ziele oder Template-Text..."></textarea>
                             </div>
                         </div>
                     </div>
                     <!-- Step 3: Duration -->
-                     <div id="quest-step-3" class="quest-wizard-step hidden space-y-4">
+                     <!-- ID: div-1128 - Wizard Schritt 3: Dauer. Gruppe: Quest-System. -->
+                     <div id="div-1128" class="quest-wizard-step hidden space-y-4">
                         <h4 class="text-lg font-semibold text-center text-gray-400">Schritt 3: Dauer (Pflichtfeld)</h4>
-                        <div class="space-y-2">
+                        <!-- ID: div-1129 - Wrapper für Planungsstil-Auswahl. Gruppe: Quest-System. -->
+                        <div id="div-1129" class="space-y-2">
                             <label class="block text-xs font-medium text-gray-400">Planungsstil</label>
-                            <div class="flex gap-4 rounded-lg bg-gray-900 p-1">
+                            <!-- ID: div-1131 - Radio-Button-Gruppe für Planungsstil. Gruppe: Quest-System. -->
+                            <div id="div-1131" class="flex gap-4 rounded-lg bg-gray-900 p-1">
                                 <label class="flex-1 text-center p-2 rounded-md cursor-pointer text-sm transition-colors" for="duration-style-pomodoro">
                                     <input type="radio" name="duration-style" id="duration-style-pomodoro" value="pomodoro" class="sr-only" checked>
                                     <span>Pomodoro</span>
@@ -309,15 +365,17 @@
                             </div>
                         </div>
 
-                        <div id="duration-container-task">
+                        <!-- ID: div-1132 - Container für Dauer-Eingabe (Aufgabe). Gruppe: Quest-System. -->
+                        <div id="div-1132">
                             <div class="flex justify-between items-center mb-2">
                                 <label class="block text-xs font-medium text-gray-400">Dauer</label>
                                 <button type="button" id="duration-mode-toggle" class="text-xs text-indigo-400 hover:text-indigo-300">Manuelle Eingabe</button>
                             </div>
-                            <div id="Bearbeitungsdauer-Pomodoro">
-                                <div class="flex items-center gap-4 p-2 bg-gray-900 rounded-lg">
+                            <!-- ID: div-1133 - Container für Pomodoro-Dauer-Buttons. Gruppe: Quest-System. -->
+                            <div id="div-1133">
+                                <div class="flex items-center gap-4 p-2 bg-gray-900 rounded-lg"> <!-- Wrapper -->
                                     <span id="quest-duration-display" class="font-mono text-2xl font-bold text-white">0m</span>
-                                    <div class="flex-grow flex justify-end gap-2">
+                                    <div class="flex-grow flex justify-end gap-2"> <!-- Button-Gruppe -->
                                         <button type="button" data-add-duration="25" class="duration-add-btn bg-blue-600 hover:bg-blue-500 rounded px-3 py-1">+25m</button>
                                         <button type="button" data-add-duration="45" class="duration-add-btn bg-blue-600 hover:bg-blue-500 rounded px-3 py-1">+45m</button>
                                         <button type="button" id="duration-reset-btn" class="bg-red-600 hover:bg-red-500 rounded px-3 py-1">Reset</button>
@@ -325,24 +383,29 @@
                                 </div>
                             </div>
                             <div id="Bearbeitungsdauer-Frei" class="hidden">
+                                <!-- ID: div-1134 - Container für freie Dauer-Eingabe. Gruppe: Quest-System. -->
                                 <input type="text" id="quest-duration-free-input" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2" placeholder="z.B. 1h 30m, 90m, 2h...">
                             </div>
                         </div>
-                        <div id="quest-split-container" class="hidden pt-2">
+                        <!-- ID: div-1135 - Container für Quest-Split-Toggle. Gruppe: Quest-System. -->
+                        <div id="div-1135" class="hidden pt-2">
                             <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg bg-indigo-900/50 hover:bg-indigo-900/80">
                                 <input type="checkbox" id="quest-split-toggle" class="form-checkbox bg-gray-700 border-gray-600 text-indigo-500 h-5 w-5">
                                 <span>Quest in 45-Minuten-Blöcke aufteilen</span>
                             </label>
                         </div>
-                        <div id="duration-container-project" class="hidden">
+                        <!-- ID: div-1136 - Container für Dauer-Eingabe (Projekt). Gruppe: Quest-System. -->
+                        <div id="div-1136" class="hidden">
                             <label class="block text-xs font-medium text-gray-400 mb-1">Dauer (Tage)</label>
                             <input type="number" id="project-duration-days" min="1" value="7" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2">
                         </div>
                     </div>
                      <!-- Step 4: Deadline & Repeat -->
-                      <div id="quest-step-4" class="quest-wizard-step hidden space-y-4">
+                      <!-- ID: div-1137 - Wizard Schritt 4: Deadline & Wiederholung. Gruppe: Quest-System. -->
+                      <div id="div-1137" class="quest-wizard-step hidden space-y-4">
                         <h4 class="text-lg font-semibold text-center text-gray-400">Schritt 4: Deadline & Wiederholung</h4>
-                        <div class="grid grid-cols-2 gap-4">
+                        <!-- ID: div-1138 - Grid-Container für Datums-Eingaben. Gruppe: Quest-System. -->
+                        <div id="div-1138" class="grid grid-cols-2 gap-4">
                             <div id="deadline-container">
                                 <label class="block text-xs font-medium text-gray-400 mb-1">Deadline</label>
                                 <div class="flex items-center gap-2">
@@ -362,25 +425,31 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="pt-2" id="repeat-section">
+                        <!-- ID: div-1139 - Container für Wiederholungs-Optionen. Gruppe: Quest-System. -->
+                        <div id="div-1139" class="pt-2">
                             <label class="flex items-center gap-2">
                                 <input type="checkbox" id="todo-repeat" class="form-checkbox bg-gray-700 border-gray-600 text-indigo-500 focus:ring-indigo-500">
                                 <span>Tägliche Quest? (Wiederholbar)</span>
                             </label>
-                            <div id="todo-repeat-options-container" class="hidden mt-2 space-y-2">
+                            <!-- ID: div-1141 - Container für detaillierte Wiederholungs-Einstellungen. Gruppe: Quest-System. -->
+                            <div id="div-1141" class="hidden mt-2 space-y-2">
                                 <p class="text-xs text-yellow-400 p-2 bg-yellow-900 bg-opacity-40 rounded-lg">Tägliche Quests sind immer 'Leicht', geben +30 Bronze und kosten 5 HP, wenn sie verpasst werden.</p>
-                                <div>
+                                <!-- ID: div-1142 - Wrapper für Startzeit-Eingabe. Gruppe: Quest-System. -->
+                                <div id="div-1142">
                                     <label class="block text-xs font-medium text-gray-400 mb-1">Startzeit (Pflichtfeld)</label>
                                     <input type="time" id="todo-start-time" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2">
                                 </div>
-                                <div id="todo-repeat-days-container" class="flex flex-wrap gap-x-3 gap-y-1 text-sm text-gray-300"></div>
+                                <!-- ID: div-1143 - Container für die Auswahl der Wochentage. Gruppe: Quest-System. -->
+                                <div id="div-1143" class="flex flex-wrap gap-x-3 gap-y-1 text-sm text-gray-300"></div>
                             </div>
                         </div>
                     </div>
                     <!-- Step 5: Details -->
-                     <div id="quest-step-5" class="quest-wizard-step hidden space-y-4">
+                     <!-- ID: div-1144 - Wizard Schritt 5: Details. Gruppe: Quest-System. -->
+                     <div id="div-1144" class="quest-wizard-step hidden space-y-4">
                          <h4 class="text-lg font-semibold text-center text-gray-400">Schritt 5: Details</h4>
-                         <div id="priority-container">
+                         <!-- ID: div-1145 - Wrapper für Prioritäts-Auswahl. Gruppe: Quest-System. -->
+                         <div id="div-1145">
                             <label class="block text-xs font-medium text-gray-400 mb-1">Priorität</label>
                             <select id="todo-priority" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 <option value="Leicht">Leicht</option>
@@ -388,15 +457,19 @@
                                 <option value="Schwer">Schwer</option>
                             </select>
                         </div>
-                        <div>
+                        <!-- ID: div-1146 - Wrapper für Tag-Auswahl. Gruppe: Quest-System. -->
+                        <div id="div-1146">
                              <label class="block text-sm font-medium text-gray-400 mb-2">Tag (1 auswählen)</label>
-                            <div id="todo-tags-container" class="flex flex-wrap gap-x-4 gap-y-2 p-2 rounded-lg border border-transparent"></div>
+                            <!-- ID: div-1147 - Container für die Tag-Buttons. Gruppe: Quest-System. -->
+                            <div id="div-1147" class="flex flex-wrap gap-x-4 gap-y-2 p-2 rounded-lg border border-transparent"></div>
                         </div>
                     </div>
                 </form>
-                <div id="quest-wizard-progress" class="flex justify-center gap-2 mt-4"></div>
-                <div id="quest-wizard-nav" class="mt-6 flex justify-between items-center">
-                    <div class="flex gap-2">
+                <!-- ID: div-1148 - Container für die Fortschrittsanzeige des Wizards. Gruppe: Quest-System. -->
+                <div id="div-1148" class="flex justify-center gap-2 mt-4"></div>
+                <!-- ID: div-1149 - Navigationsleiste des Wizards. Gruppe: Quest-System. -->
+                <div id="div-1149" class="mt-6 flex justify-between items-center">
+                    <div class="flex gap-2"> <!-- Button-Gruppe -->
                         <button id="quest-next-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 disabled:bg-gray-500 disabled:cursor-not-allowed" disabled>Weiter</button>
                         <button id="quest-submit-btn" type="submit" form="add-todo-form" class="hidden bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Quest Hinzufügen</button>
                     </div>
@@ -408,44 +481,55 @@
     
     <!-- Journal Modal -->
     <div id="div-1130" class="modal hidden fixed top-1/4 left-1/2 w-[500px] z-40" data-parent="div-1000">
-        <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-             <div id="header-1130" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
-                <h3 id="title-1130" class="font-bold">Journal</h3>
+        <!-- ID: div-1131 - Innerer Wrapper des Journal-Modals. Gruppe: Quest-System. -->
+        <div id="div-1131" class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
+             <div class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 class="font-bold">Journal</h3>
                 <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-            <div id="content-1130" class="p-4 space-y-2 overflow-y-auto"></div>
+            <!-- ID: div-1132 - Inhaltscontainer für Journaleinträge. Gruppe: Quest-System. -->
+            <div id="div-1132" class="p-4 space-y-2 overflow-y-auto"></div>
         </div>
     </div>
     
     <!-- Achievements Modal -->
-    <div id="div-3330" class="modal hidden fixed top-1/4 left-1/2 w-[700px] z-40" data-parent="div-3000">
-        <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-            <div id="header-3330" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
-                <h3 id="title-3330" class="font-bold">Erfolge</h3>
+    <!-- ID: div-2430 - Modal für die Anzeige der Erfolge. Gruppe: Spieler-Team. -->
+    <div id="div-2430" class="modal hidden fixed top-1/4 left-1/2 w-[700px] z-40" data-parent="div-2000">
+        <!-- ID: div-2431 - Innerer Wrapper des Achievements-Modals. Gruppe: Spieler-Team. -->
+        <div id="div-2431" class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
+            <div class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 class="font-bold">Erfolge</h3>
                 <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-            <div id="content-3330" class="flex p-4 flex-grow gap-4 overflow-hidden">
-                <div id="achievements-list" class="w-5/6 space-y-3 overflow-y-auto pr-2"></div>
-                <div class="w-1/6 border-l border-gray-600 pl-4">
+            <!-- ID: div-2432 - Inhaltscontainer des Achievements-Modals. Gruppe: Spieler-Team. -->
+            <div id="div-2432" class="flex p-4 flex-grow gap-4 overflow-hidden">
+                <!-- ID: div-2433 - Container für die Liste der Erfolge. Gruppe: Spieler-Team. -->
+                <div id="div-2433" class="w-5/6 space-y-3 overflow-y-auto pr-2"></div>
+                <!-- ID: div-2434 - Seitenleiste für die Auswahl der angezeigten Icons. Gruppe: Spieler-Team. -->
+                <div id="div-2434" class="w-1/6 border-l border-gray-600 pl-4">
                     <h4 class="text-sm font-bold text-gray-400 mb-2 text-center">Angezeigte Symbole</h4>
-                    <div id="achievement-icons-selection" class="flex flex-wrap gap-2 justify-center"></div>
+                    <!-- ID: div-2435 - Container für die Icon-Auswahl-Buttons. Gruppe: Spieler-Team. -->
+                    <div id="div-2435" class="flex flex-wrap gap-2 justify-center"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Equipment Modal -->
-    <div id="div-3310" class="modal hidden fixed top-1/4 left-1/3 w-[1035px] h-[750px] z-40" data-parent="div-3000">
+    <!-- ID: div-2410 - Modal für die Ausrüstungsansicht. Gruppe: Spieler-Team. -->
+    <div id="div-2410" class="modal hidden fixed top-1/4 left-1/3 w-[1035px] h-[750px] z-40" data-parent="div-2000">
         <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-            <div id="header-3310" class="p-2 bg-gray-700 flex justify-between items-center">
-                <h3 id="title-3310" class="font-bold cursor-move modal-header flex-grow">Ausrüstung</h3>
+            <div class="p-2 bg-gray-700 flex justify-between items-center">
+                <h3 class="font-bold cursor-move modal-header flex-grow">Ausrüstung</h3>
                 <button id="unequip-all-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-2 rounded-lg text-xs mr-2">Alles ablegen</button>
                 <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-             <div id="content-3310" class="flex p-4 flex-grow gap-4 overflow-auto">
+             <!-- ID: div-2411 - Inhaltscontainer des Equipment-Modals. Gruppe: Spieler-Team. -->
+             <div id="div-2411" class="flex p-4 flex-grow gap-4 overflow-auto">
                  <!-- Column 1: Weapons, Tools & Stats -->
-                <div class="w-1/3 flex-shrink-0 flex flex-col gap-4">
-                    <div>
+                <!-- ID: div-2412 - Linke Spalte (Waffen, Werkzeuge, Details). Gruppe: Spieler-Team. -->
+                <div id="div-2412" class="w-1/3 flex-shrink-0 flex flex-col gap-4">
+                    <div id="div-2413"> <!-- Wrapper für Waffen & Werkzeuge -->
                         <h4 class="text-lg font-bold text-gray-400 text-center mb-4">Waffen & Werkzeuge</h4>
                         <div class="grid grid-cols-2 grid-rows-2 gap-4 w-full justify-items-center items-center pt-4">
                             <div data-slot-type="weapon1" class="equipment-slot w-32 h-32 text-gray-400">Waffe 1</div>
@@ -454,10 +538,12 @@
                             <div data-slot-type="tool2" class="equipment-slot slot-medium text-gray-400">Werkzeug 2</div>
                         </div>
                     </div>
-                    <div id="equipment-item-details" class="bg-gray-900 p-4 rounded-lg border border-gray-600 mt-4 flex-grow"></div>
+                    <!-- ID: div-2414 - Container für die Details des ausgewählten Items. Gruppe: Spieler-Team. -->
+                    <div id="div-2414" class="bg-gray-900 p-4 rounded-lg border border-gray-600 mt-4 flex-grow"></div>
                 </div>
                 <!-- Column 2: Armor -->
-                <div class="w-2/3 flex-shrink-0 flex flex-col gap-4">
+                <!-- ID: div-2415 - Rechte Spalte (Rüstung & Schmuck). Gruppe: Spieler-Team. -->
+                <div id="div-2415" class="w-2/3 flex-shrink-0 flex flex-col gap-4">
                      <h4 class="text-lg font-bold text-gray-400 text-center mb-4">Rüstung & Schmuck</h4>
                      <div class="grid grid-cols-3 gap-y-2 gap-x-2 justify-items-center items-center w-full h-full">
                         <div></div>
@@ -483,30 +569,38 @@
     
     <!-- Pomodoro Timer Modal -->
     <div id="div-1140" class="modal hidden fixed top-1/4 left-1/3 w-[400px] z-40" data-parent="div-1000">
-        <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-            <div id="header-1140" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
-                <h3 id="title-1140" class="font-bold">Pomodoro Timer</h3>
+        <!-- ID: div-1141 - Innerer Wrapper des Pomodoro-Timer-Modals. Gruppe: Quest-System. -->
+        <div id="div-1141" class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
+            <div class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 class="font-bold">Pomodoro Timer</h3>
                 <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-            <div id="content-1140" class="p-4 flex flex-col items-center">
-                <div id="timer-display" class="text-6xl font-mono text-center my-4">25:00</div>
+            <!-- ID: div-1142 - Inhaltscontainer des Pomodoro-Timers. Gruppe: Quest-System. -->
+            <div id="div-1142" class="p-4 flex flex-col items-center">
+                <!-- ID: div-1143 - Anzeige der verbleibenden Zeit. Gruppe: Quest-System. -->
+                <div id="div-1143" class="text-6xl font-mono text-center my-4">25:00</div>
                 <p id="timer-mode-display" class="mb-4 text-gray-400">Modus: Arbeit</p>
-                <div class="mb-4">
+                <!-- ID: div-1144 - Container für "Arbeit"-Buttons. Gruppe: Quest-System. -->
+                <div id="div-1144" class="mb-4">
                     <h4 class="text-sm font-bold mb-2 text-center text-gray-300">Arbeit</h4>
-                    <div class="flex gap-2">
+                    <!-- ID: div-1145 - Button-Gruppe für Arbeitszeit. Gruppe: Quest-System. -->
+                    <div id="div-1145" class="flex gap-2">
                         <button class="timer-select-btn px-3 py-1 bg-blue-600 hover:bg-blue-500 rounded text-sm" data-minutes="25" data-mode="Arbeit">25 Min</button>
                         <button class="timer-select-btn px-3 py-1 bg-blue-600 hover:bg-blue-500 rounded text-sm" data-minutes="45" data-mode="Arbeit">45 Min</button>
                     </div>
                 </div>
-                 <div class="mb-6">
+                 <!-- ID: div-1146 - Container für "Pause"-Buttons. Gruppe: Quest-System. -->
+                 <div id="div-1146" class="mb-6">
                     <h4 class="text-sm font-bold mb-2 text-center text-gray-300">Pause</h4>
-                    <div class="flex gap-2">
+                    <!-- ID: div-1147 - Button-Gruppe für Pausenzeit. Gruppe: Quest-System. -->
+                    <div id="div-1147" class="flex gap-2">
                         <button class="timer-select-btn px-3 py-1 bg-green-600 hover:bg-green-500 rounded text-sm" data-minutes="5" data-mode="Pause">5 Min</button>
                         <button class="timer-select-btn px-3 py-1 bg-green-600 hover:bg-green-500 rounded text-sm" data-minutes="10" data-mode="Pause">10 Min</button>
                          <button class="timer-select-btn px-3 py-1 bg-green-600 hover:bg-green-500 rounded text-sm" data-minutes="30" data-mode="Pause">30 Min</button>
                     </div>
                 </div>
-                <div class="flex gap-4">
+                <!-- ID: div-1148 - Container für Timer-Steuerungsbuttons. Gruppe: Quest-System. -->
+                <div id="div-1148" class="flex gap-4">
                     <button id="timer-start-btn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded font-bold">Start</button>
                     <button id="timer-pause-btn" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-500 rounded font-bold">Pause</button>
                     <button id="timer-reset-btn" class="px-4 py-2 bg-red-600 hover:bg-red-500 rounded font-bold">Reset</button>
@@ -516,13 +610,16 @@
     </div>
 
     <!-- Inventory Modal -->
-    <div id="div-3320" class="modal hidden fixed top-1/4 left-1/2 w-[700px] h-[500px] z-40" data-parent="div-3000">
-        <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-            <div id="header-3320" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
-                 <h3 id="title-3320" class="font-bold">Inventar</h3>
+    <!-- ID: div-2420 - Modal für das Inventar. Gruppe: Spieler-Team. -->
+    <div id="div-2420" class="modal hidden fixed top-1/4 left-1/2 w-[700px] h-[500px] z-40" data-parent="div-2000">
+        <!-- ID: div-2422 - Innerer Wrapper des Inventar-Modals. Gruppe: Spieler-Team. -->
+        <div id="div-2422" class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
+            <div class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                 <h3 class="font-bold">Inventar</h3>
                 <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-             <div class="p-2 border-b border-gray-700 flex gap-2 text-xs flex-wrap" id="inventory-sort-buttons">
+             <!-- ID: div-2423 - Container für die Inventar-Sortierbuttons. Gruppe: Spieler-Team. -->
+             <div id="div-2423" class="p-2 border-b border-gray-700 flex gap-2 text-xs flex-wrap">
                 <button data-sort-category="all" class="px-2 py-1 bg-indigo-600 rounded">Alle</button>
                 <button data-sort-category="weapon" class="px-2 py-1 bg-gray-600 rounded">Waffen</button>
                 <button data-sort-category="armor" class="px-2 py-1 bg-gray-600 rounded">Rüstung</button>
@@ -533,9 +630,12 @@
                 <button data-sort-category="card" class="px-2 py-1 bg-gray-600 rounded">Karten</button>
                 <button data-sort-category="pet" class="px-2 py-1 bg-gray-600 rounded">Pets</button>
             </div>
-            <div id="content-3320" class="flex p-4 flex-grow gap-4 overflow-hidden">
-                <div id="inventory-list-container" class="space-y-3 overflow-y-auto flex-grow pr-2"></div>
-                 <div id="inventory-item-details" class="w-2/5 flex-shrink-0 bg-gray-900 p-4 rounded-lg border border-gray-600 flex flex-col">
+            <!-- ID: div-2424 - Inhaltscontainer des Inventars (Liste + Details). Gruppe: Spieler-Team. -->
+            <div id="div-2424" class="flex p-4 flex-grow gap-4 overflow-hidden">
+                <!-- ID: div-2421 - Container für die Liste der Inventar-Items. Gruppe: Spieler-Team. -->
+                <div id="div-2421" class="space-y-3 overflow-y-auto flex-grow pr-2"></div>
+                 <!-- ID: div-2425 - Container für die Details des ausgewählten Items. Gruppe: Spieler-Team. -->
+                 <div id="div-2425" class="w-2/5 flex-shrink-0 bg-gray-900 p-4 rounded-lg border border-gray-600 flex flex-col">
                  </div>
             </div>
             <div id="inventory-pagination" class="p-2 flex justify-center items-center gap-4 border-t border-gray-700">
@@ -548,40 +648,50 @@
 
     <!-- Edit Quest Modal -->
     <div id="div-1112" class="modal hidden fixed top-1/4 left-1/3 w-[500px] z-40" data-parent="div-1000">
-        <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-            <div id="header-1112" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
-                <h3 id="title-1112" class="font-bold">Quest bearbeiten</h3>
+        <!-- ID: div-1116 - Innerer Wrapper des "Quest bearbeiten"-Modals. Gruppe: Quest-System. -->
+        <div id="div-1116" class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
+            <div class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 class="font-bold">Quest bearbeiten</h3>
                 <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-            <div id="content-1112" class="p-4 overflow-y-auto">
+            <!-- ID: div-1117 - Inhaltscontainer des "Quest bearbeiten"-Modals. Gruppe: Quest-System. -->
+            <div id="div-1117" class="p-4 overflow-y-auto">
                 <form id="edit-quest-form" class="space-y-3 text-sm">
                     <input type="hidden" id="edit-quest-id">
-                    <div>
+                    <!-- ID: div-1118 - Wrapper für Titel-Eingabe. Gruppe: Quest-System. -->
+                    <div id="div-1118">
                         <label class="block text-xs font-medium text-gray-400 mb-1">Titel</label>
                         <input type="text" id="edit-quest-text" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2" required>
                     </div>
-                    <div>
+                    <!-- ID: div-1119 - Wrapper für Beschreibungs-Eingabe. Gruppe: Quest-System. -->
+                    <div id="div-1119">
                         <label class="block text-xs font-medium text-gray-400 mb-1">Beschreibung</label>
                         <textarea id="edit-quest-details" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2 h-20"></textarea>
                     </div>
-                    <div class="grid grid-cols-2 gap-4 pt-2">
-                        <div>
+                    <!-- ID: div-1121 - Grid-Container für diverse Quest-Eigenschaften. Gruppe: Quest-System. -->
+                    <div id="div-1121" class="grid grid-cols-2 gap-4 pt-2">
+                        <!-- ID: div-1122 - Wrapper für Prioritäts-Auswahl. Gruppe: Quest-System. -->
+                        <div id="div-1122">
                             <label class="block text-xs font-medium text-gray-400 mb-1">Priorität</label>
                             <select id="edit-quest-priority" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2"></select>
                         </div>
-                        <div>
+                        <!-- ID: div-1123 - Wrapper für Dauer-Eingabe. Gruppe: Quest-System. -->
+                        <div id="div-1123">
                             <label class="block text-xs font-medium text-gray-400 mb-1">Dauer (Minuten)</label>
                             <input type="number" id="edit-quest-duration" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2" min="0">
                         </div>
-                        <div>
+                        <!-- ID: div-1124 - Wrapper für Deadline-Eingabe. Gruppe: Quest-System. -->
+                        <div id="div-1124">
                             <label class="block text-xs font-medium text-gray-400 mb-1">Deadline</label>
                             <input type="date" id="edit-quest-deadline" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2">
                         </div>
-                        <div>
+                        <!-- ID: div-1125 - Wrapper für Bearbeitungstag-Eingabe. Gruppe: Quest-System. -->
+                        <div id="div-1125">
                             <label class="block text-xs font-medium text-gray-400 mb-1">Bearbeitungstag</label>
                             <input type="date" id="edit-quest-scheduled-date" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2">
                         </div>
-                        <div>
+                        <!-- ID: div-1126 - Wrapper für Typ-Auswahl. Gruppe: Quest-System. -->
+                        <div id="div-1126">
                             <label class="block text-xs font-medium text-gray-400 mb-1">Typ</label>
                             <select id="edit-quest-type" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2">
                                 <option value="Aufgabe">Aufgabe</option>
@@ -589,15 +699,18 @@
                             </select>
                         </div>
                     </div>
-                    <div id="edit-quest-parent-project-container" class="hidden">
+                    <!-- ID: div-1127 - Wrapper für Projekt-Auswahl. Gruppe: Quest-System. -->
+                    <div id="edit-quest-parent-project-container" class="hidden"> <!-- ID wird von JS verwendet -->
                         <label class="block text-xs font-medium text-gray-400 mb-1">Übergeordnetes Projekt</label>
                         <select id="edit-quest-parent-project" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2"></select>
                     </div>
-                    <div>
+                    <!-- ID: div-1128 - Wrapper für Tag-Auswahl. Gruppe: Quest-System. -->
+                    <div id="div-1128">
                         <label class="block text-xs font-medium text-gray-400 mb-1">Tag</label>
                         <div id="edit-quest-tags-container" class="flex flex-wrap gap-x-4 gap-y-2 p-2 rounded-lg border border-gray-700"></div>
                     </div>
-                    <div>
+                    <!-- ID: div-1129 - Wrapper für Farbauswahl. Gruppe: Quest-System. -->
+                    <div id="div-1129">
                         <label for="edit-quest-color" class="block text-xs font-medium text-gray-400 mb-1">Quest Farbe</label>
                         <input type="color" id="edit-quest-color" class="w-full h-10 bg-gray-700 rounded-lg p-1">
                     </div>
@@ -608,16 +721,21 @@
     </div>
 
     <!-- Test Tools Modal -->
-    <div id="div-8110" class="modal hidden fixed top-1/4 left-1/3 w-[450px] z-40" data-parent="div-8000">
-        <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-            <div id="header-8110" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
-                <h3 id="title-8110" class="font-bold">Test-Werkzeuge</h3>
+    <!-- ID: div-5100 - Modal für die Test-Werkzeuge. Gruppe: Entwickler-Tools. -->
+    <div id="div-5100" class="modal hidden fixed top-1/4 left-1/3 w-[450px] z-40" data-parent="div-5000">
+        <!-- ID: div-5101 - Innerer Wrapper des Test-Tools-Modals. Gruppe: Entwickler-Tools. -->
+        <div id="div-5101" class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
+            <div class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 class="font-bold">Test-Werkzeuge</h3>
                 <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-            <div id="content-8110" class="p-4 space-y-2 overflow-y-auto">
+            <!-- ID: div-5102 - Inhaltscontainer des Test-Tools-Modals. Gruppe: Entwickler-Tools. -->
+            <div id="div-5102" class="p-4 space-y-2 overflow-y-auto">
+                <!-- ID: div-5120 - Sektion für Charakter & Währung. Gruppe: Entwickler-Tools. -->
                 <details class="bg-gray-700 rounded-lg p-2" open>
                     <summary class="cursor-pointer font-semibold">Charakter & Währung</summary>
-                    <div class="grid grid-cols-2 gap-2 mt-2 text-xs">
+                    <!-- ID: div-5121 - Grid für Charakter-Buttons. Gruppe: Entwickler-Tools. -->
+                    <div id="div-5121" class="grid grid-cols-2 gap-2 mt-2 text-xs">
                         <button id="test-levelup-btn" class="test-btn bg-yellow-600 hover:bg-yellow-500 p-2 rounded">Level Up (+100 XP)</button>
                         <button id="test-add-bronze-btn" class="test-btn bg-yellow-700 hover:bg-yellow-600 p-2 rounded">+125 Bronze</button>
                         <button id="test-add-hp-btn" class="test-btn bg-red-600 hover:bg-red-500 p-2 rounded">+50 HP</button>
@@ -625,8 +743,10 @@
                         <button id="toggle-ui-borders-btn" class="test-btn bg-gray-500 hover:bg-gray-400 p-2 rounded col-span-2">UI-Rahmen an/aus</button>
                     </div>
                 </details>
+                <!-- ID: div-5130 - Sektion für Quests. Gruppe: Entwickler-Tools. -->
                 <details class="bg-gray-700 rounded-lg p-2">
-                    <summary class="cursor-pointer font-semibold">Quests</summary>
+                    <!-- ID: div-5110 - Wrapper für die Quest-Testbuttons. Gruppe: Entwickler-Tools. -->
+                    <summary id="div-5110" class="cursor-pointer font-semibold">Quests</summary>
                      <div class="grid grid-cols-2 gap-2 mt-2 text-xs">
                         <button id="test-add-today-quests-btn" class="test-btn bg-blue-600 hover:bg-blue-500 p-2 rounded">+5 Quests für Heute</button>
                         <button id="test-complete-all-quests-btn" class="test-btn bg-red-600 hover:bg-red-500 p-2 rounded">Alle Quests erledigen</button>
@@ -635,14 +755,17 @@
                         <button data-count="5" data-priority="Schwer" class="add-test-quests-btn test-btn bg-gray-600 hover:bg-gray-500 p-2 rounded">+5 Schwere Quests</button>
                     </div>
                 </details>
+                 <!-- ID: div-5140 - Sektion für Sonstiges. Gruppe: Entwickler-Tools. -->
                  <details class="bg-gray-700 rounded-lg p-2">
                     <summary class="cursor-pointer font-semibold">Sonstiges</summary>
-                     <div class="grid grid-cols-2 gap-2 mt-2 text-xs">
+                     <!-- ID: div-5141 - Grid für sonstige Buttons. Gruppe: Entwickler-Tools. -->
+                     <div id="div-5141" class="grid grid-cols-2 gap-2 mt-2 text-xs">
                         <button id="test-simulate-drop-btn" class="test-btn bg-orange-600 hover:bg-orange-500 p-2 rounded">Item-Drop simulieren</button>
                         <button id="test-gain-pet-xp-btn" class="test-btn bg-purple-600 hover:bg-purple-500 p-2 rounded">Pet XP (+50)</button>
                         <button id="test-delete-breaks-btn" class="test-btn bg-orange-700 hover:bg-orange-600 p-2 rounded">Test: Pausen löschen</button>
                     </div>
                 </details>
+                <!-- ID: div-5150 - Sektion für Gantt & Zeit. Gruppe: Entwickler-Tools. -->
                 <details class="bg-gray-700 rounded-lg p-2" open>
                     <summary class="cursor-pointer font-semibold">Gantt & Zeit</summary>
                      <div class="grid grid-cols-2 gap-2 mt-2 text-xs">
@@ -655,9 +778,11 @@
                         <button id="test-date-today-btn" class="test-btn bg-lime-700 hover:bg-lime-600 p-2 rounded">Datum Heute</button>
                     </div>
                 </details>
+                <!-- ID: div-5160 - Sektion für Datenbank-Abfrage. Gruppe: Entwickler-Tools. -->
                 <details class="bg-gray-700 rounded-lg p-2">
                     <summary class="cursor-pointer font-semibold">Datenbank-Abfrage</summary>
-                    <div class="grid grid-cols-2 gap-2 mt-2 text-xs">
+                    <!-- ID: div-5161 - Grid für DB-Query-Controls. Gruppe: Entwickler-Tools. -->
+                    <div id="div-5161" class="grid grid-cols-2 gap-2 mt-2 text-xs">
                         <div class="col-span-2">
                             <label for="db-path-select" class="block text-xs font-medium text-gray-400 mb-1">Datenbankpfad</label>
                             <select id="db-path-select" class="w-full bg-gray-900 text-white rounded-lg px-2 py-1 text-xs">
@@ -667,9 +792,11 @@
                         <button id="test-db-query-btn" class="test-btn bg-cyan-600 hover:bg-cyan-500 p-2 rounded col-span-2">Wert abfragen</button>
                     </div>
                 </details>
+                <!-- ID: div-5170 - Sektion für Logging-Einstellungen. Gruppe: Entwickler-Tools. -->
                 <details class="bg-gray-700 rounded-lg p-2">
                     <summary class="cursor-pointer font-semibold">Logging-Einstellungen</summary>
-                    <div class="mt-2 space-y-2 text-sm">
+                    <!-- ID: div-5171 - Container für Logging-Toggles. Gruppe: Entwickler-Tools. -->
+                    <div id="div-5171" class="mt-2 space-y-2 text-sm">
                         <label class="flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" id="log-toggle-quests" class="form-checkbox bg-gray-600 border-gray-500 text-indigo-500" checked>
                             <span>Quest-Positionierung loggen</span>
@@ -685,16 +812,21 @@
     </div>
 
     <!-- Pets Modal -->
-    <div id="div-5110" class="modal hidden fixed top-1/4 left-1/3 w-[800px] z-40" data-parent="div-5000">
-        <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-            <div id="header-5110" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
-                <h3 id="title-5110" class="font-bold">Meine Pets</h3>
+    <!-- ID: div-3200 - Modal für "Meine Pets". Gruppe: Gamification. -->
+    <div id="div-3200" class="modal hidden fixed top-1/4 left-1/3 w-[800px] z-40" data-parent="div-3000">
+        <!-- ID: div-3201 - Innerer Wrapper des Pets-Modals. Gruppe: Gamification. -->
+        <div id="div-3201" class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
+            <div class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 class="font-bold">Meine Pets</h3>
                 <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-            <div id="content-5110" class="flex p-4 flex-grow gap-4 overflow-hidden">
+            <!-- ID: div-3202 - Inhaltscontainer des Pets-Modals. Gruppe: Gamification. -->
+            <div id="div-3202" class="flex p-4 flex-grow gap-4 overflow-hidden">
                 <!-- Left Column: Pet Inventory -->
-                <div class="w-2/5 flex flex-col gap-3">
-                    <div id="pets-inventory-filters" class="flex-shrink-0 flex gap-2 text-sm">
+                <!-- ID: div-3210 - Linke Spalte (Pet-Inventar). Gruppe: Gamification. -->
+                <div id="div-3210" class="w-2/5 flex flex-col gap-3">
+                    <!-- ID: div-3211 - Container für Pet-Filter. Gruppe: Gamification. -->
+                    <div id="div-3211" class="flex-shrink-0 flex gap-2 text-sm">
                         <select id="pet-filter-element" class="flex-grow bg-gray-700 p-1 rounded">
                             <option value="all">Alle Elemente</option>
                             <option value="Erde">Erde</option>
@@ -713,17 +845,20 @@
                             <option value="epic">Episch</option>
                         </select>
                     </div>
-                    <div id="pets-inventory-list" class="flex-grow space-y-2 overflow-y-auto pr-2">
+                    <!-- ID: div-3212 - Container für die Pet-Inventarliste. Gruppe: Gamification. -->
+                    <div id="div-3212" class="flex-grow space-y-2 overflow-y-auto pr-2">
                         <!-- Pet items will be rendered here -->
                     </div>
-                    <div id="pets-inventory-pagination" class="flex-shrink-0 p-2 flex justify-center items-center gap-4 border-t border-gray-700">
+                    <!-- ID: div-3213 - Container für die Pet-Inventar-Pagination. Gruppe: Gamification. -->
+                    <div id="div-3213" class="flex-shrink-0 p-2 flex justify-center items-center gap-4 border-t border-gray-700">
                         <button id="pets-page-prev" class="px-3 py-1 bg-indigo-600 rounded disabled:bg-gray-500">&lt;</button>
                         <span id="pets-page-info">Seite 1 / 1</span>
                         <button id="pets-page-next" class="px-3 py-1 bg-indigo-600 rounded disabled:bg-gray-500">&gt;</button>
                     </div>
                 </div>
                 <!-- Right Column: Details/Comparison -->
-                <div id="pets-details-view" class="w-3/5 bg-gray-900 p-4 rounded-lg border border-gray-600 flex flex-col">
+                <!-- ID: div-3220 - Rechte Spalte (Details/Vergleich). Gruppe: Gamification. -->
+                <div id="div-3220" class="w-3/5 bg-gray-900 p-4 rounded-lg border border-gray-600 flex flex-col">
                     <!-- Details will be rendered here -->
                 </div>
             </div>
@@ -731,10 +866,12 @@
     </div>
     
     <!-- Skill Tree Modal -->
-    <div id="div-3340" class="modal hidden fixed top-1/4 left-1/3 w-[800px] h-[70vh] z-40" data-parent="div-3000">
-        <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-             <div id="header-3340" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
-                <h3 id="title-3340" class="font-bold">Charakter-Skills</h3>
+    <!-- ID: div-2440 - Modal für den Skill-Baum. Gruppe: Spieler-Team. -->
+    <div id="div-2440" class="modal hidden fixed top-1/4 left-1/3 w-[800px] h-[70vh] z-40" data-parent="div-2000">
+        <!-- ID: div-2441 - Innerer Wrapper des Skill-Tree-Modals. Gruppe: Spieler-Team. -->
+        <div id="div-2441" class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
+             <div class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 class="font-bold">Charakter-Skills</h3>
                 <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
             <div class="p-4 border-b border-gray-700 text-center">
@@ -748,7 +885,8 @@
                     <!-- Skill details will be rendered here -->
                 </div>
             </div>
-            <div class="p-2 border-t border-gray-700 text-right">
+            <!-- ID: div-2445 - Footer des Skill-Tree-Modals. Gruppe: Spieler-Team. -->
+            <div id="div-2445" class="p-2 border-t border-gray-700 text-right">
                 <button id="reset-skills-btn" class="text-xs bg-red-800 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-lg">Skills zurücksetzen (Test)</button>
             </div>
         </div>
@@ -756,12 +894,15 @@
 
 
     <!-- Item Found Modal -->
-    <div id="div-4000" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-gray-700 p-6 rounded-lg text-center shadow-xl text-white">
+    <!-- ID: div-4100 - Generisches Modal für Item-Drops. Gruppe: Globale UI. -->
+    <div id="div-4100" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <!-- ID: div-4101 - Innerer Wrapper des Item-Found-Modals. Gruppe: Globale UI. -->
+        <div id="div-4101" class="bg-gray-700 p-6 rounded-lg text-center shadow-xl text-white">
             <h3 class="text-xl mb-4">Gegenstand gefunden!</h3>
             <div id="modal-item-icon" class="text-5xl mb-2"></div>
             <p id="modal-item-name" class="font-bold mb-4"></p>
-            <div class="flex justify-center gap-4">
+            <!-- ID: div-4102 - Button-Container im Item-Found-Modal. Gruppe: Globale UI. -->
+            <div id="div-4102" class="flex justify-center gap-4">
                 <button id="modal-keep-btn" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded">Behalten</button>
                 <button id="modal-discard-btn" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded">Verwerfen</button>
             </div>
@@ -770,12 +911,14 @@
 
     <!-- Simple Quest Test Modal -->
     <div id="div-1150" class="modal hidden fixed top-1/4 left-1/2 w-[400px] z-40" data-parent="div-1000">
-        <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-             <div id="header-1150" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
-                <h3 id="title-1150" class="font-bold">Simple Quest Test</h3>
+        <!-- ID: div-1151 - Innerer Wrapper des Simple-Quest-Modals. Gruppe: Quest-System. -->
+        <div id="div-1151" class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
+             <div class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 class="font-bold">Simple Quest Test</h3>
                 <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-            <div id="content-1150" class="p-4">
+            <!-- ID: div-1152 - Inhaltscontainer des Simple-Quest-Modals. Gruppe: Quest-System. -->
+            <div id="div-1152" class="p-4">
                 <form id="simple-quest-form" class="space-y-4">
                     <input type="text" id="simple-quest-input" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2" placeholder="Test Quest Titel..." required>
                     <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg">Create Test Quest</button>
@@ -785,11 +928,14 @@
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <div id="div-4010" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-gray-700 p-6 rounded-lg text-center shadow-xl text-white">
+    <!-- ID: div-4110 - Generisches Modal für Löschbestätigungen. Gruppe: Globale UI. -->
+    <div id="div-4110" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <!-- ID: div-4111 - Innerer Wrapper des Delete-Confirm-Modals. Gruppe: Globale UI. -->
+        <div id="div-4111" class="bg-gray-700 p-6 rounded-lg text-center shadow-xl text-white">
             <h3 class="text-xl mb-4">Wirklich löschen?</h3>
             <p id="delete-confirm-text" class="text-gray-300 mb-4">Diese Aktion kann nicht rückgängig gemacht werden.</p>
-            <div class="flex justify-center gap-4">
+            <!-- ID: div-4112 - Button-Container im Delete-Confirm-Modal. Gruppe: Globale UI. -->
+            <div id="div-4112" class="flex justify-center gap-4">
                 <button id="delete-confirm-btn" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded">Ja, löschen</button>
                 <button id="delete-cancel-btn" class="bg-gray-500 hover:bg-gray-600 px-4 py-2 rounded">Abbrechen</button>
             </div>
@@ -798,10 +944,13 @@
     
     <!-- Break Popup Modal -->
     <div id="div-4020" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[60]">
-        <div class="bg-gray-800 p-8 rounded-lg text-center shadow-xl text-white w-96">
+        <!-- ID: div-4021 - Innerer Wrapper des Pausen-Popups. Gruppe: Globale UI. -->
+        <div id="div-4021" class="bg-gray-800 p-8 rounded-lg text-center shadow-xl text-white w-96">
             <h3 class="text-2xl font-bold mb-4">Zeit für eine Pause!</h3>
-            <div id="break-timer-display" class="text-7xl font-mono my-6">05:00</div>
-            <div class="flex justify-center gap-4 mb-6">
+            <!-- ID: div-4022 - Anzeige des Pausen-Timers. Gruppe: Globale UI. -->
+            <div id="div-4022" class="text-7xl font-mono my-6">05:00</div>
+            <!-- ID: div-4023 - Button-Container zum Verlängern der Pause. Gruppe: Globale UI. -->
+            <div id="div-4023" class="flex justify-center gap-4 mb-6">
                 <button data-extend-break="5" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">5 Min</button>
                 <button data-extend-break="10" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">10 Min</button>
                 <button data-extend-break="30" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">30 Min</button>
@@ -812,10 +961,12 @@
 
     <!-- Post-Break Continue Modal -->
     <div id="div-4030" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[60]">
-        <div class="bg-gray-800 p-8 rounded-lg text-center shadow-xl text-white">
+        <!-- ID: div-4031 - Innerer Wrapper des "Pause vorbei"-Modals. Gruppe: Globale UI. -->
+        <div id="div-4031" class="bg-gray-800 p-8 rounded-lg text-center shadow-xl text-white">
             <h3 class="text-2xl font-bold mb-4">Pause vorbei!</h3>
             <p class="mb-6">Bereit, weiterzumachen?</p>
-            <div class="flex justify-center gap-4">
+            <!-- ID: div-4032 - Button-Container im "Pause vorbei"-Modal. Gruppe: Globale UI. -->
+            <div id="div-4032" class="flex justify-center gap-4">
                 <button id="continue-quest-btn" class="bg-green-600 hover:bg-green-700 px-6 py-2 rounded font-bold">Weiter</button>
                 <button id="end-focus-btn" class="bg-gray-600 hover:bg-gray-500 px-6 py-2 rounded font-bold">Beenden</button>
             </div>
@@ -823,39 +974,49 @@
     </div>
     
     <!-- Gantt Test Modal -->
-    <div id="div-8200" class="modal hidden fixed top-1/4 left-1/4 w-[1000px] h-[60vh] z-40" data-parent="div-8000">
-        <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-             <div id="header-8200" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
-                <h3 id="title-8200" class="font-bold">Gantt Chart (Test)</h3>
+    <!-- ID: div-5200 - Modal für Gantt-Chart-Test. Gruppe: Entwickler-Tools. -->
+    <div id="div-5200" class="modal hidden fixed top-1/4 left-1/4 w-[1000px] h-[60vh] z-40" data-parent="div-5000">
+        <!-- ID: div-5201 - Innerer Wrapper des Gantt-Test-Modals. Gruppe: Entwickler-Tools. -->
+        <div id="div-5201" class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
+             <div class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 class="font-bold">Gantt Chart (Test)</h3>
                 <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-            <div id="content-8200" class="p-4 flex-grow overflow-auto text-sm"></div>
+            <!-- ID: div-5202 - Inhaltscontainer für das Test-Gantt-Chart. Gruppe: Entwickler-Tools. -->
+            <div id="div-5202" class="p-4 flex-grow overflow-auto text-sm"></div>
         </div>
     </div>
 
     <!-- Pomodoro Activation Modal -->
-    <div id="div-7120" class="modal hidden fixed top-1/4 left-1/3 w-[450px] z-40" data-parent="div-7000">
-        <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-            <div id="header-7120" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
-                <h3 id="title-7120" class="font-bold">Pomodoro-Modus aktivieren</h3>
+    <!-- ID: div-4330 - Modal zur Aktivierung des Pomodoro-Modus. Gruppe: Globale UI. -->
+    <div id="div-4330" class="modal hidden fixed top-1/4 left-1/3 w-[450px] z-40" data-parent="div-4300">
+        <!-- ID: div-4331 - Innerer Wrapper des Pomodoro-Aktivierungs-Modals. Gruppe: Globale UI. -->
+        <div id="div-4331" class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
+            <div class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 class="font-bold">Pomodoro-Modus aktivieren</h3>
                 <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-            <div id="content-7120" class="p-4 space-y-4">
+            <!-- ID: div-4332 - Inhaltscontainer des Pomodoro-Aktivierungs-Modals. Gruppe: Globale UI. -->
+            <div id="div-4332" class="p-4 space-y-4">
                 <p class="text-sm">Wähle die erste Quest (Prio 1), die an den Anfang des Tages gesetzt werden soll.</p>
                 
-                <div>
+                <!-- ID: div-4333 - Wrapper für Quest-Suche und Auswahl. Gruppe: Globale UI. -->
+                <div id="div-4333">
                     <label for="pomodoro-quest-search" class="sr-only">Suche</label>
                     <input type="search" id="pomodoro-quest-search" placeholder="Quest suchen..." class="w-full bg-gray-700 text-white rounded-lg px-4 py-2 text-sm mb-2">
-                    <div id="pomodoro-quest-selection" class="bg-gray-900 p-2 rounded-lg border border-gray-600 h-28 overflow-y-auto space-y-1">
+                    <!-- ID: div-4334 - Container für die Quest-Auswahlliste. Gruppe: Globale UI. -->
+                    <div id="div-4334" class="bg-gray-900 p-2 rounded-lg border border-gray-600 h-28 overflow-y-auto space-y-1">
                         <!-- Quest list will be populated here -->
                     </div>
                 </div>
 
-                <div class="flex items-center gap-4 pt-2">
+                <!-- ID: div-4335 - Wrapper für Startzeit-Eingabe. Gruppe: Globale UI. -->
+                <div id="div-4335" class="flex items-center gap-4 pt-2">
                     <label for="pomodoro-initial-start-time" class="text-sm font-medium text-gray-300">Startzeit:</label>
                     <input type="time" id="pomodoro-initial-start-time" value="09:00" class="flex-grow bg-gray-700 text-white rounded-lg px-4 py-2">
                 </div>
-                <div class="grid grid-cols-2 gap-4 text-sm">
+                <!-- ID: div-4336 - Grid für Pausen- und Intervall-Einstellungen. Gruppe: Globale UI. -->
+                <div id="div-4336" class="grid grid-cols-2 gap-4 text-sm">
                     <div>
                         <label for="pomodoro-initial-break-duration" class="block text-xs font-medium text-gray-400 mb-1">Kurze Pause:</label>
                         <select id="pomodoro-initial-break-duration" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2">
@@ -877,13 +1038,16 @@
     </div>
 
     <!-- Pomodoro Breaks Test Modal -->
-    <div id="div-8120" class="modal hidden fixed top-1/4 left-1/3 w-[600px] h-[60vh] z-40" data-parent="div-8000">
-        <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-            <div id="header-8120" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
-                <h3 id="title-8120" class="font-bold">Test: Pomodoro Pausen-Liste</h3>
+    <!-- ID: div-5300 - Modal für die Anzeige der Pomodoro-Pausenliste (Test). Gruppe: Entwickler-Tools. -->
+    <div id="div-5300" class="modal hidden fixed top-1/4 left-1/3 w-[600px] h-[60vh] z-40" data-parent="div-5000">
+        <!-- ID: div-5301 - Innerer Wrapper des Pausenlisten-Modals. Gruppe: Entwickler-Tools. -->
+        <div id="div-5301" class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
+            <div class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 class="font-bold">Test: Pomodoro Pausen-Liste</h3>
                 <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-            <div id="content-8120" class="p-4 space-y-2 overflow-y-auto flex-grow">
+            <!-- ID: div-5302 - Inhaltscontainer für die Pausenliste. Gruppe: Entwickler-Tools. -->
+            <div id="div-5302" class="p-4 space-y-2 overflow-y-auto flex-grow">
                 <!-- Break list will be rendered here -->
             </div>
         </div>
@@ -891,13 +1055,16 @@
 
 
     <!-- Pomodoro Settings Modal -->
-    <div id="div-7130" class="modal hidden fixed top-1/4 left-1/3 w-[500px] z-40" data-parent="div-7000">
-        <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-            <div id="header-7130" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
-                <h3 id="title-7130" class="font-bold">Pomodoro-Einstellungen</h3>
+    <!-- ID: div-4340 - Modal für Pomodoro-Einstellungen. Gruppe: Globale UI. -->
+    <div id="div-4340" class="modal hidden fixed top-1/4 left-1/3 w-[500px] z-40" data-parent="div-4300">
+        <!-- ID: div-4341 - Innerer Wrapper des Pomodoro-Einstellungs-Modals. Gruppe: Globale UI. -->
+        <div id="div-4341" class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
+            <div class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 class="font-bold">Pomodoro-Einstellungen</h3>
                 <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-            <div id="content-7130" class="p-4 space-y-4 overflow-y-auto text-sm">
+            <!-- ID: div-4342 - Inhaltscontainer des Pomodoro-Einstellungs-Modals. Gruppe: Globale UI. -->
+            <div id="div-4342" class="p-4 space-y-4 overflow-y-auto text-sm">
                 <div>
                     <label for="pomodoro-long-break-duration" class="block text-xs font-medium text-gray-400 mb-1">Dauer der langen Pause (nach 4 Quests)</label>
                     <input type="number" id="pomodoro-long-break-duration" value="30" min="15" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2">
@@ -908,7 +1075,8 @@
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-gray-400 mb-1">Anzeigestil der Pausen</label>
-                    <div class="flex gap-2 rounded-lg bg-gray-900 p-1">
+                    <!-- ID: div-4343 - Radio-Button-Gruppe für Pausen-Anzeigestil. Gruppe: Globale UI. -->
+                    <div id="div-4343" class="flex gap-2 rounded-lg bg-gray-900 p-1">
                         <label class="flex-1 text-center p-1 rounded-md cursor-pointer text-xs transition-colors" for="pomodoro-style-bar">
                             <input type="radio" name="pomodoro-style" id="pomodoro-style-bar" value="bar" class="sr-only" checked><span>Balken</span>
                         </label>
@@ -918,9 +1086,11 @@
                     </div>
                 </div>
                 <!-- Bar Style Settings -->
-                <div id="pomodoro-bar-settings" class="space-y-4 border-t border-gray-700 pt-4 mt-4">
+                <!-- ID: div-4344 - Container für Balken-Einstellungen. Gruppe: Globale UI. -->
+                <div id="div-4344" class="space-y-4 border-t border-gray-700 pt-4 mt-4">
                     <h4 class="text-sm font-semibold text-gray-300">Balken-Einstellungen</h4>
-                    <div class="grid grid-cols-2 gap-4">
+                    <!-- ID: div-4345 - Grid für Umrandungs-Einstellungen. Gruppe: Globale UI. -->
+                    <div id="div-4345" class="grid grid-cols-2 gap-4">
                         <div>
                             <label for="pomodoro-bar-outline-thickness" class="block text-xs font-medium text-gray-400 mb-1">Umrandungsdicke (px)</label>
                             <input type="number" id="pomodoro-bar-outline-thickness" value="1" min="0" max="5" class="w-full bg-gray-700 text-white rounded-lg px-4 py-2">
@@ -930,7 +1100,8 @@
                             <input type="color" id="pomodoro-break-bar-border-color" value="#FBBF24" class="w-full h-10 bg-gray-700 rounded-lg p-1">
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
+                    <!-- ID: div-4346 - Grid für Farb-Einstellungen. Gruppe: Globale UI. -->
+                    <div id="div-4346" class="grid grid-cols-2 gap-4">
                         <div>
                             <label for="pomodoro-short-break-color" class="block text-xs font-medium text-gray-400 mb-1">Farbe kurze Pause</label>
                             <input type="color" id="pomodoro-short-break-color" value="#FBBF24" class="w-full h-10 bg-gray-700 rounded-lg p-1">
@@ -948,9 +1119,11 @@
                     </div>
                 </div>
                 <!-- Line Style Settings -->
-                <div id="pomodoro-line-settings" class="hidden space-y-4 border-t border-gray-700 pt-4 mt-4">
+                <!-- ID: div-4347 - Container für Linien-Einstellungen. Gruppe: Globale UI. -->
+                <div id="div-4347" class="hidden space-y-4 border-t border-gray-700 pt-4 mt-4">
                     <h4 class="text-sm font-semibold text-gray-300">Linien-Einstellungen</h4>
-                    <div class="grid grid-cols-2 gap-4">
+                    <!-- ID: div-4348 - Grid für Linien-Farb- und Dicken-Einstellungen. Gruppe: Globale UI. -->
+                    <div id="div-4348" class="grid grid-cols-2 gap-4">
                         <div>
                             <label for="pomodoro-line-color" class="block text-xs font-medium text-gray-400 mb-1">Linienfarbe</label>
                             <input type="color" id="pomodoro-line-color" value="#FBBF24" class="w-full h-10 bg-gray-700 rounded-lg p-1">
@@ -961,15 +1134,18 @@
                         </div>
                     </div>
                 </div>
-                <div class="border-t border-gray-700 pt-3">
+                <!-- ID: div-4349 - Container für fixe Pausenblöcke. Gruppe: Globale UI. -->
+                <div id="div-4349" class="border-t border-gray-700 pt-3">
                     <h4 class="font-semibold mb-2">Fixe Pausenblöcke</h4>
-                    <div id="pomodoro-fixed-breaks-container" class="space-y-2">
+                    <!-- ID: div-4350 - Container für die Liste der fixen Pausen. Gruppe: Globale UI. -->
+                    <div id="div-4350" class="space-y-2">
                         <!-- Fixed breaks will be rendered here -->
                     </div>
                     <button id="pomodoro-add-fixed-break-btn" class="mt-2 text-xs bg-green-700 hover:bg-green-600 px-3 py-1 rounded">+ Block hinzufügen</button>
                     <p class="text-xs text-gray-500 mt-2">Füge hier feste Termine wie Mittagspausen, Fahrtzeiten etc. ein. Quests werden automatisch um diese Blöcke herum geplant.</p>
                 </div>
-                <div class="flex justify-end pt-4">
+                <!-- ID: div-4351 - Footer mit Speicher-Button. Gruppe: Globale UI. -->
+                <div id="div-4351" class="flex justify-end pt-4">
                     <button id="pomodoro-settings-save-btn" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded">Speichern</button>
                 </div>
             </div>
@@ -977,19 +1153,23 @@
     </div>
 
     <!-- Pomodoro Quest Split Modal -->
-    <div id="div-7140" class="modal hidden fixed top-1/4 left-1/3 w-[500px] z-40" data-parent="div-7000">
-        <div class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
-            <div id="header-7140" class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
-                <h3 id="title-7140" class="font-bold">Quest aufteilen</h3>
+    <!-- ID: div-4360 - Modal zur Bestätigung des Quest-Splittings. Gruppe: Globale UI. -->
+    <div id="div-4360" class="modal hidden fixed top-1/4 left-1/3 w-[500px] z-40" data-parent="div-4300">
+        <!-- ID: div-4361 - Innerer Wrapper des Quest-Split-Modals. Gruppe: Globale UI. -->
+        <div id="div-4361" class="bg-gray-800 text-white rounded-lg h-full flex flex-col">
+            <div class="p-2 bg-gray-700 flex justify-between items-center cursor-move modal-header">
+                <h3 class="font-bold">Quest aufteilen</h3>
                 <button class="modal-close-btn text-xl font-bold hover:text-red-500">&times;</button>
             </div>
-            <div id="content-7140" class="p-4 space-y-4 text-sm">
+            <!-- ID: div-4362 - Inhaltscontainer des Quest-Split-Modals. Gruppe: Globale UI. -->
+            <div id="div-4362" class="p-4 space-y-4 text-sm">
                 <p>Diese Quest wird in mehrere kleinere Arbeitsblöcke aufgeteilt, die durch Pausen getrennt sind. Sie haben die Wahl:</p>
                 <ul class="list-disc list-inside text-gray-400 space-y-1">
                     <li><b>Als eine Quest belassen:</b> Die Quest wird visuell aufgeteilt, bleibt aber ein einzelner Eintrag.</li>
                     <li><b>In Sub-Quests umwandeln:</b> Die Quest wird in mehrere, einzeln plan- und abschließbare Sub-Quests umgewandelt.</li>
                 </ul>
-                <div class="flex justify-end pt-4">
+                <!-- ID: div-4363 - Footer mit Bestätigungs-Button. Gruppe: Globale UI. -->
+                <div id="div-4363" class="flex justify-end pt-4">
                     <button id="quest-split-confirm-btn" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded">Jetzt Teilen</button>
                 </div>
             </div>

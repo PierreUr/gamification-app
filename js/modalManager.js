@@ -26,18 +26,18 @@ export class ModalManager {
             console.error("ModalManager: No modal elements found on DOM initialization.");
             return;
         }
-        this.deleteConfirmModal = document.getElementById('div-4010');
+        this.deleteConfirmModal = document.getElementById('div-4110');
         this.deleteConfirmText = document.getElementById('delete-confirm-text');
         this.deleteConfirmBtn = document.getElementById('delete-confirm-btn');
         this.deleteCancelBtn = document.getElementById('delete-cancel-btn');
 
         // Break Popup Elements
         this.breakPopup = document.getElementById('div-4020');
-        this.breakTimerDisplay = document.getElementById('break-timer-display');
+        this.breakTimerDisplay = document.getElementById('div-4022');
         this.closeBreakPopupBtn = document.getElementById('close-break-popup-btn');
         this.continueQuestBtn = document.getElementById('continue-quest-btn');
         this.continueQuestPopup = document.getElementById('div-4030');
-        this.minimizedBreakTimer = document.getElementById('minimized-break-timer');
+        this.minimizedBreakTimer = document.getElementById('div-4040');
     }
 
 

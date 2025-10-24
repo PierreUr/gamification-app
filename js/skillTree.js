@@ -172,7 +172,7 @@ export class SkillTreeManager {
 
     _attachEventListeners() {
         // DOM Elements
-        this.modal = document.getElementById('div-3340');
+        this.modal = document.getElementById('div-2440');
         this.openBtn = document.getElementById('open-skills-btn');
         this.closeBtn = this.modal.querySelector('.modal-close-btn');
         this.skillPointsDisplay = document.getElementById('skill-points-display');

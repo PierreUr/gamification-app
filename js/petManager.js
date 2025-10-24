@@ -8,17 +8,17 @@ export class PetManager {
         this.rarityColors = config.rarityColors;
 
         // DOM-Elemente
-        this.modal = document.getElementById('div-5110');
+        this.modal = document.getElementById('div-3200');
         this.openBtn = document.getElementById('menu-btn-pets');
         this.closeBtn = this.modal.querySelector('.modal-close-btn');
-        this.inventoryList = document.getElementById('pets-inventory-list');
-        this.detailsView = document.getElementById('pets-details-view');
+        this.inventoryList = document.getElementById('div-3212');
+        this.detailsView = document.getElementById('div-3220');
         this.pagePrevBtn = document.getElementById('pets-page-prev');
         this.pageNextBtn = document.getElementById('pets-page-next');
         this.pageInfo = document.getElementById('pets-page-info');
         this.filterElement = document.getElementById('pet-filter-element');
         this.filterRarity = document.getElementById('pet-filter-rarity');
-        this.activePetsSidebar = document.getElementById('active-pets-sidebar');
+        this.activePetsSidebar = document.getElementById('div-2120');
 
         // Zustand
         this.currentUser = null;

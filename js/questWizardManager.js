@@ -9,20 +9,20 @@ export class QuestWizardManager {
         this.todoDetailsInput = document.getElementById('todo-details');
         this.todoPriorityInput = document.getElementById('todo-priority');
         this.todoDeadlineInput = document.getElementById('todo-deadline');
-        this.todoTagsContainer = document.getElementById('todo-tags-container');
+        this.todoTagsContainer = document.getElementById('div-1147');
         this.todoTaskTypeInput = document.getElementById('todo-task-type');
         this.todoParentProjectContainer = document.getElementById('todo-parent-project-container');
         this.todoParentProjectInput = document.getElementById('todo-parent-project');
         this.todoRepeatCheckbox = document.getElementById('todo-repeat');
-        this.todoRepeatDaysContainer = document.getElementById('todo-repeat-days-container');
+        this.todoRepeatDaysContainer = document.getElementById('div-1143');
         this.todoStartTimeInput = document.getElementById('todo-start-time');
         this.questWizardSteps = document.querySelectorAll('.quest-wizard-step');
         this.questWizardProgress = document.getElementById('quest-wizard-progress');
         this.questBackBtn = document.getElementById('quest-back-btn');
         this.questNextBtn = document.getElementById('quest-next-btn');
         this.questSubmitBtn = document.getElementById('quest-submit-btn');
-        this.toggleDetailsBtn = document.getElementById('toggle-details-btn');
-        this.detailsToggleContent = document.getElementById('details-toggle-content');
+        this.toggleDetailsBtn = document.getElementById('toggle-details-btn'); // This ID is correct
+        this.detailsToggleContent = document.getElementById('div-1127');
 
         // State
         this.currentQuestStep = 1;
