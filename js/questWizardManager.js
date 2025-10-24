@@ -3,7 +3,7 @@ export class QuestWizardManager {
         this.availableTags = availableTags;
         this.weekDays = weekDays;
 
-        // DOM Elements
+        // DOM Elements (IDs must match index.html/UI_ELEMENT_IDS.md)
         this.addTodoForm = document.getElementById('add-todo-form');
         this.todoInput = document.getElementById('todo-input');
         this.todoDetailsInput = document.getElementById('todo-details');
@@ -17,12 +17,19 @@ export class QuestWizardManager {
         this.todoRepeatDaysContainer = document.getElementById('div-1143');
         this.todoStartTimeInput = document.getElementById('todo-start-time');
         this.questWizardSteps = document.querySelectorAll('.quest-wizard-step');
-        this.questWizardProgress = document.getElementById('quest-wizard-progress');
+        this.questWizardProgress = document.getElementById('div-1148'); // Korrigierte ID
         this.questBackBtn = document.getElementById('quest-back-btn');
         this.questNextBtn = document.getElementById('quest-next-btn');
         this.questSubmitBtn = document.getElementById('quest-submit-btn');
-        this.toggleDetailsBtn = document.getElementById('toggle-details-btn'); // This ID is correct
-        this.detailsToggleContent = document.getElementById('div-1127');
+        this.toggleDetailsBtn = document.getElementById('toggle-details-btn'); 
+        this.detailsToggleContent = document.getElementById('div-1127'); // Korrigierte ID
+        
+        // NEUE DOM-Elemente zur Fehlerbehebung im Reset()
+        this.priorityContainer = document.getElementById('div-1145');
+        this.deadlineContainer = document.getElementById('deadline-container'); // Innerhalb von div-1138
+        this.repeatOptionsContainer = document.getElementById('div-1141');
+        this.durationPomodoroContainer = document.getElementById('div-1133'); // Bearbeitungsdauer-Pomodoro
+        this.durationFreeContainer = document.getElementById('Bearbeitungsdauer-Frei'); // Manuelle Eingabe
 
         // State
         this.currentQuestStep = 1;
@@ -50,8 +57,9 @@ export class QuestWizardManager {
         });
 
         this.toggleDetailsBtn.addEventListener('click', () => {
-            this.detailsToggleContent.classList.toggle('hidden');
-            this.toggleDetailsBtn.textContent = this.detailsToggleContent.classList.contains('hidden') ? 'Beschreibung hinzufügen +' : 'Beschreibung ausblenden -';
+            // Verwende this.detailsToggleContent, um das Element zu manipulieren
+            this.detailsToggleContent?.classList.toggle('hidden');
+            this.toggleDetailsBtn.textContent = this.detailsToggleContent?.classList.contains('hidden') ? 'Beschreibung hinzufügen +' : 'Beschreibung ausblenden -';
         });
 
         document.querySelectorAll('.duration-add-btn').forEach(btn => {
@@ -69,32 +77,35 @@ export class QuestWizardManager {
         });
 
         document.getElementById('duration-mode-toggle').addEventListener('click', (e) => {
-            document.getElementById('Bearbeitungsdauer-Pomodoro').classList.toggle('hidden');
-            document.getElementById('Bearbeitungsdauer-Frei').classList.toggle('hidden');
-            e.target.textContent = document.getElementById('Bearbeitungsdauer-Pomodoro').classList.contains('hidden') ? 'Button-Eingabe' : 'Manuelle Eingabe';
+            this.durationPomodoroContainer?.classList.toggle('hidden');
+            this.durationFreeContainer?.classList.toggle('hidden');
+            e.target.textContent = this.durationPomodoroContainer?.classList.contains('hidden') ? 'Button-Eingabe' : 'Manuelle Eingabe';
             this._validateCurrentQuestStep();
         });
 
         this.todoRepeatCheckbox.addEventListener('change', (e) => {
             const isChecked = e.target.checked;
-            document.getElementById('todo-repeat-options-container').classList.toggle('hidden', !isChecked);
-            document.getElementById('deadline-container').style.display = isChecked ? 'none' : 'block';
-            document.getElementById('priority-container').style.display = isChecked ? 'none' : 'block';
+            this.repeatOptionsContainer?.classList.toggle('hidden', !isChecked);
+            // Korrigierte DOM-Referenzen
+            this.deadlineContainer.style.display = isChecked ? 'none' : 'block';
+            this.priorityContainer.style.display = isChecked ? 'none' : 'block';
+            
             if (isChecked) this.todoPriorityInput.value = 'Leicht';
             this._validateCurrentQuestStep();
         });
 
-        document.getElementById('schedule-today-btn').addEventListener('click', () => {
+        document.getElementById('schedule-today-btn')?.addEventListener('click', () => {
             document.getElementById('todo-scheduled-date').valueAsDate = new Date();
         });
 
-        document.getElementById('deadline-today-btn').addEventListener('click', () => {
+        document.getElementById('deadline-today-btn')?.addEventListener('click', () => {
             document.getElementById('todo-deadline').valueAsDate = new Date();
             this._validateCurrentQuestStep(); // Trigger validation manually
         });
     }
 
     _setupNewQuestForm() {
+        if (!this.todoTagsContainer) return;
         this.availableTags.forEach((tag, index) => {
             const label = document.createElement('label');
             label.className = 'flex items-center gap-2 cursor-pointer';
@@ -106,6 +117,7 @@ export class QuestWizardManager {
             label.append(tag);
             this.todoTagsContainer.appendChild(label);
         });
+        if (!this.todoRepeatDaysContainer) return;
         this.weekDays.forEach(day => {
             const label = document.createElement('label');
             label.className = 'flex items-center gap-1 cursor-pointer';
@@ -119,6 +131,7 @@ export class QuestWizardManager {
     }
 
     _renderQuestWizardProgress() {
+        if (!this.questWizardProgress) return;
         this.questWizardProgress.innerHTML = '';
         for (let i = 1; i <= this.questWizardSteps.length; i++) {
             const dot = document.createElement('div');
@@ -149,7 +162,7 @@ export class QuestWizardManager {
             case 3:
                 if (taskType === 'Projekt') isValid = document.getElementById('project-duration-days').value > 0;
                 else {
-                    const isFreeMode = !document.getElementById('Bearbeitungsdauer-Frei').classList.contains('hidden');
+                    const isFreeMode = this.durationFreeContainer && !this.durationFreeContainer.classList.contains('hidden');
                     if (isFreeMode) isValid = this._parseDuration(document.getElementById('quest-duration-free-input').value) > 0;
                     else isValid = this.newQuestDuration > 0;
                 }
@@ -163,7 +176,10 @@ export class QuestWizardManager {
 
     _showQuestStep(step) {
         this.questWizardSteps.forEach(s => s.classList.add('hidden'));
-        document.getElementById(`quest-step-${step}`)?.classList.remove('hidden');
+        // Die Quest Step IDs in index.html sind jetzt div-1123, div-1125, div-1128, div-1137, div-1144
+        const stepIdMap = { 1: 'div-1123', 2: 'div-1125', 3: 'div-1128', 4: 'div-1137', 5: 'div-1144' };
+        document.getElementById(stepIdMap[step])?.classList.remove('hidden');
+        
         this.questBackBtn.classList.toggle('hidden', step === 1);
         this.questNextBtn.classList.toggle('hidden', step === this.questWizardSteps.length);
         this.questSubmitBtn.classList.toggle('hidden', step !== this.questWizardSteps.length);
@@ -182,22 +198,33 @@ export class QuestWizardManager {
         this.addTodoForm.reset();
         this.currentQuestStep = 1;
         this.newQuestDuration = 0;
-        const durationDisplayContainer = document.getElementById('div-1133');
-        if (durationDisplayContainer) {
-            const durationDisplaySpan = durationDisplayContainer.querySelector('span');
-            if (durationDisplaySpan) durationDisplaySpan.textContent = this._formatDuration(0);
-        }
-        this.todoTagsContainer.querySelector('input').checked = true;
-        document.getElementById('todo-scheduled-date').value = '';
-        document.getElementById('div-1145').style.display = 'block';
-        document.getElementById('div-1138').querySelector('#deadline-container').style.display = 'block';
-        document.getElementById('div-1141').classList.add('hidden');
+        
+        // KORREKTUREN FÜR DOM-Zugriffe (Sicherheits-Checks hinzugefügt)
+        const durationDisplaySpan = document.getElementById('quest-duration-display');
+        if (durationDisplaySpan) durationDisplaySpan.textContent = this._formatDuration(0);
+
+        if (this.todoTagsContainer.querySelector('input')) this.todoTagsContainer.querySelector('input').checked = true;
+
+        const scheduledDateInput = document.getElementById('todo-scheduled-date');
+        if (scheduledDateInput) scheduledDateInput.value = '';
+
+        // Verwende this.Elemente für bessere Lesbarkeit und Null-Checks
+        this.priorityContainer?.style.removeProperty('display');
+        this.deadlineContainer?.style.removeProperty('display');
+        this.repeatOptionsContainer?.classList.add('hidden');
+        
         this.todoPriorityInput.value = 'Mittel';
         this.todoStartTimeInput.value = '10:00';
-        document.getElementById('project-start-date').valueAsDate = new Date();
-        document.getElementById('Bearbeitungsdauer-Pomodoro').classList.remove('hidden');
-        document.getElementById('Bearbeitungsdauer-Frei').classList.add('hidden');
-        document.getElementById('duration-mode-toggle').textContent = 'Manuelle Eingabe';
+        
+        const projectStartDate = document.getElementById('project-start-date');
+        if (projectStartDate) projectStartDate.valueAsDate = new Date();
+
+        this.durationPomodoroContainer?.classList.remove('hidden');
+        this.durationFreeContainer?.classList.add('hidden');
+        
+        const durationModeToggle = document.getElementById('duration-mode-toggle');
+        if (durationModeToggle) durationModeToggle.textContent = 'Manuelle Eingabe';
+        
         this.questSubmitBtn.textContent = 'Quest Hinzufügen';
         this._showQuestStep(1);
     }
