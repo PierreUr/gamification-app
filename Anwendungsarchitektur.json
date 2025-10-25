@@ -1,75 +1,278 @@
 ﻿{
   "project_name": "Gamification App",
   "version": "1.0",
+  "last_updated": "2024-05-24T12:00:00Z",
   "architecture_type": "Modular-Manager-Pattern",
   "core_entry_point": "js/main.js",
-  "data_flow": "main.js (listenToUserProfile) -> updateUserData in all Managers",
+  "global_data_flow": "main.js (listenToUserProfile) -> updateUserData(user, userProfile) in all Managers",
   "modules": {
     "GamificationApp": {
       "file": "js/main.js",
-      "purpose": "Orchestrator, Firebase/Auth Setup, Global State Management",
-      "ui_areas": ["#auth-view", "#app-view", "#global-currency-display", "#notification-area"],
-      "dependencies": ["All Managers"]
+      "purpose": "Zentraler Orchestrator, Firebase/Auth-Setup, globales State-Management und Initialisierung aller anderen Manager.",
+      "summary": "Der Haupteinstiegspunkt der Anwendung. Initialisiert Firebase, alle Manager-Module und behandelt den globalen Anwendungsstatus, Benutzerauthentifizierung und den Datenfluss vom Backend (Firestore) zu den UI-Komponenten.",
+      "dependencies": [
+        "SkillTreeManager",
+        "PetManager",
+        "CharacterSheetManager",
+        "InventoryManager",
+        "ModalManager",
+        "TestToolsManager",
+        "QuestManager",
+        "TimerManager",
+        "AchievementManager",
+        "JournalManager",
+        "GanttManager",
+        "NewQuestWizardManager"
+      ],
+      "domInteractions": [
+        {"element": "#div-9900 (authView)", "action": "Zeigt/versteckt die Anmeldeansicht."},
+        {"element": "#div-4000 (appView)", "action": "Zeigt/versteckt die Haupt-App-Ansicht."},
+        {"element": "#login-btn", "action": "click", "handler": "signIn()"},
+        {"element": "#logout-btn", "action": "click", "handler": "deleteUserAndData()"},
+        {"element": "#div-4060 (notificationArea)", "action": "Zeigt Pop-up-Benachrichtigungen an."},
+        {"element": "#div-4100 (itemFoundModal)", "action": "Zeigt Modal für gefundene Items an."},
+        {"element": "#div-4110 (deleteConfirmModal)", "action": "Zeigt Modal für Löschbestätigung an."},
+        {"element": "#menu-btn-new-quest", "action": "click", "handler": "newQuestWizardManager.open()"},
+        {"element": "document", "action": "breakTimerUpdate (Custom Event)", "handler": "Aktualisiert Timer-Anzeigen in verschiedenen Managern."}
+      ],
+      "databaseInteractions": [
+        {"operation": "Firebase Auth", "notes": "signInAnonymously, onAuthStateChanged, deleteUser, signOut."},
+        {"operation": "onSnapshot", "collection": "users/{userId}", "notes": "Abonniert das Benutzerprofil für Echtzeit-Updates."},
+        {"operation": "writeBatch", "collection": "users", "notes": "Erstellt ein neues Benutzerprofil mit Standardwerten (Stats, Equipment, Pets etc.)."},
+        {"operation": "deleteDoc", "collection": "users/{userId}", "notes": "Löscht das Benutzerprofil."},
+        {"operation": "updateDoc", "collection": "users/{userId}", "notes": "Aktualisiert XP, Level, Skillpunkte und Erfolge."}
+      ],
+      "issues": [
+        {"description": "Die Methode `questManager._renderBreakFocus` wird im `breakTimerUpdate`-Event-Listener aufgerufen, existiert aber nicht im `QuestManager`.", "impact": "TypeError, Pausenzeit wird nicht im Fokus-Container angezeigt."}
+      ]
     },
     "QuestManager": {
       "file": "js/questManager.js",
-      "purpose": "Quest CRUD, Focus Logic, Completion/Reward Handling",
-      "ui_areas": ["#focus-quest-container (div-6xxx)", "div-1112 (Edit Modal)"],
-      "dependencies": ["GanttManager", "QuestListManager", "QuestWizardManager", "TimerManager"]
+      "purpose": "Verwaltet das Laden, Anzeigen, Filtern, Fokussieren und Abschließen von Quests.",
+      "summary": "Zentrale Klasse für die Verwaltung von Quests nach deren Erstellung. Interagiert eng mit dem GanttManager und TimerManager.",
+      "dependencies": ["GanttManager", "TimerManager", "main.js (Callbacks)"],
+      "domInteractions": [
+        {"element": "#div-1110 (myQuestsModal)", "action": "Öffnet/schließt das 'Meine Quests'-Modal."},
+        {"element": "#div-1115 (questListContainer)", "action": "Rendert die Quest-Liste und fängt Klicks für 'Fokus'-Buttons ab."},
+        {"element": "#quest-sort-select, .quest-filter-btn", "action": "change/click", "handler": "_renderMyQuests()"},
+        {"element": "#div-4400 (focusQuestContainer)", "action": "Rendert die Details der fokussierten Quest."}
+      ],
+      "databaseInteractions": [
+        {"operation": "onSnapshot", "collection": "todos", "query": "where('userId', '==', userId)", "notes": "Abonniert alle Quests des Benutzers."},
+        {"operation": "addDoc", "collection": "todos", "notes": "Erstellt neue Test-Quests (`addTestQuestsForToday`)."},
+        {"operation": "updateDoc", "collection": "todos", "notes": "Wird für Quest-Abschluss, Bearbeitung und Fokus-Änderungen verwendet."},
+        {"operation": "deleteDoc", "collection": "todos", "notes": "Löscht eine Quest."}
+      ],
+      "issues": [
+        {"description": "Die Methode `_renderBreakFocus(timeLeft)` fehlt, was zu einem Fehler in `main.js` führt.", "impact": "TypeError."}
+      ]
+    },
+    "NewQuestWizardManager": {
+      "file": "NewQuestWizardManager.js",
+      "purpose": "Orchestriert den mehrstufigen Prozess zur Erstellung einer neuen Quest.",
+      "summary": "Sammelt Daten von einzelnen Schritten (Typ, Info, Dauer, Deadline, Details) und speichert die neue Quest in Firestore.",
+      "dependencies": ["NewStep1_Type", "NewStep2_Info", "NewStep3_Duration", "NewStep4_Deadline", "NewStep5_Details", "main.js"],
+      "domInteractions": [
+        {"element": "#div-1120 (modal)", "action": "Öffnet/schließt das Wizard-Modal."},
+        {"element": "#add-todo-form", "action": "input, change, submit", "notes": "Fängt Formular-Events zur Validierung und zum Absenden ab."},
+        {"element": "#quest-back-btn, #quest-next-btn, #quest-submit-btn", "action": "click, disabled", "notes": "Navigations- und Submit-Buttons."}
+      ],
+      "databaseInteractions": [
+        {"operation": "addDoc", "collection": "todos", "notes": "Speichert die gesammelten Quest-Daten."}
+      ]
     },
     "GanttManager": {
       "file": "js/ganttManager.js",
-      "purpose": "Renders Gantt Chart, Pomodoro Mode/Settings, Drag\u0026Drop, UI Controls",
-      "ui_areas": ["div-7110 (Gantt Grid)", "div-7120 (Pomodoro Activate)", "div-7130 (Pomodoro Settings)"],
-      "dependencies": ["GanttSortManager", "GanttWarningManager", "PomodoroGridGenerator", "QuestManager"]
+      "purpose": "Orchestriert das Gantt-Chart, verwaltet den Zustand und delegiert UI-Logik an Sub-Manager.",
+      "summary": "Haupt-Orchestrator für das Gantt-Chart. Verwaltet den Zustand (Pomodoro-Modus, Datum), delegiert Rendering und Interaktionen an den GanttUIManager und speichert Änderungen.",
+      "dependencies": ["GanttUIManager", "GanttSortManager", "PomodoroGridGenerator", "GanttScheduleGenerator", "QuestManager"],
+      "domInteractions": [
+        {"element": "#div-4320 (ganttChartContainer)", "action": "Haupt-Container, in den das Gantt-Chart gerendert wird."},
+        {"element": "#gantt-view-select, #gantt-timescale-select, #gantt-hours-view-select", "action": "change", "handler": "render()"},
+        {"element": "#gantt-sort-all-btn, #gantt-pomodoro-toggle", "action": "click/change", "notes": "Delegiert an GanttInteractionManager."}
+      ],
+      "databaseInteractions": [
+        {"operation": "writeBatch", "collection": "todos", "notes": "Speichert gesammelte Änderungen an Quests (Position, Dauer, Pausen)."}
+      ]
+    },
+    "GanttUIManager": {
+      "file": "js/GanttUI.js",
+      "purpose": "Orchestriert alle UI-bezogenen Sub-Manager für das Gantt-Chart.",
+      "summary": "Bündelt die Logik für Rendering, Interaktion und Warnungen des Gantt-Charts.",
+      "dependencies": ["GanttManager", "GanttWarningManager", "GanttInteractionManager", "GanttRenderManager"],
+      "domInteractions": [
+        {"element": "#gantt-save-btn", "action": "Dynamisches Erstellen/Entfernen des Speicher-Buttons."}
+      ]
+    },
+    "GanttInteractionManager": {
+      "file": "js/GanttUI.js",
+      "purpose": "Verwaltet alle Benutzerinteraktionen mit dem Gantt-Chart (Klicks, Drag & Drop, Zoom).",
+      "summary": "Enthält die komplexe Logik für Drag & Drop, Größenänderung von Quests, Klicks auf Icons, Öffnen von Modals und das Mausrad-Zooming.",
+      "dependencies": ["GanttManager", "GanttUIManager", "QuestManager"],
+      "domInteractions": [
+        {"element": "#div-4320 (ganttChartContainer)", "action": "dragstart, dragover, drop, mousedown, wheel, click"},
+        {"element": "#div-4330 (pomodoroActivationModal), #div-4340 (pomodoroSettingsModal)", "action": "Öffnen, Schließen, Interaktionen mit Formularelementen."},
+        {"element": ".gantt-quest-bar, .gantt-resize-handle, .gantt-info-icon, .gantt-warning-icon", "action": "Interaktions-Listener."}
+      ],
+      "databaseInteractions": [
+        {"operation": "updateDoc", "collection": "todos", "notes": "Aktualisiert Quest-Daten nach Interaktionen."},
+        {"operation": "updateDoc", "collection": "users", "notes": "Speichert Pomodoro-Einstellungen."}
+      ]
+    },
+    "GanttRenderManager": {
+      "file": "js/GanttUI.js",
+      "purpose": "Verantwortlich für das Zeichnen der HTML-Elemente des Gantt-Charts.",
+      "summary": "Erstellt dynamisch die Grid-Struktur, Zeit-Header, Quest-Balken, Pausenbalken und den aktuellen Zeitindikator.",
+      "dependencies": ["GanttManager", "GanttUIManager"],
+      "domInteractions": [
+        {"element": "#div-4320 (ganttChartContainer)", "action": "innerHTML, appendChild"},
+        {"element": ".gantt-quest-bar, .gantt-pomodoro-break, #gantt-current-time-indicator", "action": "createElement, style, appendChild"}
+      ]
     },
     "TimerManager": {
       "file": "js/timerManager.js",
-      "purpose": "Manages quest and break countdown timers (Pomodoro functionality)",
-      "ui_areas": ["div-4020 (Break Popup)", "div-4030 (Post-Break)", "#minimized-break-timer"],
-      "dependencies": ["QuestManager", "ModalManager"]
+      "purpose": "Verwaltet Quest- und Pausen-Countdown-Timer (Pomodoro-Funktionalität).",
+      "summary": "Steuert die Logik für alle Timer, einschließlich Start, Stopp, Pause, Fortsetzen und Verlängern. Löst Events bei Timer-Ablauf und -Update aus.",
+      "dependencies": ["QuestManager", "ModalManager", "main.js (Callbacks)"],
+      "domInteractions": [
+        {"element": "document", "action": "Dispatch 'breakTimerUpdate' Custom Event."}
+      ]
     },
     "CharacterSheetManager": {
       "file": "js/characterSheetManager.js",
-      "purpose": "Calculates and renders character stats/bars (HP, XP, Attributes)",
-      "ui_areas": ["div-3000 (Character Sidebar)", "div-3210 (Bars)", "div-3400 (Attributes)"],
-      "dependencies": []
+      "purpose": "Berechnet und rendert Charakter-Statistiken, -Balken (HP, XP) und Attribute.",
+      "summary": "Aktualisiert die rechte Seitenleiste mit allen Charakterwerten, berechnet abgeleitete Werte und handhabt das Ausgeben von Attributpunkten.",
+      "dependencies": ["Firebase"],
+      "domInteractions": [
+        {"element": "#character-name, #character-level", "action": "textContent"},
+        {"element": "#hp-bar-fill, #mana-bar-fill, #stamina-bar-fill, #xp-bar-progress", "action": "style.width"},
+        {"element": "#hp-bar-text, #mana-bar-text, #stamina-bar-text", "action": "textContent"},
+        {"element": "#stat-vitality, #stat-strength, ...", "action": "textContent"},
+        {"element": ".stat-increase-btn", "action": "click", "handler": "Erhöht ein Attribut in der DB."}
+      ],
+      "databaseInteractions": [
+        {"operation": "updateDoc", "collection": "users/{userId}", "notes": "Aktualisiert `statPoints` und die Werte in `stats`, `hp`, `mana`."}
+      ]
     },
     "InventoryManager": {
       "file": "js/inventoryManager.js",
-      "purpose": "Manages Inventory (stacking, delete) and Equipment (equip, unequip)",
-      "ui_areas": ["div-3310 (Equipment Modal)", "div-3320 (Inventory Modal)", "#hp-potion-count", "#mana-potion-count"],
-      "dependencies": []
+      "purpose": "Verwaltet Inventar (Stapeln, Löschen) und Ausrüstung (Anlegen, Ablegen).",
+      "summary": "Handhabt die komplexe Logik für das An- und Ablegen von Items, die Verwendung von Tränken und die Anzeige in den entsprechenden Modals.",
+      "dependencies": ["Firebase", "main.js (Callbacks)"],
+      "domInteractions": [
+        {"element": "#div-2410 (equipmentModal), #div-2420 (inventoryModal)", "action": "Öffnen/Schließen der Modals."},
+        {"element": ".equipment-slot", "action": "click", "handler": "Zeigt Item-Details an."},
+        {"element": "#inventory-list-container", "action": "click", "handler": "Delegiert Aktionen wie 'equip', 'use', 'delete'."},
+        {"element": "#use-hp-potion-btn, #use-mana-potion-btn", "action": "click", "handler": "useItem()"}
+      ],
+      "databaseInteractions": [
+        {"operation": "onSnapshot", "collection": "users/{userId}/inventory", "notes": "Abonniert das Inventar für Echtzeit-Updates."},
+        {"operation": "runTransaction", "collection": "users", "notes": "Für sicheres Anlegen/Benutzen von Items."},
+        {"operation": "updateDoc, deleteDoc, addDoc, setDoc", "collection": "users/{userId}/inventory", "notes": "Für alle CRUD-Operationen im Inventar."}
+      ]
     },
     "PetManager": {
       "file": "js/petManager.js",
-      "purpose": "Manages Pets, Active Pet selection and rendering in sidebar",
-      "ui_areas": ["div-5110 (Pets Modal)", "#active-pets-sidebar"],
-      "dependencies": []
+      "purpose": "Verwaltet Pets, die Auswahl aktiver Pets und deren Anzeige.",
+      "summary": "Stellt die UI für die Verwaltung von aktiven und inaktiven Pets bereit, inklusive Filterung, Paginierung und einer Vergleichsansicht.",
+      "dependencies": ["Firebase", "main.js (Callbacks)"],
+      "domInteractions": [
+        {"element": "#div-3200 (modal)", "action": "Öffnet/schließt das 'Meine Pets'-Modal."},
+        {"element": "#div-3212 (inventoryList)", "action": "click", "handler": "Wählt ein Pet für die Detailansicht aus."},
+        {"element": "#div-3220 (detailsView)", "action": "click", "handler": "Delegiert Aktionen wie 'swap-pet', 'unequip-pet'."},
+        {"element": "#div-2120 (activePetsSidebar)", "action": "Rendert die Icons der aktiven Pets."}
+      ],
+      "databaseInteractions": [
+        {"operation": "updateDoc", "collection": "users/{userId}", "notes": "Aktualisiert das `activePets`-Array."}
+      ]
     },
     "SkillTreeManager": {
       "file": "js/skillTree.js",
-      "purpose": "Manages Skill Tree logic (learning skills, cost, dependencies)",
-      "ui_areas": ["div-3340 (Skills Modal)", "#skill-points-display"],
-      "dependencies": []
+      "purpose": "Verwaltet die Skill-Tree-Logik (Lernen, Kosten, Abhängigkeiten).",
+      "summary": "Stellt die UI für den Skill-Baum bereit, prüft Voraussetzungen und ermöglicht das Erlernen neuer Fähigkeiten.",
+      "dependencies": ["Firebase", "main.js (Callbacks)"],
+      "domInteractions": [
+        {"element": "#div-2440 (modal)", "action": "Öffnet/schließt das Skill-Tree-Modal."},
+        {"element": "#skill-list-panel", "action": "click", "handler": "Wählt einen Skill zur Anzeige der Details aus."},
+        {"element": "#skill-detail-panel", "action": "click", "handler": "Delegiert Klick auf 'Lernen'-Button."}
+      ],
+      "databaseInteractions": [
+        {"operation": "updateDoc", "collection": "users/{userId}", "notes": "Fügt einen Skill zum `skills`-Array hinzu und dekrementiert `skillPoints`."}
+      ]
     },
     "TestToolsManager": {
       "file": "js/testToolsManager.js",
-      "purpose": "Provides debug and testing utilities, DB query function",
-      "ui_areas": ["div-8110 (Test Tools Modal)"],
-      "dependencies": ["QuestManager", "TimerManager"]
+      "purpose": "Stellt Debugging- und Test-Utilities zur Verfügung.",
+      "summary": "Bietet eine UI mit Buttons, um schnell Spielzustände zu testen (z.B. XP geben, Quests erstellen, Timer manipulieren).",
+      "dependencies": ["QuestManager", "TimerManager", "GanttManager", "main.js (Callbacks)"],
+      "domInteractions": [
+        {"element": "#div-5100 (modal)", "action": "Öffnet/schließt das Test-Tools-Modal."},
+        {"element": "this.modal", "action": "click", "handler": "Delegiert Klicks auf alle Test-Buttons."}
+      ],
+      "databaseInteractions": [
+        {"operation": "updateDoc", "collection": "users", "notes": "Manipuliert Währung, HP, Mana."},
+        {"operation": "runTransaction", "collection": "users", "notes": "Für Pet-XP-Updates."},
+        {"operation": "writeBatch", "collection": "todos", "notes": "FEHLER: Aktualisiert bestehende Quests, anstatt neue zu erstellen."}
+      ],
+      "issues": [
+        {"description": "Der Event-Listener für `#test-add-today-quests-btn` ruft nicht `questManager.addTestQuestsForToday()` auf, sondern implementiert eine fehlerhafte Logik, die bestehende Quests verschiebt.", "impact": "Der Button erstellt keine neuen Quests, was die Testbarkeit beeinträchtigt."}
+      ]
     },
     "GanttSortManager": {
       "file": "js/ganttSortManager.js",
-      "purpose": "Logic for sorting quests (chronological, pomodoro grid insertion)",
-      "ui_areas": ["#gantt-sort-all-btn"],
-      "dependencies": ["GanttManager"]
+      "purpose": "Implementiert die 'Auto-Sortieren'-Funktionalität für das Gantt-Chart.",
+      "summary": "Enthält die Logik, um Quests entweder chronologisch lückenlos oder nach Pomodoro-Priorität in ein Zeit-Raster einzuordnen.",
+      "dependencies": ["GanttManager", "Firebase"],
+      "databaseInteractions": [
+        {"operation": "writeBatch", "collection": "todos", "notes": "Aktualisiert die `ganttScheduledAt`-Zeiten der sortierten Quests."}
+      ],
+      "issues": [
+        {"description": "Die Logik in `_sortIntoPomodoroGrid` berücksichtigt die Dauer von Pausen nicht korrekt, was zu Überlappungen führen kann.", "impact": "Quests werden nicht korrekt um Pausen herum geplant."}
+      ]
     },
     "PomodoroGridGenerator": {
       "file": "js/PomodoroGridGenerator.js",
-      "purpose": "Generates temporal grid data for Pomodoro breaks (pure logic)",
-      "ui_areas": [],
+      "purpose": "Erzeugt ein Raster von Pausenobjekten basierend auf Pomodoro-Regeln (reine Logik).",
+      "summary": "Eine zustandslose Klasse, deren einzige Aufgabe es ist, ein Array von Pausenobjekten für einen ganzen Tag zu generieren.",
       "dependencies": []
+    },
+    "AchievementManager": {
+      "file": "js/achievementManager.js",
+      "purpose": "Verwaltet die Anzeige und das Freischalten von Erfolgen.",
+      "summary": "Rendert die Liste der Erfolge, prüft Bedingungen und ermöglicht die Auswahl von Icons, die im Charakter-Profil angezeigt werden.",
+      "dependencies": ["Firebase", "main.js (Callbacks)"],
+      "domInteractions": [
+        {"element": "#div-2430 (modal)", "action": "Öffnet/schließt das Erfolge-Modal."},
+        {"element": "#div-2433 (listContainer)", "action": "Rendert die Liste der Erfolge."},
+        {"element": "#div-2435 (iconsSelectionContainer)", "action": "click", "handler": "Wählt/Abwählt anzuzeigende Erfolgs-Icons."}
+      ],
+      "databaseInteractions": [
+        {"operation": "updateDoc", "collection": "users/{userId}", "notes": "Aktualisiert das `displayedAchievements`-Array."}
+      ]
+    },
+    "JournalManager": {
+      "file": "js/journalManager.js",
+      "purpose": "Verwaltet das Journal, das abgeschlossene Quests anzeigt.",
+      "summary": "Abonniert die 'journal'-Subkollektion und rendert eine chronologische Liste der erledigten Aufgaben.",
+      "dependencies": ["Firebase"],
+      "domInteractions": [
+        {"element": "#div-1130 (journalModal)", "action": "Öffnet/schließt das Journal-Modal."},
+        {"element": "#div-1133 (journalListContainer)", "action": "Rendert die Liste der Journaleinträge."}
+      ],
+      "databaseInteractions": [
+        {"operation": "onSnapshot", "collection": "users/{userId}/journal", "notes": "Abonniert die Journal-Einträge des Benutzers."}
+      ]
+    },
+    "ModalManager": {
+      "file": "js/modalManager.js",
+      "purpose": "Handhabt globale Modal-Verhaltensweisen wie Drag & Drop und Schließen mit ESC.",
+      "summary": "Stellt eine zentrale Logik für das Verschieben von Fenstern und das Schließen über die Escape-Taste bereit. Verwaltet außerdem die spezifischen Interaktionen der Pausen-Popups.",
+      "dependencies": ["main.js (Callbacks)"],
+      "domInteractions": [
+        {"element": "document.body", "action": "mousedown", "handler": "Implementiert Drag & Drop für alle Modals."},
+        {"element": "window", "action": "keydown", "handler": "Schließt das oberste Modal bei 'Escape'."},
+        {"element": "#div-4020 (breakPopup), #div-4030 (continueQuestPopup)", "action": "click", "handler": "Handhabt Klicks auf Buttons in den Pausen-Modals."}
+      ]
     }
   },
   "ui_id_schema_reference": "PROCESS_DOCS/UI_ELEMENT_IDS.md"

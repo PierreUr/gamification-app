@@ -217,10 +217,7 @@ class GamificationApp {
         
         // Attach listeners for each manager
         this.managers.forEach(manager => {
-            // Exclude the old questManager's wizard listeners to prevent conflicts.
-            // The new newQuestWizardManager handles the creation process.
-            const isOldQuestManager = manager.constructor.name === 'QuestManager';
-            if (manager && typeof manager._attachEventListeners === 'function' && !isOldQuestManager) {
+            if (manager && typeof manager._attachEventListeners === 'function') {
                 try {
                     manager._attachEventListeners();
                 } catch (error) {
